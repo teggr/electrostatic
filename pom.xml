@@ -21,6 +21,7 @@
 		<module>jinx-core</module>
 		<module>jinx-spring-boot-starter</module>
 		<module>jinx-maven-plugin</module>
+		<module>jinx-software-site</module>
 	</modules>
 
 </project>

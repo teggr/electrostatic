@@ -34,16 +34,16 @@
 
 	<build>
 		<plugins>
-		
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 			
 			<plugin>
 				<groupId>software.jinx</groupId>
 				<artifactId>jinx-maven-plugin</artifactId>
 				<version>${project.version}</version>
+			</plugin>
+		
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			
 		</plugins>
