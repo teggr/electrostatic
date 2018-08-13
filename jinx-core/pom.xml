@@ -71,6 +71,43 @@
 			<version>2.5</version>
 		</dependency>
 
+		<!-- thymeleaf libraryes -->
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring5</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.github.mxab.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-data-attribute</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 	</dependencies>
 
 </project>

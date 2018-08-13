@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.boot.CommandLineRunner;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -18,16 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SiteGeneratorRunner implements CommandLineRunner {
+public class SiteGenerator {
 
-	private final SiteGeneratorProperties properties;
+	private final SiteGeneratorConfiguration configuration;
 
 	private final TemplateEngine templateEngine;
 
-	@Override
-	public void run(String... args) throws Exception {
-		log.info("Command line args {}", Arrays.asList(args));
-		log.info("Properties {}", properties);
+	public void run() throws Exception {
+		
+		log.info("Properties {}", configuration);
 
 		processStatic();
 		processPosts();
@@ -38,9 +35,9 @@ public class SiteGeneratorRunner implements CommandLineRunner {
 	private void processStatic() throws IOException {
 
 		// process pages
-		Path staticFolder = Paths.get(properties.getSiteDirectoryLocation(), "static");
+		Path staticFolder = Paths.get(configuration.getBaseDirectory().getAbsolutePath(), "static");
 
-		Path outputFolder = Paths.get(properties.getOutputDirectoryLocation()).toAbsolutePath();
+		Path outputFolder = Paths.get(configuration.getOutputDirectory().getAbsolutePath()).toAbsolutePath();
 		Files.createDirectories(outputFolder);
 
 		FileUtils.copyDirectory(staticFolder.toFile(), outputFolder.toFile());
@@ -48,7 +45,7 @@ public class SiteGeneratorRunner implements CommandLineRunner {
 
 	private void processPages() throws IOException {
 		// process pages
-		Path pagesFolder = Paths.get(properties.getSiteDirectoryLocation(), "pages");
+		Path pagesFolder = Paths.get(configuration.getBaseDirectory().getAbsolutePath(), "pages");
 
 		// get all posts
 		List<MarkdownFile> posts = Files.walk(pagesFolder).filter(Files::isRegularFile).map(MarkdownReader::read)
@@ -63,7 +60,7 @@ public class SiteGeneratorRunner implements CommandLineRunner {
 
 	private void processPosts() throws IOException {
 		// process posts
-		Path postsFolder = Paths.get(properties.getSiteDirectoryLocation(), "posts");
+		Path postsFolder = Paths.get(configuration.getBaseDirectory().getAbsolutePath(), "posts");
 
 		// get all posts
 		List<MarkdownFile> posts = Files.walk(postsFolder).filter(Files::isRegularFile).map(MarkdownReader::read)
@@ -79,7 +76,7 @@ public class SiteGeneratorRunner implements CommandLineRunner {
 	public void writePage(Page page) {
 
 		try {
-			Path outputFile = Paths.get(properties.getOutputDirectoryLocation(), page.getPath()).toAbsolutePath();
+			Path outputFile = Paths.get(configuration.getOutputDirectory().getAbsolutePath(), page.getPath()).toAbsolutePath();
 			Files.createDirectories(outputFile.getParent());
 			Files.write(outputFile, page.getRender());
 		} catch (IOException e) {

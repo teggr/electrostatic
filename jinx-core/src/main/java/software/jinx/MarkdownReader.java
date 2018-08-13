@@ -1,6 +1,10 @@
 package software.jinx;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -20,12 +24,28 @@ public class MarkdownReader {
 	public static MarkdownFile read(Path path) {
 
 		try {
+			String input = new String(Files.readAllBytes(path), Charset.defaultCharset());
+			StringReader reader = new StringReader(input);
+			return read(reader);
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+
+	}
+
+	public static MarkdownFile read(InputStream in) {
+
+		return read(new InputStreamReader(in));
+
+	}
+
+	private static MarkdownFile read(Reader reader) {
+		try {
 			List<Extension> extensions = Arrays.asList(YamlFrontMatterExtension.create());
 			Parser parser = Parser.builder().extensions(extensions).build();
 			HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
 			YamlFrontMatterVisitor frontMatterVisitor = new YamlFrontMatterVisitor();
-
-			Node document = parser.parse(new String(Files.readAllBytes(path), Charset.defaultCharset()));
+			Node document = parser.parseReader(reader);
 
 			document.accept(frontMatterVisitor);
 			System.out.println(renderer.render(document)); // "<p>This is
@@ -37,7 +57,6 @@ public class MarkdownReader {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
-
 	}
 
 }
