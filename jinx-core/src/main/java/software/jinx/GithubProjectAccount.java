@@ -1,13 +1,18 @@
 package software.jinx;
 
+import groovy.transform.builder.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@Builder
 @RequiredArgsConstructor
 public class GithubProjectAccount implements Account<GithubProjectAccount> {
-	
 
-	private final String username;
-	private final String project;
+	private String username;
+	private String project;
 	
 	@Override
 	public String getName() {
