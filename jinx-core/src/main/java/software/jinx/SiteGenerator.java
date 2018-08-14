@@ -22,8 +22,10 @@ public class SiteGenerator {
 
 	private final TemplateEngine templateEngine;
 
+	private final Accounts accounts;
+
 	public void run() throws Exception {
-		
+
 		log.info("Properties {}", configuration);
 
 		processStatic();
@@ -76,7 +78,8 @@ public class SiteGenerator {
 	public void writePage(Page page) {
 
 		try {
-			Path outputFile = Paths.get(configuration.getOutputDirectory().getAbsolutePath(), page.getPath()).toAbsolutePath();
+			Path outputFile = Paths.get(configuration.getOutputDirectory().getAbsolutePath(), page.getPath())
+					.toAbsolutePath();
 			Files.createDirectories(outputFile.getParent());
 			Files.write(outputFile, page.getRender());
 		} catch (IOException e) {
@@ -93,8 +96,7 @@ public class SiteGenerator {
 
 		Context context = new Context();
 		context.setVariable("post", post);
-		context.setVariable("twitter", new TwitterModel("jinxsoftware"));
-		context.setVariable("github", new GithubProjectModel("teggr", "jinx"));
+		accounts.getActive().stream().forEach(a -> context.setVariable(a.getName(), a));
 
 		return new Page(post, templateEngine.process(layout, context));
 

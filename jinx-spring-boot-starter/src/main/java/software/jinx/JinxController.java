@@ -31,8 +31,9 @@ public class JinxController {
 
 		String layout = markdownFile.getLayout().orElse("post");
 
-		model.addAttribute("twitter", new TwitterModel("jinxsoftware"));
-		model.addAttribute("github", new GithubProjectModel("teggr", "jinx"));
+		Accounts accounts = Accounts.builder().twitter(new TwitterAccount("jinxsoftware"))
+				.githubProject(new GithubProjectAccount("teggr", "jinx")).build();
+		accounts.getActive().stream().forEach(a -> model.addAttribute(a.getName(), a));
 
 		return layout;
 	}

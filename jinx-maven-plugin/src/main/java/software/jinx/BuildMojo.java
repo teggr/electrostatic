@@ -51,8 +51,11 @@ public class BuildMojo extends AbstractMojo {
 		engine.setTemplateResolver(templateResolver);
 		engine.setDialect(new SpringStandardDialect());
 
+		Accounts accounts = Accounts.builder().twitter(new TwitterAccount("jinxsoftware"))
+				.githubProject(new GithubProjectAccount("teggr", "jinx")).build();
+
 		try {
-			new SiteGenerator(configuration, engine).run();
+			new SiteGenerator(configuration, engine, accounts).run();
 		} catch (Exception e) {
 			throw new MojoFailureException("Could not generate site", e);
 		}
