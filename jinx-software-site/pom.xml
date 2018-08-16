@@ -15,20 +15,20 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
-		
+
 		<!-- site generator -->
 		<dependency>
 			<groupId>software.jinx</groupId>
 			<artifactId>jinx-spring-boot-starter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<!-- define thymeleaf as a dependency -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-		
+
 		<!-- developer tools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -46,30 +46,30 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<!-- testing utilities -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>software.jinx</groupId>
 				<artifactId>jinx-maven-plugin</artifactId>
 				<version>${project.version}</version>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 

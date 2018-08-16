@@ -2,7 +2,6 @@ package software.jinx;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -26,9 +25,11 @@ import org.apache.maven.shared.artifact.filter.collection.AbstractArtifactFeatur
 import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactsFilter;
 import org.apache.maven.shared.artifact.filter.collection.FilterArtifacts;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.loader.tools.MainClassFinder;
 import org.springframework.boot.maven.MatchingGroupIdFilter;
 import org.springframework.boot.maven.RunArguments;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring5.dialect.SpringStandardDialect;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -40,11 +41,11 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
  *
  */
 @Mojo(name = "build", requiresProject = true, defaultPhase = LifecyclePhase.VALIDATE, requiresDependencyResolution = ResolutionScope.TEST)
-@Execute(phase=LifecyclePhase.TEST_COMPILE)
+@Execute(phase = LifecyclePhase.TEST_COMPILE)
 public class BuildMojo extends AbstractMojo {
 
 	private static final String SPRING_BOOT_APPLICATION_CLASS_NAME = "org.springframework.boot.autoconfigure.SpringBootApplication";
-	
+
 	/**
 	 * The enclosing project.
 	 */
@@ -54,7 +55,7 @@ public class BuildMojo extends AbstractMojo {
 	@Parameter(property = "jinx.baseDir", defaultValue = "${project.basedir}/src/main/resources")
 	private File baseDir;
 
-	@Parameter(property = "jinx.outputDir", defaultValue = "${project.build.directory}/site")
+	@Parameter(property = "jinx.outputDir", defaultValue = "${project.build.directory}/jinx")
 	private File outputDir;
 
 	/**
@@ -73,60 +74,28 @@ public class BuildMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
-		// TODO: not going to be using spring boot directly. autoconfiguration
-		// maybe
-		// what are my inputs into the jinx engine. we are using spring auto
-		// configuration where possible
-
-		getLog().info("baseDir " + baseDir);
-		getLog().info("ouputDir " + outputDir);
-
-		SiteGeneratorConfiguration configuration = SiteGeneratorConfiguration.builder().baseDirectory(baseDir)
-				.outputDirectory(outputDir).build();
-
-		FileTemplateResolver templateResolver = new FileTemplateResolver();
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		templateResolver.setCharacterEncoding("UTF-8");
-		templateResolver.setCacheable(true);
-		templateResolver.setPrefix(new File(baseDir, "templates").getAbsolutePath() + File.separator);
-		templateResolver.setSuffix(".html");
-
-		TemplateEngine engine = new TemplateEngine();
-		engine.setTemplateResolver(templateResolver);
-		engine.setDialect(new SpringStandardDialect());
-
-		Accounts accounts = Accounts.builder().twitter(new TwitterAccount()).githubProject(new GithubProjectAccount())
-				.build();
-
-		runWithMavenJvm(getStartClass(),
-				resolveApplicationArguments().asArray());
-
-		//
-		//
-		// // how do i get the spring context loaded?
-		// try {
-		// ConfigurableApplicationContext applicationContext = SpringApplication
-		// .run(Class.forName(), new String[] {});
-		//
-		// new SiteGenerator(configuration, engine, accounts).run();
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// throw new MojoFailureException("Could not generate site", e);
-		// }
+		runWithMavenJvm(getStartClass(), resolveApplicationArguments().asArray());
 
 	}
-	
+
 	/**
 	 * Resolve the application arguments to use.
+	 * 
 	 * @return a {@link RunArguments} defining the application arguments
 	 */
 	protected RunArguments resolveApplicationArguments() {
 		RunArguments runArguments = new RunArguments(this.arguments);
 		addActiveProfileArgument(runArguments);
-		runArguments.getArgs().add("--spring.main.web-application-type=none"); // ensures we don't start up a server
+		runArguments.getArgs().add("--spring.main.web-application-type=none"); // ensures
+																				// we
+																				// don't
+																				// start
+																				// up
+																				// a
+																				// server
 		return runArguments;
-}
-	
+	}
+
 	private void addActiveProfileArgument(RunArguments arguments) {
 		// if (this.profiles.length > 0) {
 		// StringBuilder arg = new StringBuilder("--spring.profiles.active=");
@@ -139,30 +108,30 @@ public class BuildMojo extends AbstractMojo {
 		// arguments.getArgs().addFirst(arg.toString());
 		// logArguments("Active profile(s): ", this.profiles);
 		// }
-}
-	
+	}
+
 	private String getStartClass() throws MojoExecutionException {
 		String mainClass = null;
 		if (mainClass == null) {
 			try {
 				mainClass = MainClassFinder.findSingleMainClass(this.classesDirectory,
 						SPRING_BOOT_APPLICATION_CLASS_NAME);
-			}
-			catch (IOException ex) {
+			} catch (IOException ex) {
 				throw new MojoExecutionException(ex.getMessage(), ex);
 			}
 		}
 		if (mainClass == null) {
-			throw new MojoExecutionException("Unable to find a suitable main class, "
-					+ "please add a 'mainClass' property");
+			throw new MojoExecutionException(
+					"Unable to find a suitable main class, " + "please add a 'mainClass' property");
 		}
 		return mainClass;
-}
+	}
 
 	protected void runWithMavenJvm(String startClassName, String... arguments) throws MojoExecutionException {
 		IsolatedThreadGroup threadGroup = new IsolatedThreadGroup(startClassName);
 		Thread launchThread = new Thread(threadGroup, new LaunchRunner(startClassName, arguments), "main");
-		launchThread.setContextClassLoader(new URLClassLoader(getClassPathUrls()));
+		launchThread.setContextClassLoader(
+				new URLClassLoader(getClassPathUrls(), Thread.currentThread().getContextClassLoader()));
 		launchThread.start();
 		join(threadGroup);
 		threadGroup.rethrowUncaughtException();
@@ -225,9 +194,16 @@ public class BuildMojo extends AbstractMojo {
 
 	private void addDependencies(List<URL> urls) throws MalformedURLException, MojoExecutionException {
 		FilterArtifacts filters = (this.useTestClasspath ? getFilters() : getFilters(new TestArtifactFilter()));
-		Set<Artifact> artifacts = filterDependencies(this.project.getArtifacts(), filters);
+		Set<Artifact> artifacts2 = this.project.getArtifacts();
+		for (Artifact artifact : artifacts2) {
+			if (artifact.getFile() != null) {
+				getLog().info("Project artefact: " + artifact.getFile());
+			}
+		}
+		Set<Artifact> artifacts = filterDependencies(artifacts2, filters);
 		for (Artifact artifact : artifacts) {
 			if (artifact.getFile() != null) {
+				getLog().info("Adding to classpath: " + artifact.getFile());
 				urls.add(artifact.getFile().toURI().toURL());
 			}
 		}
@@ -349,15 +325,52 @@ public class BuildMojo extends AbstractMojo {
 			ClassLoader classLoader = thread.getContextClassLoader();
 			try {
 				Class<?> startClass = classLoader.loadClass(this.startClassName);
-				Method mainMethod = startClass.getMethod("main", String[].class);
-				if (!mainMethod.isAccessible()) {
-					mainMethod.setAccessible(true);
+				// Method mainMethod = startClass.getMethod("main",
+				// String[].class);
+				// if (!mainMethod.isAccessible()) {
+				// mainMethod.setAccessible(true);
+				// }
+				// mainMethod.invoke(null, new Object[] { this.args });
+
+				ConfigurableApplicationContext context = SpringApplication.run(startClass, args);
+
+				TwitterAccount twitterAccount = context.getBean(TwitterAccount.class);
+				GithubProjectAccount githubProjectAccount = context.getBean(GithubProjectAccount.class);
+				Accounts accounts = Accounts.builder().twitter(twitterAccount).githubProject(githubProjectAccount).build();
+
+				// now get all the configuration out of the context
+
+				getLog().info("baseDir " + baseDir);
+				getLog().info("ouputDir " + outputDir);
+
+				SiteGeneratorConfiguration configuration = SiteGeneratorConfiguration.builder().baseDirectory(baseDir)
+						.outputDirectory(outputDir).build();
+
+				FileTemplateResolver templateResolver = new FileTemplateResolver();
+				templateResolver.setTemplateMode(TemplateMode.HTML);
+				templateResolver.setCharacterEncoding("UTF-8");
+				templateResolver.setCacheable(true);
+				templateResolver.setPrefix(new File(baseDir, "templates").getAbsolutePath() + File.separator);
+				templateResolver.setSuffix(".html");
+
+				TemplateEngine engine = new TemplateEngine();
+				engine.setTemplateResolver(templateResolver);
+				engine.setDialect(new SpringStandardDialect());
+
+				// how do i get the spring context loaded?
+				try {
+
+					new SiteGenerator(configuration, engine, accounts).run();
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new MojoFailureException("Could not generate site", e);
 				}
-				mainMethod.invoke(null, new Object[] { this.args });				
-			} catch (NoSuchMethodException ex) {
-				Exception wrappedEx = new Exception(
-						"The specified mainClass doesn't contain a " + "main method with appropriate signature.", ex);
-				thread.getThreadGroup().uncaughtException(thread, wrappedEx);
+
+				// } catch (NoSuchMethodException ex) {
+				// Exception wrappedEx = new Exception(
+				// "The specified mainClass doesn't contain a " + "main method
+				// with appropriate signature.", ex);
+				// thread.getThreadGroup().uncaughtException(thread, wrappedEx);
 			} catch (Exception ex) {
 				thread.getThreadGroup().uncaughtException(thread, ex);
 			}
