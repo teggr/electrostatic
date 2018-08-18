@@ -2,22 +2,21 @@
 <html lang="en" class="no-js" xmlns:th="http://www.thymeleaf.org">
   <!-- Head -->
   <head>
-    <title>Electro Static Site Generator - Coming Soon Page</title>
+    <title th:text="${title}"></title>
 
     <!-- Meta -->
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="keywords" content="Static Site Generator, Maven, Java, Spring Boot, Bootstrap Theme">
-    <meta name="description" content="Electro Static Site Generator - Coming Soon Page">
+    <meta name="keywords" th:content="${tags}">
+    <meta name="description" th:content="${title}">
     <meta name="author" content="electrostatic.site">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Web Fonts -->
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-    <link href="//fonts.googleapis.com/css?family=Russo+One:400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Audiowide:400" rel="stylesheet">
 
     <!-- Bootstrap Styles -->
     <link rel="stylesheet" type="text/css" href="assets/vendors/bootstrap/css/bootstrap.min.css">
@@ -35,8 +34,9 @@
     <header class="js-parallax u-promo-block u-promo-block--mheight-600 u-overlay u-overlay--dark py-0" style="background-image: url(assets/img-temp/ali-yahya-488146-unsplash.jpg);">
       <nav class="navbar navbar-expand-sm navbar-dark u-overlay__inner py-3">
         <div class="container">
-          <a class="navbar-brand" href="index.html">
-            <img src="assets/img/logo-white.png" alt="Stream UI Kit" style="width: 130px;">
+          <a class="navbar-brand" style="font-family: 'Audiowide', cursive;" href="index.html">
+<!--             <img src="assets/img/200x200-logo.png" alt="Stream UI Kit" style="width: 130px;"> -->
+            <span>Electro</span>
           </a>
 
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo05" aria-controls="navbarTogglerDemo05" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@
           <div class="collapse navbar-collapse" id="navbarTogglerDemo05">
             <ul class="navbar-nav ml-auto mt-1 mt-lg-0">
               <li class="nav-item active mx-2">
-                <a class="nav-link" th:href="${twitter.link}">
+                <a class="nav-link" style="font-family: 'Audiowide', cursive;" th:href="${twitter.link}">
                   <i class="fab fa-twitter"></i> [[${twitter.handle}]]
                 </a>
               </li>
