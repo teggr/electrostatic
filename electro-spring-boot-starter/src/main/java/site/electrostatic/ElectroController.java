@@ -1,0 +1,53 @@
+package site.electrostatic;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import site.electrostatic.Accounts;
+import site.electrostatic.GithubProjectAccount;
+import site.electrostatic.MarkdownFile;
+import site.electrostatic.MarkdownReader;
+import site.electrostatic.TwitterAccount;
+
+@Controller
+@RequestMapping(path = { "/", "/*" })
+public class ElectroController {
+
+	@Autowired
+	private TwitterAccount twitter;
+
+	@Autowired
+	private GithubProjectAccount githubProject;
+
+	@GetMapping
+	public String get(HttpServletRequest request, Model model) throws IOException {
+
+		String requestURI = request.getRequestURI();
+		System.out.println(requestURI);
+		requestURI = "/pages" + requestURI;
+		if (requestURI.endsWith("/")) {
+			requestURI = requestURI + "index";
+		}
+		System.out.println(requestURI);
+
+		ClassPathResource classPathResource = new ClassPathResource(requestURI + ".md");
+
+		MarkdownFile markdownFile = MarkdownReader.read(classPathResource.getInputStream());
+
+		String layout = markdownFile.getLayout().orElse("post");
+
+		Accounts accounts = Accounts.builder().twitter(twitter).githubProject(githubProject).build();
+		accounts.getActive().stream().forEach(a -> model.addAttribute(a.getName(), a));
+
+		return layout;
+	}
+
+}

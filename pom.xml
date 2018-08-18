@@ -10,18 +10,18 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>software.jinx</groupId>
-	<artifactId>jinx-static-site-generator</artifactId>
+	<groupId>site.electrostatic</groupId>
+	<artifactId>electro-static-site-generator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<description>Jinx Static Site Generator for Java Spring Boot Developers</description>
+	<description>Electro Static Site Generator for Java Spring Boot Developers</description>
 
 	<modules>
-		<module>jinx-core</module>
-		<module>jinx-spring-boot-starter</module>
-		<module>jinx-maven-plugin</module>
-		<module>jinx-software-site</module>
+		<module>electro-core</module>
+		<module>electro-spring-boot-starter</module>
+		<module>electro-maven-plugin</module>
+		<module>electro-software-site</module>
 	</modules>
 
 </project>
