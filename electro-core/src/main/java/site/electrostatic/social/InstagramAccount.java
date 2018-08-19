@@ -1,15 +1,14 @@
-package site.electrostatic;
+package site.electrostatic.social;
 
-import groovy.transform.builder.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import site.electrostatic.Account;
 
 @Getter
 @Setter
-@Builder
 @RequiredArgsConstructor
-public class GithubProjectAccount implements Account<GithubProjectAccount> {
+public class InstagramAccount implements Account<InstagramAccount> {
 
 	private String username;
 	private String project;
@@ -20,7 +19,7 @@ public class GithubProjectAccount implements Account<GithubProjectAccount> {
 	}
 	
 	@Override
-	public GithubProjectAccount get() {
+	public InstagramAccount get() {
 		return this;
 	}
 	

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import site.electrostatic.Accounts;
-import site.electrostatic.GithubProjectAccount;
 import site.electrostatic.MarkdownFile;
 import site.electrostatic.MarkdownReader;
-import site.electrostatic.TwitterAccount;
+import site.electrostatic.social.GithubProjectAccount;
+import site.electrostatic.social.TwitterAccount;
 
 @Controller
 @RequestMapping(path = { "/", "/*" })

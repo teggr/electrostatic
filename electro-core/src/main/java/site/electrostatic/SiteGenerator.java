@@ -97,6 +97,7 @@ public class SiteGenerator {
 		Context context = new Context();
 		context.setVariable("post", post);
 		accounts.getActive().stream().forEach(a -> context.setVariable(a.getName(), a));
+		context.setVariable("site", new AggregatingSiteContext(new PageContext(), new SiteConfiguration()));
 
 		return new Page(post, templateEngine.process(layout, context));
 

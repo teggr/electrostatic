@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import site.electrostatic.social.GithubProjectAccount;
+import site.electrostatic.social.TwitterAccount;
+
 @Configuration
 @ComponentScan("site.electrostatic")
 public class ElectroStaticSiteGeneratorAutoConfiguration {

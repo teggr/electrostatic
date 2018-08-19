@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
+import site.electrostatic.social.GithubProjectAccount;
+import site.electrostatic.social.TwitterAccount;
 
 @Builder
 public class Accounts {

@@ -1,13 +1,12 @@
-package site.electrostatic;
+package site.electrostatic.social;
 
-import groovy.transform.builder.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import site.electrostatic.Account;
 
 @Getter
 @Setter
-@Builder
 @RequiredArgsConstructor
 public class TwitterAccount implements Account<TwitterAccount> {
 
