@@ -1,5 +1,6 @@
 package site.electrostatic;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,18 @@ public class MarkdownFile {
 	public Optional<String> getLayout() {
 		return data.getOrDefault("layout", Collections.emptyList()).stream().findFirst();
 	}
-	
+
 	public String getContent() {
 		return render;
+	}
+
+	public Optional<LocalDate> getDate() {
+
+		return Optional.of(LocalDate.now());
+	}
+
+	public Optional<String> getExcerpt() {
+		return Optional.of("a short piece of text");
 	}
 
 }

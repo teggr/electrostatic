@@ -1,6 +1,7 @@
 package site.electrostatic;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,9 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import site.electrostatic.Accounts;
-import site.electrostatic.MarkdownFile;
-import site.electrostatic.MarkdownReader;
 import site.electrostatic.social.GithubProjectAccount;
 import site.electrostatic.social.TwitterAccount;
 
@@ -46,6 +44,11 @@ public class ElectroController {
 
 		Accounts accounts = Accounts.builder().twitter(twitter).githubProject(githubProject).build();
 		accounts.getActive().stream().forEach(a -> model.addAttribute(a.getName(), a));
+
+		model.addAttribute("title", markdownFile.getTitle());
+		model.addAttribute("site", new AggregatingSiteContext(new PageContext(), new SiteConfiguration()));
+		model.addAttribute("content", markdownFile.getContent());
+		model.addAttribute("posts", Arrays.asList( new MarkdownFilePostAdapter( markdownFile ) ) );
 
 		return layout;
 	}

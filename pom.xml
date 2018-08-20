@@ -21,6 +21,7 @@
 		<module>electro-core</module>
 		<module>electro-spring-boot-starter</module>
 		<module>electro-maven-plugin</module>
+		<module>electro-starter-site</module>
 		<module>electro-software-site</module>
 	</modules>
 
