@@ -8,9 +8,19 @@
 			</pluginExecutionFilter>
 			<action>
 				<execute>
-					<runOnIncremental>true</runOnIncremental>
+					<runOnIncremental>false</runOnIncremental>
 					<runOnConfiguration>false</runOnConfiguration>
 				</execute>
+			</action>
+		</pluginExecution>
+		<pluginExecution>
+			<pluginExecutionFilter>
+				<goals>
+					<goal>zip</goal>
+				</goals>
+			</pluginExecutionFilter>
+			<action>
+				<ignore />
 			</action>
 		</pluginExecution>
 	</pluginExecutions>

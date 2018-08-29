@@ -57,10 +57,17 @@
 			<artifactId>maven-common-artifact-filters</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+
+		<!-- zipping - https://github.com/zeroturnaround/zt-zip -->
+		<dependency>
+			<groupId>org.zeroturnaround</groupId>
+			<artifactId>zt-zip</artifactId>
+			<version>1.13</version>
 		</dependency>
 
 	</dependencies>

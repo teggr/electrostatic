@@ -12,62 +12,16 @@
 
 	<artifactId>electro-starter-site</artifactId>
 	<description>Starter Electro Website</description>
-	<packaging>jar</packaging>
-
-	<dependencies>
-
-		<!-- site generator -->
-		<dependency>
-			<groupId>site.electrostatic</groupId>
-			<artifactId>electro-spring-boot-starter</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<!-- define thymeleaf as a dependency -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-
-		<!-- developer tools -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- testing utilities -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
-
+	<packaging>zip</packaging>
+	
 	<build>
 		<plugins>
-
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 
 			<plugin>
 				<groupId>site.electrostatic</groupId>
 				<artifactId>electro-maven-plugin</artifactId>
 				<version>${project.version}</version>
+				<extensions>true</extensions>
 			</plugin>
 
 		</plugins>
