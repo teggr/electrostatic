@@ -1,0 +1,21 @@
+.post-tags.ul { list-style-type: none; margin-left: 0; font-weight: 200; }
+
+.post-tags li { display: inline; padding-left: 5px; padding-right: 5px; }
+
+.post-tags li a { text-decoration: none; }
+
+.post-tags li a:link { border-bottom: 1px dashed #2a7ae2; }
+
+.post-tags li a:visited { border-bottom: 1px dashed #2a7ae2; }
+
+.post-tags li a:hover { border-bottom: 1px dashed #111; }
+
+/*# sourceMappingURL=style.css.map */
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a, .pagination .page_number {
+    padding: 8px 16px;
+}
