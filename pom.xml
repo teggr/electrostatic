@@ -20,6 +20,7 @@
 	<modules>
 		<module>electrostatic-core</module>
 		<module>electrostatic-maven-plugin</module>
+		<module>electrostatic-site</module>
 	</modules>
 
 	<dependencies>
