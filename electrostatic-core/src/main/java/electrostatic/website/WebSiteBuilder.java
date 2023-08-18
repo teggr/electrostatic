@@ -1,7 +1,8 @@
-package electrostatic.engine;
+package electrostatic.website;
 
+import electrostatic.build.BuildContext;
+import electrostatic.engine.*;
 import electrostatic.plugins.Plugins;
-import electrostatic.plugins.ThemePlugin;
 import electrostatic.site.Site;
 import electrostatic.site.SitePlugin;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class WebSiteBuilder {
 
-    private final ThemePlugin themePlugin;
+    private final WebsiteConfiguration websiteConfiguration;
+    private final BuildContext buildContext;
 
     @SneakyThrows
-    public void build( String workingDirectoryPath, String environment ) {
+    public void build() {
 
         // TODO: whilst multi-module in Intellij - must set workdirectory to the module root, unless we set it to absolute?
-        var workingDirectory = Paths.get(workingDirectoryPath);
+        var workingDirectory = Paths.get(buildContext.getWorkingDirectory());
         log.info("working directory: {}", workingDirectory.toAbsolutePath());
 
         // register plugins
-        themePlugin.registerPlugins();
+        websiteConfiguration.getThemePlugin().registerPlugins(buildContext);
 
         // define the source of content
         var contentSource = new ContentSource(workingDirectory);
@@ -39,9 +41,9 @@ public class WebSiteBuilder {
         // load rendering engine context
         Context context = new Context();
 
-        log.info("environment: {}", environment);
+        log.info("environment: {}", buildContext.getEnvironment());
 
-        context.setEnvironment(environment);
+        context.setEnvironment(buildContext.getEnvironment());
 
         Site site = SitePlugin.loadFromFile(workingDirectory);
 

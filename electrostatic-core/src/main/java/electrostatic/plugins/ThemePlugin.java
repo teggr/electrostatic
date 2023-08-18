@@ -1,7 +1,9 @@
 package electrostatic.plugins;
 
+import electrostatic.build.BuildContext;
+
 public interface ThemePlugin {
 
-  void registerPlugins();
+  void registerPlugins(BuildContext buildContext);
 
 }

@@ -87,6 +87,13 @@
 			<!--            <scope>runtime</scope>-->
 		</dependency>
 
+		<!--https://github.com/classgraph/classgraph/releases/tag/classgraph-4.8.162-->
+		<dependency>
+			<groupId>io.github.classgraph</groupId>
+			<artifactId>classgraph</artifactId>
+			<version>4.8.162</version>
+		</dependency>
+
 	</dependencies>
 
 </project>
