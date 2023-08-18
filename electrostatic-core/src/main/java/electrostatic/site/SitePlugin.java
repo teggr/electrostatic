@@ -28,11 +28,28 @@ public class SitePlugin {
         Path siteConfigFile = path.resolve("site-config.xml");
         log.info("site config: " + siteConfigFile.toAbsolutePath());
 
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        if (Files.exists(siteConfigFile)) {
 
-        Site site = (Site) unmarshaller.unmarshal(Files.newInputStream(siteConfigFile));
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-        return site;
+            return (Site) unmarshaller.unmarshal(Files.newInputStream(siteConfigFile));
+
+        } else {
+
+            Site site = new Site();
+            site.setTitle("electrostatic Site");
+            site.setAuthor(new Author("Auto", "new@electrostatic.website"));
+            site.setDescription("A new electrostatic generated site");
+            site.setEmail("new@electrostatic.website");
+            site.setTwitterUsername("electrostatic");
+            site.setGithubUsername("electrostatic");
+            site.setLinkedinUsername("electrostatic");
+            site.setUrl("");
+            site.setBaseUrl("");
+
+            return site;
+
+        }
 
     }
 

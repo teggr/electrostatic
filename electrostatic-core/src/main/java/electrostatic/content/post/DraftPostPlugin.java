@@ -38,12 +38,14 @@ public class DraftPostPlugin implements ContentTypePlugin {
     var postsDirectory = sourceDirectory.resolve("_drafts");
     log.info("drafts directory: " + postsDirectory.toAbsolutePath());
 
-    try (Stream<Path> paths = Files.walk(postsDirectory)) {
-      paths
-          .filter(Files::isRegularFile)
-          .peek(f -> log.info("{}", f))
-          .map(DraftPostPlugin::readPost)
-          .forEach(contentModel::add);
+    if(Files.exists(postsDirectory)) {
+      try (Stream<Path> paths = Files.walk(postsDirectory)) {
+        paths
+                .filter(Files::isRegularFile)
+                .peek(f -> log.info("{}", f))
+                .map(DraftPostPlugin::readPost)
+                .forEach(contentModel::add);
+      }
     }
   }
 

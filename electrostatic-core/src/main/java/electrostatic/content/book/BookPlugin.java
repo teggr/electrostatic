@@ -37,12 +37,14 @@ public class BookPlugin implements ContentTypePlugin {
     var booksDirectory = sourceDirectory.resolve("_books");
     log.info("books directory: " + booksDirectory.toAbsolutePath());
 
-    try (Stream<Path> paths = Files.walk(booksDirectory)) {
-      paths
-          .filter(Files::isRegularFile)
-          .peek(f -> log.info("{}", f))
-          .map(BookPlugin::readBook)
-          .forEach(contentModel::add);
+    if(Files.exists(booksDirectory)) {
+      try (Stream<Path> paths = Files.walk(booksDirectory)) {
+        paths
+                .filter(Files::isRegularFile)
+                .peek(f -> log.info("{}", f))
+                .map(BookPlugin::readBook)
+                .forEach(contentModel::add);
+      }
     }
 
   }

@@ -31,12 +31,14 @@ public class StaticFilesPlugin implements ContentTypePlugin {
     var staticDirectory = sourceDirectory.resolve(assetDirectory);
     log.info("static directory: " + staticDirectory.toAbsolutePath());
 
-    try (Stream<Path> paths = Files.walk(staticDirectory)) {
-      paths
-          .filter(Files::isRegularFile)
-          .peek(f -> log.info("{}", f))
-          .map( p -> this.readFile(p,staticDirectory))
-          .forEach(contentModel::addFile);
+    if(Files.exists(staticDirectory)) {
+      try (Stream<Path> paths = Files.walk(staticDirectory)) {
+        paths
+                .filter(Files::isRegularFile)
+                .peek(f -> log.info("{}", f))
+                .map(p -> this.readFile(p, staticDirectory))
+                .forEach(contentModel::addFile);
+      }
     }
 
   }

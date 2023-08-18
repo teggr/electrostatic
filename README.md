@@ -41,10 +41,11 @@ Welcome to my place
 
 ```shell
 mvn clean electrostatic:build
-
 ```
 
 Now open the index.html and voila!
+
+![starter site](docs/starter-site.png)
 
 # Next steps
 
@@ -53,3 +54,11 @@ Find more documentation on https://electrostatic.website/docs
 * Configuration Options
 * Theming
 * Content types
+
+## Configuration
+
+### Properties
+
+|--
+| Name | Default | Purpose |
+|--

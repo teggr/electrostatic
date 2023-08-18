@@ -29,14 +29,15 @@ public class PodcastPlugin implements ContentTypePlugin {
     var podcastDirectory = sourceDirectory.resolve("_podcasts");
     log.info("podcasts directory: " + podcastDirectory.toAbsolutePath());
 
-    try (Stream<Path> paths = Files.walk(podcastDirectory)) {
-      paths
-          .filter(Files::isRegularFile)
-          .peek(f -> log.info("{}", f))
-          .map(PodcastPlugin::readPodcast)
-          .forEach(contentModel::add);
+    if(Files.exists(podcastDirectory)) {
+      try (Stream<Path> paths = Files.walk(podcastDirectory)) {
+        paths
+                .filter(Files::isRegularFile)
+                .peek(f -> log.info("{}", f))
+                .map(PodcastPlugin::readPodcast)
+                .forEach(contentModel::add);
+      }
     }
-
 
   }
 

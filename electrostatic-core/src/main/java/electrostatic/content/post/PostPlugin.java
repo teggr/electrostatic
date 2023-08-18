@@ -30,13 +30,16 @@ public class PostPlugin implements ContentTypePlugin {
     var postsDirectory = sourceDirectory.resolve("_posts");
     log.info("posts directory: " + postsDirectory.toAbsolutePath());
 
-    try (Stream<Path> paths = Files.walk(postsDirectory)) {
-      paths
-          .filter(Files::isRegularFile)
-          .peek(f -> log.info("{}", f))
-          .map(PostPlugin::readPost)
-          .forEach(contentModel::add);
+    if(Files.exists(postsDirectory)) {
+      try (Stream<Path> paths = Files.walk(postsDirectory)) {
+        paths
+                .filter(Files::isRegularFile)
+                .peek(f -> log.info("{}", f))
+                .map(PostPlugin::readPost)
+                .forEach(contentModel::add);
+      }
     }
+
   }
 
   static Post readPost(Path path) {
