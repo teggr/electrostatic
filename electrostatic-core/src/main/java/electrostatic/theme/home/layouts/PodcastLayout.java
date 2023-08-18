@@ -1,4 +1,4 @@
-package electrostatic.theme.layouts;
+package electrostatic.theme.home.layouts;
 
 import electrostatic.engine.Layout;
 import electrostatic.engine.RenderModel;
@@ -10,12 +10,12 @@ import java.util.Map;
 
 import static j2html.TagCreator.*;
 
-public class BookLayout {
+public class PodcastLayout {
 
     public static Layout create() {
         return Layout.builder()
                 .data(Map.of("layout", List.of("default")))
-                .renderFunction(BookLayout::render)
+                .renderFunction(PodcastLayout::render)
                 .build();
     }
 
@@ -78,12 +78,13 @@ public class BookLayout {
                         div()
                                 .withClass("post-content e-content")
                                 .attr("itemprop", "articleBody")
-                                .with(
-                                    p(renderModel.getPage().getSubtitle()),
-                                    img()
-                                        .withWidth("150px")
-                                        .withSrc(renderModel.getPage().getImageUrl())
+                                .withText(
+                                        renderModel.getPage().getSubtitle()
                                 ),
+                        a()
+                                .withClass("u-url")
+                                .withHref(renderModel.getPage().getPodnewsUrl())
+                                .withText("Find out more and subscribe to the Podcast on Podnews"),
                         a()
                                 .withClass("u-url")
                                 .withHref(Utils.relativeUrl(renderModel.getPage().getUrl()))

@@ -1,4 +1,4 @@
-package electrostatic.theme.includes;
+package electrostatic.theme.home.includes;
 
 import electrostatic.engine.RenderModel;
 import electrostatic.utils.Utils;

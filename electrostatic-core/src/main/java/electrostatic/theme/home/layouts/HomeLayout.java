@@ -1,4 +1,4 @@
-package electrostatic.theme.layouts;
+package electrostatic.theme.home.layouts;
 
 import electrostatic.content.IndexContent;
 import electrostatic.engine.Layout;

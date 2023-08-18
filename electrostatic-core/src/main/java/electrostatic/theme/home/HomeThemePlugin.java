@@ -1,4 +1,4 @@
-package electrostatic.theme;
+package electrostatic.theme.home;
 
 import electrostatic.build.BuildContext;
 import electrostatic.categories.CategoriesPlugin;
@@ -17,8 +17,8 @@ import electrostatic.plugins.ContentTypePlugin;
 import electrostatic.plugins.Plugins;
 import electrostatic.plugins.ThemePlugin;
 import electrostatic.tags.TagPlugin;
-import electrostatic.theme.layouts.*;
-import electrostatic.theme.pages.*;
+import electrostatic.theme.home.layouts.*;
+import electrostatic.theme.home.pages.*;
 import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Path;
@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class DefaultThemePlugin implements ContentTypePlugin, ContentRenderPlugin, ThemePlugin {
+public class HomeThemePlugin implements ContentTypePlugin, ContentRenderPlugin, ThemePlugin {
 
 
-    public static DefaultThemePlugin create() {
-        return new DefaultThemePlugin();
+    public static HomeThemePlugin create() {
+        return new HomeThemePlugin();
     }
 
     @Override

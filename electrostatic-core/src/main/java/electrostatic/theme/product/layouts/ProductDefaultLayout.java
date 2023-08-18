@@ -1,22 +1,22 @@
-package electrostatic.theme.layouts;
+package electrostatic.theme.product.layouts;
 
 import electrostatic.engine.Layout;
 import electrostatic.engine.RenderModel;
 import electrostatic.mermaid.MermaidJsTagCreator;
-import electrostatic.theme.includes.Footer;
-import electrostatic.theme.includes.Head;
-import electrostatic.theme.includes.Header;
-import electrostatic.theme.includes.PiwikPro;
+import electrostatic.theme.home.includes.Footer;
+import electrostatic.theme.home.includes.Head;
+import electrostatic.theme.home.includes.Header;
+import electrostatic.theme.home.includes.PiwikPro;
 import j2html.TagCreator;
 import j2html.tags.DomContent;
 
 import static j2html.TagCreator.*;
 
-public class DefaultLayout {
+public class ProductDefaultLayout {
 
   public static Layout create() {
     return Layout.builder()
-        .renderFunction(DefaultLayout::render)
+        .renderFunction(ProductDefaultLayout::render)
         .build();
   }
 

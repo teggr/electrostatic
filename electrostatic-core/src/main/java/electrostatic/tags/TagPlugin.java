@@ -8,7 +8,7 @@ import electrostatic.engine.ContentModelVisitor;
 import electrostatic.engine.Page;
 import electrostatic.plugins.AggregatorPlugin;
 import electrostatic.plugins.Plugins;
-import electrostatic.theme.layouts.TagLayout;
+import electrostatic.theme.home.layouts.TagLayout;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

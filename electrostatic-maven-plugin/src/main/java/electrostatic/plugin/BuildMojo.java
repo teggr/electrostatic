@@ -1,7 +1,7 @@
 package electrostatic.plugin;
 
 import electrostatic.build.BuildContext;
-import electrostatic.theme.DefaultThemePlugin;
+import electrostatic.theme.home.HomeThemePlugin;
 import electrostatic.website.WebSiteBuilder;
 import electrostatic.website.WebSiteConfigurer;
 import electrostatic.website.WebsiteConfiguration;
@@ -131,7 +131,7 @@ public class BuildMojo extends AbstractMojo {
             return (configuration) -> {
                 getLog().info("using default themePlugin");
                 configuration.
-                        themePlugin(DefaultThemePlugin.create());
+                        themePlugin(HomeThemePlugin.create());
                 return configuration.build();
             };
 

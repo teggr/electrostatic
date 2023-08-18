@@ -1,4 +1,4 @@
-package electrostatic.theme.layouts;
+package electrostatic.theme.home.layouts;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

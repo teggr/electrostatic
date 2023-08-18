@@ -1,4 +1,4 @@
-package electrostatic.theme.layouts;
+package electrostatic.theme.home.layouts;
 
 import electrostatic.categories.CategoriesPlugin;
 import electrostatic.engine.Layout;

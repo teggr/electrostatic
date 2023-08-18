@@ -10,12 +10,12 @@ import java.util.Map;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.h1;
 
-public class HomePage {
+public class LandingPage {
     public static Page create() {
         return Page.builder()
                 .path("index.html")
                 .data(Map.of("layout", List.of("default")))
-                .renderFunction(HomePage::render)
+                .renderFunction(LandingPage::render)
                 .build();
     }
 

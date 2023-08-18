@@ -7,8 +7,8 @@ import electrostatic.engine.ContentModelVisitor;
 import electrostatic.engine.Pageable;
 import electrostatic.plugins.AggregatorPlugin;
 import electrostatic.plugins.Plugins;
-import electrostatic.theme.layouts.PagedContent;
-import electrostatic.theme.pages.IndexPage;
+import electrostatic.theme.home.layouts.PagedContent;
+import electrostatic.theme.home.pages.IndexPage;
 import electrostatic.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 

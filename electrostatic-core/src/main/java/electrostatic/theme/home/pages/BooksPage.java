@@ -1,4 +1,4 @@
-package electrostatic.theme.pages;
+package electrostatic.theme.home.pages;
 
 import electrostatic.content.book.Book;
 import electrostatic.engine.Page;

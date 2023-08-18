@@ -1,4 +1,4 @@
-package electrostatic.theme.pages;
+package electrostatic.theme.home.pages;
 
 import electrostatic.engine.Page;
 import electrostatic.engine.RenderModel;

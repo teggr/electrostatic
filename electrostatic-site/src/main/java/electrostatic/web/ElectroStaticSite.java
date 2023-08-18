@@ -1,6 +1,6 @@
 package electrostatic.web;
 
-import electrostatic.theme.DefaultThemePlugin;
+import electrostatic.theme.product.ProductThemePlugin;
 import electrostatic.website.WebSiteConfigurer;
 import electrostatic.website.WebsiteConfiguration;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +15,9 @@ public class ElectroStaticSite implements WebSiteConfigurer {
 
         return configuration
                 .themePlugin(
-                        DefaultThemePlugin
+                        ProductThemePlugin
                                 .create()
+                                .landingPage(LandingPage.create())
                 )
                 .build();
 
