@@ -9,6 +9,7 @@ import electrostatic.engine.Page;
 import electrostatic.plugins.AggregatorPlugin;
 import electrostatic.plugins.Plugins;
 import electrostatic.theme.home.layouts.CategoryLayout;
+import lombok.Singular;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

@@ -8,48 +8,43 @@ import electrostatic.content.post.DraftPostPlugin;
 import electrostatic.content.post.PostPlugin;
 import electrostatic.content.staticfiles.ClasspathFilesPlugin;
 import electrostatic.content.staticfiles.StaticFilesPlugin;
-import electrostatic.engine.ContentModel;
-import electrostatic.engine.Layout;
 import electrostatic.feed.FeedPlugin;
 import electrostatic.index.IndexPlugin;
-import electrostatic.plugins.*;
+import electrostatic.layouts.LayoutsPlugin;
+import electrostatic.pages.PagesPlugin;
+import electrostatic.plugins.PluginContext;
+import electrostatic.plugins.Plugins;
+import electrostatic.plugins.ThemePlugin;
 import electrostatic.tags.TagPlugin;
 import electrostatic.theme.home.layouts.*;
 import electrostatic.theme.home.pages.*;
 import lombok.RequiredArgsConstructor;
 
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
-public class HomeThemePlugin implements ContentTypePlugin, ContentRenderPlugin, ThemePlugin {
-
-    @Override
-    public void loadContent(Path sourceDirectory, ContentModel contentModel) {
-        contentModel.addPage(_404Page.create());
-        contentModel.addPage(CategoriesPage.create());
-        contentModel.addPage(TagsPage.create());
-        contentModel.addPage(PodcastsPage.create());
-        contentModel.addPage(BooksPage.create());
-    }
-
-    @Override
-    public void loadLayout(Map<String, Layout> layouts) {
-        layouts.put("default", DefaultLayout.create());
-        layouts.put("home", HomeLayout.create());
-        layouts.put("page", PageLayout.create());
-        layouts.put("tag", TagLayout.create());
-        layouts.put("book", BookLayout.create());
-        layouts.put("podcast", PodcastLayout.create());
-        layouts.put("post", PostLayout.create());
-    }
+public class HomeThemePlugin implements ThemePlugin {
 
     @Override
     public void registerPlugins(PluginContext pluginContext, BuildContext buildContext) {
 
-        Plugins.contentTypePlugins.add(this);
-        Plugins.contentRenderPlugins.add(this);
+        PagesPlugin pagesPlugin = new PagesPlugin();
+        pagesPlugin.addPage(_404Page.create());
+        pagesPlugin.addPage(CategoriesPage.create());
+        pagesPlugin.addPage(TagsPage.create());
+        pagesPlugin.addPage(PodcastsPage.create());
+        pagesPlugin.addPage(BooksPage.create());
+        pagesPlugin.register();
+
+        LayoutsPlugin layoutsPlugin = new LayoutsPlugin();
+        layoutsPlugin.put("default", DefaultLayout.create());
+        layoutsPlugin.put("home", HomeLayout.create());
+        layoutsPlugin.put("page", PageLayout.create());
+        layoutsPlugin.put("tag", TagLayout.create());
+        layoutsPlugin.put("book", BookLayout.create());
+        layoutsPlugin.put("podcast", PodcastLayout.create());
+        layoutsPlugin.put("post", PostLayout.create());
+        layoutsPlugin.register();
 
         BookPlugin.create().registerPlugins();
         PodcastPlugin.create().registerPlugins();

@@ -9,6 +9,10 @@ import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,6 +21,22 @@ import java.util.stream.Stream;
 public class ElectroStaticSiteBuilder {
 
     private final BuildContext buildContext;
+
+    @SneakyThrows
+    public static void clean(String workingDirectory) {
+
+        // create output directory
+        var outputDirectory = Path.of(workingDirectory).resolve("target/site");
+        log.info("output directory: {}", outputDirectory.toAbsolutePath());
+
+        if (Files.exists(outputDirectory)) {
+            Files.walk(outputDirectory)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
+
+    }
 
     @SneakyThrows
     public void build() {
@@ -68,7 +88,7 @@ public class ElectroStaticSiteBuilder {
                 .filter(ElectroStaticSiteBuilder::isCustomPlugin)
                 .toList();
 
-        if(customPlugins.isEmpty()) {
+        if (customPlugins.isEmpty()) {
 
             // pick a default plugin
             if (themeName.isBlank()) {
