@@ -4,6 +4,7 @@ import electrostatic.categories.CategoriesPlugin;
 import electrostatic.engine.Page;
 import electrostatic.engine.RenderModel;
 import electrostatic.utils.Utils;
+import j2html.TagCreator;
 import j2html.tags.DomContent;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class CategoriesPage {
                         .withText(renderModel.getPage().getTitle())
                 ),
                 renderModel.getContent(),
-                iff(
+                TagCreator.iff(
                     CategoriesPlugin.INSTANCE.getCategories().size() > 0,
                     each(CategoriesPlugin.INSTANCE.getCategories(), category -> {
                             return each(
@@ -54,7 +55,7 @@ public class CategoriesPage {
                                 ul()
                                     .withClass("post-list")
                                     .with(
-                                        each(CategoriesPlugin.INSTANCE.getPostsInCategory(category), post -> {
+                                        TagCreator.each(CategoriesPlugin.INSTANCE.getPostsInCategory(category), post -> {
                                             return li()
                                                 .with(
                                                     span()
@@ -67,7 +68,7 @@ public class CategoriesPage {
                                                                 .withHref(Utils.relativeUrl(post.getUrl()))
                                                                 .withText(Utils.escape(post.getTitle()))
                                                         ),
-                                                    iff(
+                                                    TagCreator.iff(
                                                         renderModel.getContext().getSite().showExcerpts(),
                                                         post.getExcerpt(renderModel)
                                                     )

@@ -18,7 +18,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class WebSiteBuilder {
 
-    private final WebsiteConfiguration websiteConfiguration;
     private final BuildContext buildContext;
 
     @SneakyThrows
@@ -27,9 +26,6 @@ public class WebSiteBuilder {
         // TODO: whilst multi-module in Intellij - must set workdirectory to the module root, unless we set it to absolute?
         var workingDirectory = Paths.get(buildContext.getWorkingDirectory());
         log.info("working directory: {}", workingDirectory.toAbsolutePath());
-
-        // register plugins
-        websiteConfiguration.getThemePlugin().registerPlugins(buildContext);
 
         // define the source of content
         var contentSource = new ContentSource(workingDirectory);

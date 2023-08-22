@@ -7,8 +7,10 @@ import lombok.Getter;
 @Getter
 public class BuildContext {
 
-    private String workingDirectory;
-    private String environment;
-    private boolean drafts;
+    private final String workingDirectory;
+    private final String basePackage;
+    private final String environment;
+    private final boolean drafts;
+    private final String themeName;
 
 }

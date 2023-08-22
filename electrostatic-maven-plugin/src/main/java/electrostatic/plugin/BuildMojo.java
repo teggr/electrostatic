@@ -1,14 +1,7 @@
 package electrostatic.plugin;
 
 import electrostatic.build.BuildContext;
-import electrostatic.theme.home.HomeThemePlugin;
-import electrostatic.website.WebSiteBuilder;
-import electrostatic.website.WebSiteConfigurer;
-import electrostatic.website.WebsiteConfiguration;
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
-import lombok.SneakyThrows;
+import electrostatic.build.ElectroStaticSiteBuilder;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -21,7 +14,6 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 @Mojo(name = "build", defaultPhase = LifecyclePhase.NONE)
@@ -45,6 +37,9 @@ public class BuildMojo extends AbstractMojo {
     @Parameter(property = "basePackage", defaultValue = "${project.groupId}")
     String basePackage;
 
+    @Parameter(property = "themeName", defaultValue = "home")
+    String themeName;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -57,6 +52,24 @@ public class BuildMojo extends AbstractMojo {
         getLog().info("environment: " + environment);
         getLog().info("basePackage: " + basePackage);
 
+        addProjectClasspathToPlugin();
+
+        BuildContext build = BuildContext.builder()
+                .workingDirectory(wd)
+                .basePackage(basePackage)
+                .environment(environment)
+                .drafts(drafts)
+                .themeName(themeName)
+                .build();
+
+        ElectroStaticSiteBuilder.builder()
+                .buildContext(build)
+                .build()
+                .build();
+
+    }
+
+    private void addProjectClasspathToPlugin() {
         // need to configure the plugins here
         classpath.forEach(cp -> {
             getLog().info("cp:          " + cp);
@@ -71,76 +84,6 @@ public class BuildMojo extends AbstractMojo {
                 throw new RuntimeException(e);
             }
         });
-
-        BuildContext buildContext = BuildContext.builder()
-                .workingDirectory(wd)
-                .environment(environment)
-                .drafts(drafts)
-                .build();
-
-        try {
-
-            // set configuration + themePlugin
-
-            // do we have any configurators (java class or file based configuration), otherwise use the default
-            WebSiteConfigurer webSiteConfigurer = findConfigurerOrUseDefault();
-            if (webSiteConfigurer == null) {
-                throw new RuntimeException("No site configurations found");
-            }
-
-            WebsiteConfiguration.WebsiteConfigurationBuilder websiteConfigurationBuilder = WebsiteConfiguration.builder();
-
-            WebsiteConfiguration websiteConfiguration = webSiteConfigurer.configure(websiteConfigurationBuilder);
-
-            WebSiteBuilder webSiteBuilder = new WebSiteBuilder(websiteConfiguration, buildContext);
-            webSiteBuilder.build();
-
-        } catch (Exception e) {
-
-            getLog().error("electrostatic failed to complete build", e);
-            throw e;
-
-        }
-
-    }
-
-    @SneakyThrows
-    private WebSiteConfigurer findConfigurerOrUseDefault() {
-
-        getLog().info("searching package for configuration " + basePackage);
-
-        List<WebSiteConfigurer> candidates = new ArrayList<>();
-
-        try (ScanResult scanResult =
-                     new ClassGraph()
-                             //.verbose()               // Log to stderr
-                             .enableAllInfo()         // Scan classes, methods, fields, annotations
-                             .acceptPackages(basePackage)     // Scan com.xyz and subpackages (omit to scan all packages)
-                             .scan()) {               // Start the scan
-            for (ClassInfo routeClassInfo : scanResult.getClassesImplementing(WebSiteConfigurer.class.getName())) {
-
-                getLog().info("found a website configuration here " + routeClassInfo.getName());
-
-                candidates.add((WebSiteConfigurer) routeClassInfo.loadClass().getDeclaredConstructor().newInstance());
-
-            }
-        }
-
-        if (candidates.isEmpty()) {
-
-            return (configuration) -> {
-                getLog().info("using default themePlugin");
-                configuration.
-                        themePlugin(HomeThemePlugin.create());
-                return configuration.build();
-            };
-
-        } else {
-
-            return (WebSiteConfigurer) candidates.get(0);
-
-        }
-
     }
 
 }

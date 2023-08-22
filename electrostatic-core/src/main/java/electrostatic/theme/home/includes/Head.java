@@ -1,8 +1,8 @@
 package electrostatic.theme.home.includes;
 
 import electrostatic.engine.RenderModel;
-import electrostatic.feed.FeedPlugin;
 import electrostatic.utils.Utils;
+import electrostatic.feed.FeedPlugin;
 import j2html.tags.DomContent;
 
 import static j2html.TagCreator.*;

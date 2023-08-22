@@ -2,8 +2,8 @@ package electrostatic.content.podcast;
 
 import electrostatic.content.IndexContent;
 import electrostatic.content.IndexedContent;
-import electrostatic.engine.ContentItem;
 import electrostatic.content.TaggedContent;
+import electrostatic.engine.ContentItem;
 import electrostatic.engine.RenderModel;
 import j2html.tags.DomContent;
 import lombok.ToString;

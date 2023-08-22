@@ -12,10 +12,7 @@ import electrostatic.engine.ContentModel;
 import electrostatic.engine.Layout;
 import electrostatic.feed.FeedPlugin;
 import electrostatic.index.IndexPlugin;
-import electrostatic.plugins.ContentRenderPlugin;
-import electrostatic.plugins.ContentTypePlugin;
-import electrostatic.plugins.Plugins;
-import electrostatic.plugins.ThemePlugin;
+import electrostatic.plugins.*;
 import electrostatic.tags.TagPlugin;
 import electrostatic.theme.home.layouts.*;
 import electrostatic.theme.home.pages.*;
@@ -27,11 +24,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class HomeThemePlugin implements ContentTypePlugin, ContentRenderPlugin, ThemePlugin {
-
-
-    public static HomeThemePlugin create() {
-        return new HomeThemePlugin();
-    }
 
     @Override
     public void loadContent(Path sourceDirectory, ContentModel contentModel) {
@@ -54,7 +46,7 @@ public class HomeThemePlugin implements ContentTypePlugin, ContentRenderPlugin, 
     }
 
     @Override
-    public void registerPlugins(BuildContext buildContext) {
+    public void registerPlugins(PluginContext pluginContext, BuildContext buildContext) {
 
         Plugins.contentTypePlugins.add(this);
         Plugins.contentRenderPlugins.add(this);

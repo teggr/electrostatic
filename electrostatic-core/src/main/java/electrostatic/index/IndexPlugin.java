@@ -5,11 +5,11 @@ import electrostatic.content.IndexedContent;
 import electrostatic.engine.ContentItem;
 import electrostatic.engine.ContentModelVisitor;
 import electrostatic.engine.Pageable;
+import electrostatic.utils.Utils;
 import electrostatic.plugins.AggregatorPlugin;
 import electrostatic.plugins.Plugins;
 import electrostatic.theme.home.layouts.PagedContent;
 import electrostatic.theme.home.pages.IndexPage;
-import electrostatic.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

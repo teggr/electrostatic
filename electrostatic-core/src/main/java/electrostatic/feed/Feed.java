@@ -3,7 +3,6 @@ package electrostatic.feed;
 import electrostatic.content.IndexContent;
 import electrostatic.engine.RenderModel;
 import electrostatic.feed.atom.*;
-import electrostatic.feed.atom.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;

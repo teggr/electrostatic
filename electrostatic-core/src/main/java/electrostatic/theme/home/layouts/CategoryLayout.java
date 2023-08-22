@@ -4,6 +4,7 @@ import electrostatic.categories.CategoriesPlugin;
 import electrostatic.engine.Layout;
 import electrostatic.engine.RenderModel;
 import electrostatic.utils.Utils;
+import j2html.TagCreator;
 import j2html.tags.DomContent;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class CategoryLayout {
                         ul()
                                 .withClass("post-list")
                                 .with(
-                                        each(CategoriesPlugin.INSTANCE.getPostsInCategory(renderModel.getPage().getCategory()), taggedContent -> {
+                                        TagCreator.each(CategoriesPlugin.INSTANCE.getPostsInCategory(renderModel.getPage().getCategory()), taggedContent -> {
                                             return each(
                                                     span()
                                                             .withClass("post-meta")
@@ -44,7 +45,7 @@ public class CategoryLayout {
                                                                             .withHref(Utils.relativeUrl(taggedContent.getUrl()))
                                                                             .withText(Utils.escape(taggedContent.getTitle()))
                                                             ),
-                                                    iff(
+                                                    TagCreator.iff(
                                                             renderModel.getContext().getSite().showExcerpts(),
                                                             taggedContent.getExcerpt(renderModel)
                                                     )

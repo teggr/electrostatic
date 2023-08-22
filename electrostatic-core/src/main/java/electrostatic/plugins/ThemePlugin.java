@@ -4,6 +4,6 @@ import electrostatic.build.BuildContext;
 
 public interface ThemePlugin {
 
-  void registerPlugins(BuildContext buildContext);
+  void registerPlugins(PluginContext pluginContext, BuildContext buildContext);
 
 }

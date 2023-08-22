@@ -1,4 +1,4 @@
-package electrostatic.web;
+package website.electrostatic;
 
 import electrostatic.engine.Page;
 import electrostatic.engine.RenderModel;

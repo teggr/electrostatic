@@ -25,9 +25,6 @@
                 <groupId>website.electrostatic</groupId>
                 <artifactId>electrostatic-maven-plugin</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
-                <configuration>
-                    <basePackage>electrostatic.web</basePackage>
-                </configuration>
             </plugin>
         </plugins>
     </build>

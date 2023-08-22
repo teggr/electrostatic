@@ -4,6 +4,7 @@ import electrostatic.engine.Layout;
 import electrostatic.engine.RenderModel;
 import electrostatic.tags.TagPlugin;
 import electrostatic.utils.Utils;
+import j2html.TagCreator;
 import j2html.tags.DomContent;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class TagLayout {
             ul()
                 .withClass("post-list")
                 .with(
-                    each(TagPlugin.INSTANCE.getTaggedContent(renderModel.getPage().getTag()), taggedContent -> {
+                    TagCreator.each(TagPlugin.INSTANCE.getTaggedContent(renderModel.getPage().getTag()), taggedContent -> {
                       return each(
                           span()
                               .withClass("post-meta")
@@ -44,7 +45,7 @@ public class TagLayout {
                                       .withHref(Utils.relativeUrl(taggedContent.getUrl()))
                                       .withText(Utils.escape(taggedContent.getTitle()))
                               ),
-                          iff(
+                          TagCreator.iff(
                               renderModel.getContext().getSite().showExcerpts(),
                               taggedContent.getExcerpt(renderModel)
                           )

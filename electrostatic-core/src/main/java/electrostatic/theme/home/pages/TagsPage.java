@@ -4,6 +4,7 @@ import electrostatic.engine.Page;
 import electrostatic.engine.RenderModel;
 import electrostatic.tags.TagPlugin;
 import electrostatic.utils.Utils;
+import j2html.TagCreator;
 import j2html.tags.DomContent;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class TagsPage {
                         ul()
                                 .withClass("post-list")
                                 .with(
-                                        each(TagPlugin.INSTANCE.getTags().stream().sorted(String.CASE_INSENSITIVE_ORDER).toList(), tag ->{
+                                        TagCreator.each(TagPlugin.INSTANCE.getTags().stream().sorted(String.CASE_INSENSITIVE_ORDER).toList(), tag ->{
                                             return h3()
                                                     .with(
                                                             a()
