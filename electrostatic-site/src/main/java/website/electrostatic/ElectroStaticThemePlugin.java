@@ -22,10 +22,9 @@ public class ElectroStaticThemePlugin implements ThemePlugin {
         pagesPlugin.addPage(LandingPage.create());
         pagesPlugin.register();
 
-        // static resources
-
         // register documentation plugin for _docs folder
-        DocumentationPlugin.create().register();
+        DocumentationPlugin.create()
+                .register();
 
     }
 
