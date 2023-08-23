@@ -28,14 +28,7 @@ public class LandingPageLayout {
         return each(
                 jumboIntroduction(renderModel),
                 iconGrid(renderModel),
-                gettingStarted(renderModel),
-                footer(
-                        p(
-                                a("Image by rawpixel.com")
-                                        .withHref("https://www.freepik.com/free-vector/black-neural-network-illustration_3853730.htm#query=wireframe%20grid&position=17&from_view=search&track=ais"),
-                                text(" on Freepik.")
-                        )
-                )
+                gettingStarted(renderModel)
         );
     }
 
