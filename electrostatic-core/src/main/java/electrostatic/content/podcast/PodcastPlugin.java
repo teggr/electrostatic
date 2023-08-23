@@ -25,19 +25,7 @@ public class PodcastPlugin implements ContentTypePlugin {
   @SneakyThrows
   @Override
   public void loadContent(Path sourceDirectory, ContentModel contentModel) {
-    // load podcasts from folder with markdown
-    var podcastDirectory = sourceDirectory.resolve("_podcasts");
-    log.info("podcasts directory: " + podcastDirectory.toAbsolutePath());
 
-    if(Files.exists(podcastDirectory)) {
-      try (Stream<Path> paths = Files.walk(podcastDirectory)) {
-        paths
-                .filter(Files::isRegularFile)
-                .peek(f -> log.info("{}", f))
-                .map(PodcastPlugin::readPodcast)
-                .forEach(contentModel::add);
-      }
-    }
 
   }
 

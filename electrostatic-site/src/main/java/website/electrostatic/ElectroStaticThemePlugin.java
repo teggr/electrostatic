@@ -2,6 +2,7 @@ package website.electrostatic;
 
 import electrostatic.build.BuildContext;
 import electrostatic.content.docs.DocumentationPlugin;
+import electrostatic.content.staticfiles.StaticFilesPlugin;
 import electrostatic.layouts.LayoutsPlugin;
 import electrostatic.pages.PagesPlugin;
 import electrostatic.plugins.PluginContext;
@@ -15,16 +16,18 @@ public class ElectroStaticThemePlugin implements ThemePlugin {
         // register shared layouts
         LayoutsPlugin layoutsPlugin = new LayoutsPlugin();
         layoutsPlugin.put("default", ElectroStaticLayout.create());
+        layoutsPlugin.put("landing", LandingPageLayout.create());
         layoutsPlugin.register();
 
-        // register a landing page
-        PagesPlugin pagesPlugin = new PagesPlugin();
-        pagesPlugin.addPage(LandingPage.create());
-        pagesPlugin.register();
+        PagesPlugin.create().register();
 
         // register documentation plugin for _docs folder
         DocumentationPlugin.create()
                 .register();
+
+        // add static files
+        StaticFilesPlugin.create("_static")
+                .registerPlugins();
 
     }
 

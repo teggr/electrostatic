@@ -29,6 +29,8 @@ public class RenderModel {
 
         if (url.startsWith("http")) {
             return url;
+        } else if (url.startsWith("#")) {
+            return url;
         }
 
         // what is our url
@@ -54,6 +56,9 @@ public class RenderModel {
         if(string.isBlank()) {
             string = "#";
         }
+
+        string = string.replaceAll("\\\\","/");
+
         return string;
 
     }

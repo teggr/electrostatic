@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 @Builder
@@ -107,6 +104,10 @@ public class Page {
             return "";
         }
         return stringList.get(0);
+    }
+
+    public List<String> get(String key) {
+        return data.getOrDefault(key, List.of());
     }
 
 }
