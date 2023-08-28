@@ -110,7 +110,7 @@ public class LandingPageLayout {
                                                                 .withClass("col-lg-6")
                                                                 .with(
                                                                         h1(renderModel.getPage().getTitle())
-                                                                                .withClasses("display-5", "fw-bold", "text-body-emphasis", "lh-1", "mb-3"),
+                                                                                .withClasses("display-5", "text-body-emphasis", "lh-1", "mb-3", "jumbo-title"),
                                                                         p(renderModel.getPage().getSubtitle())
                                                                                 .withClass("lead"),
                                                                         div()
