@@ -17,13 +17,19 @@ features:
   - Plugins ; Build and extend themes with a pluggable architecture. ; puzzle
 ---
 
-### Installation
+### Quick start
+
+#### Create a new project
+
+```shell
+mvn electrostatic:init --with-content
+```
 
 #### Add the maven plugin
 
 ```xml
 <plugin>
-    <groupId>website.electrostatic</groupId>
+    <groupId>run.electrostatic</groupId>
     <artifactId>electrostatic-maven-plugin</artifactId>
     <version>1.0.0</version>
 </plugin>

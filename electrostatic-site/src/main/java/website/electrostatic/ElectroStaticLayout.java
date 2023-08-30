@@ -37,6 +37,7 @@ public class ElectroStaticLayout {
                                                 .attr("rel", "preconnect")
                                                 .withHref("https://fonts.gstatic.com")
                                                 .attr("crossorigin"),
+                                        /* https://fonts.google.com/specimen/Audiowide?preview.text=electrostatic&preview.text_type=custo */
                                         link()
                                                 .withHref("https://fonts.googleapis.com/css2?family=Audiowide&display=swap")
                                                 .attr("rel", "stylesheet"),

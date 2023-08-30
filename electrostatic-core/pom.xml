@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>website.electrostatic</groupId>
+		<groupId>run.electrostatic</groupId>
 		<artifactId>electrostatic-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
