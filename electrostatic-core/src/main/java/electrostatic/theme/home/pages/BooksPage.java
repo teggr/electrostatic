@@ -17,12 +17,12 @@ public class BooksPage {
 
     return Page.builder()
         .path("/books/index.html")
-        .includeMenu(true)
         .data(Map.of(
             "layout", List.of("default"),
             "title", List.of("Books"),
             "permalink", List.of("/books"),
-            "list_title", List.of("Books")
+            "list_title", List.of("Books"),
+                "include_menu", List.of("true")
         ))
         .renderFunction(BooksPage::render)
         .build();

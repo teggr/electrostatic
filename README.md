@@ -12,7 +12,7 @@ Find the latest version on [maven central](https://)
 
 ```xml
 <plugin>
-    <groupId>run.electrostatic</groupId>
+    <groupId>website.electrostatic</groupId>
     <artifactId>electrostatic-maven-plugin</artifactId>
     <version>${latest.project.version}</version>
 </plugin>

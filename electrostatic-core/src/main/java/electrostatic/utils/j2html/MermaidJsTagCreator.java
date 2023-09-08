@@ -1,13 +1,14 @@
-package electrostatic.mermaid;
+package electrostatic.utils.j2html;
 
 import j2html.tags.DomContent;
+import j2html.tags.specialized.ScriptTag;
 
 import static j2html.TagCreator.rawHtml;
 import static j2html.TagCreator.script;
 
 public class MermaidJsTagCreator {
 
-  public static DomContent importAndInitializeMermaidJs() {
+  public static ScriptTag importAndInitializeMermaidJs() {
     return
         script()
             .withType("module")

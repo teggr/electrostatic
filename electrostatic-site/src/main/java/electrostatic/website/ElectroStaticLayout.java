@@ -1,10 +1,14 @@
-package website.electrostatic;
+package electrostatic.website;
 
 import electrostatic.engine.Layout;
 import electrostatic.engine.RenderModel;
 import j2html.tags.DomContent;
 import lombok.extern.slf4j.Slf4j;
 
+import static electrostatic.utils.bootstrap.j2html.BootstrapTagGenerator.*;
+import static electrostatic.utils.googlefonts.j2html.GoogleFontsTagGenerator.*;
+import static electrostatic.utils.j2html.MermaidJsTagCreator.importAndInitializeMermaidJs;
+import static electrostatic.utils.prism.j2html.PrismTagGenerator.*;
 import static j2html.TagCreator.*;
 
 @Slf4j
@@ -24,37 +28,15 @@ public class ElectroStaticLayout {
                         .attr("lang", "en")
                         .with(
                                 head(
-                                        meta()
-                                                .attr("charset", "utf-8"),
-                                        meta()
-                                                .withName("viewport")
-                                                .attr("content", "width=device-width, initial-scale=1"),
+                                        charset(),
+                                        viewPort(),
                                         title(renderModel.getPage().getTitle()),
-                                        link()
-                                                .attr("rel", "preconnect")
-                                                .withHref("https://fonts.googleapis.com"),
-                                        link()
-                                                .attr("rel", "preconnect")
-                                                .withHref("https://fonts.gstatic.com")
-                                                .attr("crossorigin"),
-                                        /* https://fonts.google.com/specimen/Audiowide?preview.text=electrostatic&preview.text_type=custo */
-                                        link()
-                                                .withHref("https://fonts.googleapis.com/css2?family=Audiowide&display=swap")
-                                                .attr("rel", "stylesheet"),
-                                        link()
-                                                .attr("rel", "stylesheet")
-                                                .withHref("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"),
-                                        link()
-                                                .withHref("https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css")
-                                                .attr("rel", "stylesheet")
-                                                .attr("integrity", "sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9")
-                                                .attr("crossorigin", "anonymous"),
-                                        link()
-                                                .attr("rel", "stylesheet")
-                                                .withHref("https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css")
-                                                .attr("integrity", "sha512-vswe+cgvic/XBoF1OcM/TeJ2FW0OofqAVdCZiEYkd6dwGXthvkSFWOoGGJgS2CW70VK5dQM5Oh+7ne47s74VTg==")
-                                                .attr("crossorigin", "anonymous")
-                                                .attr("referrerpolicy", "no-referrer"),
+                                        fontsGoogleApis(),
+                                        fontsGStatic(),
+                                        fontStylesheet("Audiowide"),
+                                        iconsStylesheet(),
+                                        minStylesheet(),
+                                        tomorrowStylesheet(),
                                         style(rawHtml("""
                                                 .jumbo-title {
                                                     font-family: 'Audiowide', cursive;
@@ -76,7 +58,7 @@ public class ElectroStaticLayout {
                                                                                         .withHref(renderModel.linkTo("/"))
                                                                                         .with(
                                                                                                 i().withClasses("bi", "bi-lightning-fill"),
-                                                                                                text("electrostatic")
+                                                                                                span("electrostatic").withClass("jumbo-title")
                                                                                         ),
                                                                                 button()
                                                                                         .withClass("navbar-toggler")
@@ -123,20 +105,10 @@ public class ElectroStaticLayout {
                                                         renderModel.getContent()
                                                 ),
                                                 siteFooter(renderModel),
-                                                script()
-                                                        .attr("src", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js")
-                                                        .attr("integrity", "sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm")
-                                                        .attr("crossorigin", "anonymous"),
-                                                script()
-                                                        .attr("src", "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js")
-                                                        .attr("integrity", "sha512-9khQRAUBYEJDCDVP2yw3LRUQvjJ0Pjx0EShmaQjcHa6AXiOv6qHQu9lCAIR8O+/D8FtaCoJ2c0Tf9Xo7hYH01Q==")
-                                                        .attr("crossorigin", "anonymous")
-                                                        .attr("referrerpolicy", "no-referrer"),
-                                                script()
-                                                        .attr("src", "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js")
-                                                        .attr("integrity", "sha512-SkmBfuA2hqjzEVpmnMt/LINrjop3GKWqsuLSSB3e7iBmYK7JuWw4ldmmxwD9mdm2IRTTi0OxSAfEGvgEi0i2Kw==")
-                                                        .attr("crossorigin", "anonymous")
-                                                        .attr("referrerpolicy", "no-referrer")
+                                                minBundle(),
+                                                minCore(),
+                                                minAutoloader(),
+                                                importAndInitializeMermaidJs()
                                         )
                         )
         );

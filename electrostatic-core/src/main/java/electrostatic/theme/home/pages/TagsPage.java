@@ -18,11 +18,11 @@ public class TagsPage {
 
         return Page.builder()
                 .path("/tags/index.html")
-                .includeMenu(true)
                 .data(Map.of(
                         "layout", List.of("default"),
                         "title", List.of("Tags"),
-                        "permalink", List.of("/tags")
+                        "permalink", List.of("/tags"),
+                        "include_menu", List.of("true")
                 ))
                 .renderFunction(TagsPage::render)
                 .build();

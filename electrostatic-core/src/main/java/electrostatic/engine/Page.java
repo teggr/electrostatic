@@ -17,8 +17,6 @@ public class Page {
     @ToString.Include
     private final String path;
     @ToString.Include
-    private boolean includeMenu;
-    @ToString.Include
     private final Map<String, List<String>> data;
     private final Function<RenderModel, DomContent> renderFunction;
     @Builder.Default
@@ -108,6 +106,15 @@ public class Page {
 
     public List<String> get(String key) {
         return data.getOrDefault(key, List.of());
+    }
+
+
+    public boolean isIncludeMenu() {
+        List<String> stringList = data.get("include_menu");
+        if (stringList == null) {
+            return false;
+        }
+        return Boolean.parseBoolean(stringList.get(0));
     }
 
 }

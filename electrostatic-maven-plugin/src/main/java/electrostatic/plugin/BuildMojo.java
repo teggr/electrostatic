@@ -37,8 +37,8 @@ public class BuildMojo extends AbstractMojo {
     @Parameter(property = "basePackage", defaultValue = "${project.groupId}")
     String basePackage;
 
-    @Parameter(property = "themeName", defaultValue = "home")
-    String themeName;
+    @Parameter(property = "theme", defaultValue = "home")
+    String theme;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -59,7 +59,7 @@ public class BuildMojo extends AbstractMojo {
                 .basePackage(basePackage)
                 .environment(environment)
                 .drafts(drafts)
-                .themeName(themeName)
+                .themeName(theme)
                 .build();
 
         ElectroStaticSiteBuilder.builder()

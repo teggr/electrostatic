@@ -4,6 +4,8 @@ import electrostatic.engine.RenderModel;
 import electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 
+import static electrostatic.utils.j2html.SvgTagGenerator.svg;
+import static electrostatic.utils.j2html.SvgTagGenerator.use;
 import static j2html.TagCreator.*;
 
 public class Social {
@@ -18,7 +20,12 @@ public class Social {
                         a()
                             .withHref(Utils.escape("https://github.com/" + renderModel.getContext().getSite().getGithubUsername()))
                             .with(
-                                rawHtml("<svg class=\"svg-icon\"><use xlink:href=\"/images/minima-social-icons.svg#github\"></use></svg>"),
+                                    svg()
+                                            .withClass("svg-icon")
+                                            .with(
+                                                    use()
+                                                            .attr("xlink:href", "/images/minima-social-icons.svg#github")
+                                            ),
                                 span()
                                     .withClass("username")
                                     .withText(Utils.escape(renderModel.getContext().getSite().getGithubUsername()))
@@ -32,7 +39,12 @@ public class Social {
                         a()
                             .withHref(Utils.escape("https://www.linkedin.com/in/" + renderModel.getContext().getSite().getLinkedinUsername()))
                             .with(
-                                rawHtml("<svg class=\"svg-icon\"><use xlink:href=\"/images/minima-social-icons.svg#linkedin\"></use></svg>"),
+                                    svg()
+                                            .withClass("svg-icon")
+                                            .with(
+                                                    use()
+                                                            .attr("xlink:href", "/images/minima-social-icons.svg#linkedin")
+                                            ),
                                 span()
                                     .withClass("username")
                                     .withText(Utils.escape(renderModel.getContext().getSite().getLinkedinUsername()))
@@ -46,7 +58,12 @@ public class Social {
                         a()
                             .withHref(Utils.escape("https://www.twitter.com/" + renderModel.getContext().getSite().getTwitterUsername()))
                             .with(
-                                rawHtml("<svg class=\"svg-icon\"><use xlink:href=\"/images/minima-social-icons.svg#twitter\"></use></svg>"),
+                                    svg()
+                                            .withClass("svg-icon")
+                                            .with(
+                                                    use()
+                                                            .attr("xlink:href", "/images/minima-social-icons.svg#twitter")
+                                            ),
                                 span()
                                     .withClass("username")
                                     .withText(Utils.escape(renderModel.getContext().getSite().getTwitterUsername()))

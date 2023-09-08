@@ -17,12 +17,12 @@ public class PodcastsPage {
 
     return Page.builder()
         .path("/podcasts/index.html")
-        .includeMenu(true)
         .data(Map.of(
             "layout", List.of("default"),
             "title", List.of("Podcasts"),
             "permalink", List.of("/podcasts"),
-            "list_title", List.of("Podcasts")
+            "list_title", List.of("Podcasts"),
+                "include_menu", List.of("true")
         ))
         .renderFunction(PodcastsPage::render)
         .build();

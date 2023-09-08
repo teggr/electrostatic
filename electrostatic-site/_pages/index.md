@@ -29,7 +29,7 @@ mvn electrostatic:init --with-content
 
 ```xml
 <plugin>
-    <groupId>run.electrostatic</groupId>
+    <groupId>website.electrostatic</groupId>
     <artifactId>electrostatic-maven-plugin</artifactId>
     <version>1.0.0</version>
 </plugin>

@@ -23,7 +23,7 @@ If extending the default theme or building your own from scratch in the project,
 
 ```xml
  <dependency>
-    <groupId>run.electrostatic</groupId>
+    <groupId>website.electrostatic</groupId>
     <artifactId>electrostatic-core</artifactId>
     <version>${project.version}</version>
 </dependency>
@@ -33,7 +33,7 @@ If using a theme, simply add the theme dependency. Refer to the theme's own docu
 
 ```xml
  <dependency>
-    <groupId>run.electrostatic</groupId>
+    <groupId>website.electrostatic</groupId>
     <artifactId>electrostatic-xtc-theme</artifactId>
     <version>${project.version}</version>
 </dependency>
@@ -47,7 +47,7 @@ A Maven plugin is available for running the build.
 <build>
     <plugins>
         <plugin>
-            <groupId>run.electrostatic</groupId>
+            <groupId>website.electrostatic</groupId>
             <artifactId>electrostatic-maven-plugin</artifactId>
             <version>${project.version}</version>
         </plugin>

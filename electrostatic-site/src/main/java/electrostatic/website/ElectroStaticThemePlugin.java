@@ -1,4 +1,4 @@
-package website.electrostatic;
+package electrostatic.website;
 
 import electrostatic.build.BuildContext;
 import electrostatic.content.docs.DocumentationPlugin;

@@ -2,6 +2,7 @@ package electrostatic.build;
 
 import electrostatic.plugins.ClasspathPluginContext;
 import electrostatic.plugins.ThemePlugin;
+import electrostatic.theme.cover.CoverThemePlugin;
 import electrostatic.theme.home.HomeThemePlugin;
 import electrostatic.utils.ClasspathScanner;
 import electrostatic.website.WebSiteBuilder;
@@ -124,7 +125,7 @@ public class ElectroStaticSiteBuilder {
     }
 
     private static boolean isCustomPlugin(String pluginClassName) {
-        return !Stream.of(HomeThemePlugin.class)
+        return !Stream.of(HomeThemePlugin.class, CoverThemePlugin.class)
                 .map(Class::getName)
                 .toList()
                 .contains(pluginClassName);
