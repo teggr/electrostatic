@@ -15,7 +15,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn --batch-mode -P prod clean test exec:java
+        run: mvn --batch-mode -P prod clean install electrostatic:build
       - name: Publish
         uses: South-Paw/action-netlify-cli@1.0.1
         id: netlify
