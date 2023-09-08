@@ -35,4 +35,15 @@
 
     </dependencies>
 
+
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <build.environment>production</build.environment>
+                <build.include-drafts>false</build.include-drafts>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>
