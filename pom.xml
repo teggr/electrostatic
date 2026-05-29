@@ -15,6 +15,7 @@
     <modules>
         <module>core</module>
         <module>generate-plugin</module>
+        <module>cli</module>
     </modules>
 
     <properties>

@@ -4,7 +4,7 @@
 
 import dev.rebelcraft.electrostatic.cli.ElectrostaticCli;
 
-class electrostatic {
+class Electrostatic {
     public static void main(String... args) {
         ElectrostaticCli.main(args);
     }

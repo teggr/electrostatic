@@ -39,15 +39,20 @@ public class ServeCommand implements Callable<Integer> {
                 if (uri.endsWith("/")) {
                     uri += "index.html";
                 }
-                File file = siteDirectory.resolve(uri.substring(1)).toFile();
-                if (!file.exists() || !file.isFile()) {
+                File file;
+                try {
+                    file = siteDirectory.resolve(uri.substring(1)).toRealPath().toFile();
+                } catch (Exception e) {
+                    return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
+                }
+                if (!file.toPath().startsWith(siteDirectory) || !file.isFile()) {
                     return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
                 }
                 try {
                     String mimeType = NanoHTTPD.getMimeTypeForFile(uri);
                     return newChunkedResponse(Response.Status.OK, mimeType, new FileInputStream(file));
                 } catch (FileNotFoundException e) {
-                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Internal Server Error");
+                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Not Found: " + uri);
                 }
             }
         };
