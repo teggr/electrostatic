@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.robintegg.web.engine.WebSiteBuilderTest" time="0.004" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.robintegg.web.engine.WebSiteBuilderIntegrationTest" time="0.077" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -55,5 +55,16 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="cleanOutputDirectory_shouldRemoveExistingFilesAndFolders" classname="com.robintegg.web.engine.WebSiteBuilderTest" time="0.003"/>
+  <testcase name="build_shouldWireCoreComponentsAndProduceFreshOutput" classname="com.robintegg.web.engine.WebSiteBuilderIntegrationTest" time="0.074">
+    <system-err><![CDATA[[main] INFO com.robintegg.web.engine.WebSiteBuilder - working directory: /tmp/junit4975801446317027162
+[main] INFO com.robintegg.web.site.SitePlugin - site config: /tmp/junit4975801446317027162/site-config.xml
+[main] INFO com.robintegg.web.engine.ContentSource - source directory: /tmp/junit4975801446317027162
+[main] INFO com.robintegg.web.engine.WebSiteBuilder - environment: test
+[main] INFO com.robintegg.web.engine.WebSiteBuilder - output directory: /tmp/junit4975801446317027162/target/site
+[main] INFO com.robintegg.web.engine.ContentRenderer - render=start
+[main] INFO com.robintegg.web.engine.ContentRenderer - page=Page(path=/index.html, includeMenu=false, data={layout=[default]})
+[main] INFO com.robintegg.web.engine.ContentRenderer - layout=default
+[main] INFO com.robintegg.web.engine.ContentRenderer - file=StaticFile(key=/assets/message.txt, data={})
+]]></system-err>
+  </testcase>
 </testsuite>

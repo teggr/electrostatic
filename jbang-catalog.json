@@ -1,0 +1,8 @@
+{
+  "aliases": {
+    "electrostatic": {
+      "script-ref": "electrostatic.java",
+      "description": "Electrostatic static site generator CLI - build and serve static sites"
+    }
+  }
+}
