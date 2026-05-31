@@ -9,9 +9,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>run.electrostatic</groupId>
     <artifactId>electrostatic-run</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <name>Electrostatic Website Builder</name>
+    <description>Builds the Electrostatic web site for publishing on Github pages</description>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

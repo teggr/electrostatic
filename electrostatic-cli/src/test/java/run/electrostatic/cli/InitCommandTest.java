@@ -45,7 +45,7 @@ class InitCommandTest {
 
         assertEquals(0, exitCode);
         assertTrue(Files.exists(root.resolve("site-config.xml")));
-        assertTrue(Files.exists(root.resolve("_posts/hello-world.md")));
+        assertTrue(Files.exists(root.resolve("_posts/2026-01-01-hello-world.md")));
     }
 
     @Test
@@ -56,7 +56,7 @@ class InitCommandTest {
 
         assertEquals(0, exitCode);
         assertTrue(Files.exists(root.resolve("site-config.xml")));
-        assertTrue(Files.exists(root.resolve("_posts/hello-world.md")));
+        assertTrue(Files.exists(root.resolve("_posts/2026-01-01-hello-world.md")));
     }
 
     @Test
