@@ -28,7 +28,8 @@ public class PageLayout {
                 .with(
                     h1()
                         .withClass("post-title")
-                        .withText("{{ page.title | escape }}"),
+                        .withText( renderModel.getPage().getTitle() != null ? 
+                            renderModel.getPage().getTitle() : "" ),
                     div()
                         .withClass("post-content")
                         .with(

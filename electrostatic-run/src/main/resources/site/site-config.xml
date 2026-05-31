@@ -1,10 +1,10 @@
 <site>
-  <title>My Electrostatic Docs</title>
+  <title>Electrostatic Documentation</title>
   <baseUrl>http://localhost:8080</baseUrl>
   <theme>docs</theme>
-  <description>Project documentation</description>
+  <description>Install, theme, and plugin guides for building static sites with Electrostatic.</description>
   <author>
-    <name>Your Name</name>
+    <name>Electrostatic Team</name>
   </author>
   <docsSections>installation,guides,plugins</docsSections>
   <docsSectionLabels>installation=Installation,guides=Guides,plugins=Plugins</docsSectionLabels>
