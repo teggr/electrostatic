@@ -95,6 +95,7 @@ public class DefaultThemePlugin implements ContentTypePlugin, ContentRenderPlugi
             <site>
               <title>My Electrostatic Site</title>
               <baseUrl>http://localhost:8080</baseUrl>
+              <theme>default</theme>
               <author>
                 <name>Your Name</name>
               </author>

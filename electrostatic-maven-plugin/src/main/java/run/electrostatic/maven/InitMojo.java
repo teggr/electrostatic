@@ -1,7 +1,7 @@
 package run.electrostatic.maven;
 
-import run.electrostatic.theme.DefaultThemePlugin;
 import run.electrostatic.core.SiteInitializer;
+import run.electrostatic.theme.ThemePlugins;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -30,6 +30,9 @@ public class InitMojo extends AbstractMojo {
     )
     private File rootDirectory;
 
+    @Parameter(defaultValue = "default", property = "electrostatic.theme")
+    private String theme;
+
     @Override
     public void execute() throws MojoExecutionException {
         Path targetDirectory = rootDirectory.toPath().toAbsolutePath().normalize();
@@ -40,7 +43,7 @@ public class InitMojo extends AbstractMojo {
                 throw new MojoExecutionException("Site directory already exists: " + targetDirectory);
             }
 
-            new SiteInitializer(DefaultThemePlugin.create()).initialize(targetDirectory);
+            new SiteInitializer(ThemePlugins.resolve(theme)).initialize(targetDirectory);
             getLog().info("Initialization complete.");
         } catch (MojoExecutionException e) {
             throw e;

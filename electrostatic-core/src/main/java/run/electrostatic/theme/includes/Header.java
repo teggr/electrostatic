@@ -1,13 +1,19 @@
 package run.electrostatic.theme.includes;
 
+import run.electrostatic.docs.DocsSection;
+import run.electrostatic.docs.DocsSectionConfig;
 import run.electrostatic.engine.RenderModel;
 import run.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
+
+import java.util.List;
 
 import static j2html.TagCreator.*;
 
 public class Header {
   public static DomContent create(RenderModel renderModel) {
+        List<MenuLink> links = resolveLinks(renderModel);
+
     return header()
         .withClass("site-header")
         .with(
@@ -20,7 +26,7 @@ public class Header {
                         .withHref(Utils.relativeUrl("/"))
                         .withText(Utils.escape(renderModel.getContext().getSite().getTitle())),
                     iff(
-                        renderModel.getContentModel().getPages().size() > 0,
+                        !links.isEmpty(),
                         nav()
                             .withClass("site-nav")
                             .with(
@@ -44,19 +50,19 @@ public class Header {
                                 div()
                                     .withClass("trigger")
                                     .with(
-                                        each(renderModel.getContentModel().getPages(), myPage -> {
-                                          return iff(
-                                              myPage.isIncludeMenu(),
+                                        each(links, link ->
                                               a()
                                                   .withClass("page-link")
-                                                  .withHref(Utils.relativeUrl(myPage.getUrl()))
-                                                  .withText(Utils.escape(myPage.getTitle()))
-                                          );
-                                        }),
-                                        a()
-                                            .withClass("page-link")
-                                            .withHref("#follow-me")
-                                            .withText("Follow me")
+                                                  .withHref(Utils.relativeUrl(link.href()))
+                                                  .withText(Utils.escape(link.label()))
+                                        ),
+                                        iff(
+                                            !isDocsMode(renderModel),
+                                            a()
+                                                .withClass("page-link")
+                                                .withHref("#follow-me")
+                                                .withText("Follow me")
+                                        )
                                     )
                             )
                     )
@@ -64,4 +70,26 @@ public class Header {
 
         );
   }
+
+    private static List<MenuLink> resolveLinks(RenderModel renderModel) {
+        if (isDocsMode(renderModel)) {
+            return DocsSectionConfig.fromSite(renderModel.getContext().getSite()).stream()
+                    .map(section -> new MenuLink(section.label(), section.indexPath()))
+                    .toList();
+        }
+
+        return renderModel.getContentModel().getPages().stream()
+                .filter(page -> page.isIncludeMenu())
+                .map(page -> new MenuLink(page.getTitle(), page.getUrl()))
+                .toList();
+    }
+
+    private static boolean isDocsMode(RenderModel renderModel) {
+        List<DocsSection> sections = DocsSectionConfig.fromSite(renderModel.getContext().getSite());
+        String docsSections = renderModel.getContext().getSite().getDocsSections();
+        return docsSections != null && !docsSections.isBlank() && !sections.isEmpty();
+    }
+
+    private record MenuLink(String label, String href) {
+    }
 }

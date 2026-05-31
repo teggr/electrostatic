@@ -1,7 +1,7 @@
 package run.electrostatic.maven;
 
 import run.electrostatic.core.SitePreviewServer;
-import run.electrostatic.theme.DefaultThemePlugin;
+import run.electrostatic.theme.ThemePlugins;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -51,6 +51,9 @@ public class ServeMojo extends AbstractMojo {
     @Parameter(defaultValue = "8080", property = "electrostatic.port")
     private int port;
 
+    @Parameter(property = "electrostatic.theme")
+    private String theme;
+
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
@@ -64,7 +67,7 @@ public class ServeMojo extends AbstractMojo {
         getLog().info("Output directory: " + siteDirectory);
 
         try {
-            SitePreviewServer.PreviewSession session = new SitePreviewServer(DefaultThemePlugin.create())
+            SitePreviewServer.PreviewSession session = new SitePreviewServer(ThemePlugins.resolveForSite(theme, input))
                 .start(input, siteDirectory, baseUrl, port, projectRoot);
             Runtime.getRuntime().addShutdownHook(new Thread(session::close));
 

@@ -1,7 +1,11 @@
 <site>
-  <title>My Electrostatic Site</title>
+  <title>My Electrostatic Docs</title>
   <baseUrl>http://localhost:8080</baseUrl>
+  <theme>docs</theme>
+  <description>Project documentation</description>
   <author>
     <name>Your Name</name>
   </author>
+  <docsSections>installation,guides,plugins</docsSections>
+  <docsSectionLabels>installation=Installation,guides=Guides,plugins=Plugins</docsSectionLabels>
 </site>

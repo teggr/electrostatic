@@ -1,7 +1,7 @@
 package run.electrostatic.cli;
 
 import run.electrostatic.core.SitePreviewServer;
-import run.electrostatic.theme.DefaultThemePlugin;
+import run.electrostatic.theme.ThemePlugins;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -28,6 +28,9 @@ public class ServeCommand implements Callable<Integer> {
     @Option(names = {"--output"}, description = "Output directory for the generated site (default: ./generated-site)")
     private Path outputDirectory;
 
+    @Option(names = {"--theme"}, description = "Theme bundle to use (default, docs, v2). Defaults to <theme> in site-config.xml, then default.")
+    private String theme;
+
     @Override
     public Integer call() throws Exception {
         var workingDir = Paths.get(System.getProperty("workingDirectory", ""));
@@ -37,7 +40,7 @@ public class ServeCommand implements Callable<Integer> {
             .toAbsolutePath()
             .normalize();
 
-        SitePreviewServer.PreviewSession session = new SitePreviewServer(DefaultThemePlugin.create())
+        SitePreviewServer.PreviewSession session = new SitePreviewServer(ThemePlugins.resolveForSite(theme, input))
             .start(input, siteDirectory, baseUrl, port, projectRoot);
         Runtime.getRuntime().addShutdownHook(new Thread(session::close));
 

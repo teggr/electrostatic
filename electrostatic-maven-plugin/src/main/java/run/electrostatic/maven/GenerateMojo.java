@@ -1,7 +1,7 @@
 package run.electrostatic.maven;
 
-import run.electrostatic.theme.DefaultThemePlugin;
 import run.electrostatic.core.SiteGenerator;
+import run.electrostatic.theme.ThemePlugins;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -47,6 +47,9 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(property = "electrostatic.baseUrl")
     private String baseUrl;
 
+    @Parameter(property = "electrostatic.theme")
+    private String theme;
+
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
 
@@ -61,7 +64,7 @@ public class GenerateMojo extends AbstractMojo {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(buildClassLoader(originalClassLoader));
-            new SiteGenerator(DefaultThemePlugin.create())
+            new SiteGenerator(ThemePlugins.resolveForSite(theme, inputDirectory.toPath()))
                 .generate(inputDirectory.toPath(), outputDirectory.toPath(), baseUrl);
         } catch (Exception e) {
             throw new MojoExecutionException("Failed to generate static site", e);

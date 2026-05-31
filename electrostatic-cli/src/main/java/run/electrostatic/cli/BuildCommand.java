@@ -1,7 +1,7 @@
 package run.electrostatic.cli;
 
-import run.electrostatic.theme.DefaultThemePlugin;
 import run.electrostatic.core.SiteGenerator;
+import run.electrostatic.theme.ThemePlugins;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -25,12 +25,15 @@ public class BuildCommand implements Callable<Integer> {
     @Option(names = {"--output"}, description = "Output directory for the generated site (default: ./generated-site)")
     private Path outputDirectory;
 
+    @Option(names = {"--theme"}, description = "Theme bundle to use (default, docs, v2). Defaults to <theme> in site-config.xml, then default.")
+    private String theme;
+
     @Override
     public Integer call() throws Exception {
         var workingDir = Paths.get(System.getProperty("workingDirectory", ""));
         Path input = inputDirectory != null ? inputDirectory : workingDir;
         Path output = outputDirectory != null ? outputDirectory : workingDir.resolve("generated-site");
-        new SiteGenerator(DefaultThemePlugin.create()).generate(input, output, baseUrl);
+        new SiteGenerator(ThemePlugins.resolveForSite(theme, input)).generate(input, output, baseUrl);
         return 0;
     }
 

@@ -32,7 +32,7 @@ class MavenPluginSmokeTest {
         initMojo.execute();
 
         assertTrue(Files.exists(siteRoot.resolve("site-config.xml")));
-        assertTrue(Files.exists(siteRoot.resolve("_posts/hello-world.md")));
+        assertTrue(Files.exists(siteRoot.resolve("_posts/2026-01-01-hello-world.md")));
 
         rewriteDefaultPostToDatedPost(siteRoot);
 
@@ -59,7 +59,7 @@ class MavenPluginSmokeTest {
         initMojo.execute();
 
         assertTrue(Files.exists(siteDirectory.resolve("site-config.xml")));
-        assertTrue(Files.exists(siteDirectory.resolve("_posts/hello-world.md")));
+        assertTrue(Files.exists(siteDirectory.resolve("_posts/2026-01-01-hello-world.md")));
     }
 
     @Test
@@ -75,6 +75,35 @@ class MavenPluginSmokeTest {
         assertTrue(exception.getMessage().contains("Site directory already exists"));
     }
 
+    @Test
+    void initAndGenerateWithDocsThemeShouldProduceDocsSectionRoutes() throws Exception {
+        Path siteRoot = tempDir.resolve("plugin-docs-site");
+        Path outputDir = siteRoot.resolve("target/generated-site");
+
+        InitMojo initMojo = new InitMojo();
+        setField(initMojo, "rootDirectory", siteRoot.toFile());
+        setField(initMojo, "theme", "docs");
+        initMojo.execute();
+
+        assertTrue(Files.exists(siteRoot.resolve("_installation/getting-started.md")));
+        assertTrue(Files.exists(siteRoot.resolve("_guides/first-guide.md")));
+        assertTrue(Files.exists(siteRoot.resolve("_plugins/plugin-overview.md")));
+
+        GenerateMojo generateMojo = new GenerateMojo();
+        setField(generateMojo, "inputDirectory", siteRoot.toFile());
+        setField(generateMojo, "outputDirectory", outputDir.toFile());
+        setField(generateMojo, "compileClasspathElements", List.<String>of());
+        generateMojo.execute();
+
+        assertTrue(Files.exists(outputDir.resolve("index.html")));
+        assertTrue(Files.exists(outputDir.resolve("installation/index.html")));
+        assertTrue(Files.exists(outputDir.resolve("guides/index.html")));
+        assertTrue(Files.exists(outputDir.resolve("plugins/index.html")));
+        assertTrue(Files.exists(outputDir.resolve("installation/getting-started.html")));
+        assertTrue(Files.exists(outputDir.resolve("guides/first-guide.html")));
+        assertTrue(Files.exists(outputDir.resolve("plugins/plugin-overview.html")));
+    }
+
     private static boolean hasHtmlFile(Path outputDirectory) throws Exception {
         try (Stream<Path> paths = Files.walk(outputDirectory)) {
             return paths
@@ -88,6 +117,7 @@ class MavenPluginSmokeTest {
     private static void rewriteDefaultPostToDatedPost(Path siteRoot) throws Exception {
         Path postsDirectory = siteRoot.resolve("_posts");
         Files.deleteIfExists(postsDirectory.resolve("hello-world.md"));
+        Files.deleteIfExists(postsDirectory.resolve("2026-01-01-hello-world.md"));
         Files.writeString(
             postsDirectory.resolve("2026-01-01-smoke-test.md"),
             "---\n" +

@@ -2,6 +2,7 @@ package run.electrostatic.core;
 
 import run.electrostatic.plugins.Plugins;
 import run.electrostatic.theme.DefaultThemePlugin;
+import run.electrostatic.theme.docs.DocsThemePlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,7 @@ class SiteInitializerIntegrationTest {
         String configXml = Files.readString(root.resolve("site-config.xml"));
         assertTrue(configXml.contains("<title>My Electrostatic Site</title>"));
         assertTrue(configXml.contains("<baseUrl>http://localhost:8080</baseUrl>"));
+        assertTrue(configXml.contains("<theme>default</theme>"));
     }
 
     @Test
@@ -64,5 +66,24 @@ class SiteInitializerIntegrationTest {
             IllegalStateException.class,
             () -> new SiteInitializer(DefaultThemePlugin.create()).initialize(root)
         );
+    }
+
+    @Test
+    void initialize_shouldCreateDocsScaffoldForDocsTheme() throws Exception {
+        Path root = tempDir.resolve("docs-site");
+
+        new SiteInitializer(DocsThemePlugin.create()).initialize(root);
+
+        assertTrue(Files.exists(root.resolve("site-config.xml")));
+        assertTrue(Files.exists(root.resolve("_installation")));
+        assertTrue(Files.exists(root.resolve("_guides")));
+        assertTrue(Files.exists(root.resolve("_plugins")));
+        assertTrue(Files.exists(root.resolve("_installation/getting-started.md")));
+        assertTrue(Files.exists(root.resolve("_guides/first-guide.md")));
+        assertTrue(Files.exists(root.resolve("_plugins/plugin-overview.md")));
+
+        String configXml = Files.readString(root.resolve("site-config.xml"));
+        assertTrue(configXml.contains("<theme>docs</theme>"));
+        assertTrue(configXml.contains("<docsSections>installation,guides,plugins</docsSections>"));
     }
 }

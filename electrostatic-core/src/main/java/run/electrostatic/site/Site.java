@@ -27,6 +27,9 @@ public class Site {
     private String mastodonUsername;
     private String baseUrl;
     private String feedUrl;
+    private String theme;
+    private String docsSections;
+    private String docsSectionLabels;
 
     public boolean showExcerpts() {
         return false;

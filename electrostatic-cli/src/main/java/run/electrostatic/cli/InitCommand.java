@@ -1,8 +1,9 @@
 package run.electrostatic.cli;
 
-import run.electrostatic.theme.DefaultThemePlugin;
 import run.electrostatic.core.SiteInitializer;
+import run.electrostatic.theme.ThemePlugins;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.nio.file.Path;
@@ -24,13 +25,16 @@ public class InitCommand implements Callable<Integer> {
     )
     private Path rootDirectory;
 
+    @Option(names = {"--theme"}, defaultValue = "default", description = "Theme bundle to use (default, docs, v2)")
+    private String theme;
+
     @Override
     public Integer call() {
         Path workingDir = Paths.get(System.getProperty("workingDirectory", ""));
         Path root = rootDirectory != null ? rootDirectory : workingDir;
 
         try {
-            new SiteInitializer(DefaultThemePlugin.create()).initialize(root);
+            new SiteInitializer(ThemePlugins.resolve(theme)).initialize(root);
             System.out.println("Initialized Electrostatic site at " + root.toAbsolutePath().normalize());
             return 0;
         } catch (RuntimeException e) {

@@ -32,6 +32,29 @@ The CLI/JBang `init` command requires an empty target directory and creates a st
 
 For the JBang/CLI flow, `build` and `serve` default to reading site content from the current working directory and writing output to `./generated-site`.
 
+### Use the docs theme bundle
+
+Electrostatic now supports selecting a theme bundle.
+The selected theme is persisted to `site-config.xml` during `init`, so `build` and `serve` automatically use it.
+
+For a docs-focused site profile (landing page + section collections), use:
+
+```bash
+electrostatic init --theme docs
+electrostatic build
+electrostatic serve
+```
+
+You can still pass `--theme` to `build` or `serve` to override the persisted value for a single run.
+
+JBang works the same way:
+
+```bash
+jbang Electrostatic.java init --theme docs
+jbang Electrostatic.java build
+jbang Electrostatic.java serve
+```
+
 ### JBang
 
 Install JBang, then run the root script directly:
@@ -96,6 +119,52 @@ mvn electrostatic:init -Delectrostatic.rootDirectory=./src/main/resources/my-sit
 ```
 
 By default, the Maven plugin reads site content from `src/main/resources/site` and writes output to `target/generated-site`.
+
+To select the docs bundle in Maven plugin goals:
+
+`--theme` is a CLI/JBang option, not a Maven goal option. For Maven, use `-D` properties.
+
+```bash
+mvn electrostatic:init -Delectrostatic.theme=docs
+mvn electrostatic:generate
+mvn electrostatic:serve
+```
+
+In PowerShell, quote dotted `-D` property keys so they are passed correctly:
+
+```powershell
+mvn electrostatic:init '-Delectrostatic.theme=docs'
+```
+
+You can still pass `-Delectrostatic.theme=...` to `generate` or `serve` to override the persisted theme for that invocation.
+
+## Docs collections configuration
+
+The docs bundle uses a generic section-collection model configured in `site-config.xml`.
+This makes section sets project-specific without code changes.
+
+Default docs profile:
+
+```xml
+<docsSections>installation,guides,plugins</docsSections>
+<docsSectionLabels>installation=Installation,guides=Guides,plugins=Plugins</docsSectionLabels>
+```
+
+Example deploy4j-like profile (swap `plugins` for `commands`):
+
+```xml
+<docsSections>installation,guides,commands</docsSections>
+<docsSectionLabels>installation=Installation,guides=Guides,commands=Commands</docsSectionLabels>
+```
+
+Each section key maps to a markdown folder with an underscore prefix:
+
+- `installation` -> `_installation/`
+- `guides` -> `_guides/`
+- `plugins` -> `_plugins/`
+- `commands` -> `_commands/`
+
+Markdown files support frontmatter fields like `title`, `description`, `order`, and optional `slug`.
 
 ## Modules
 
