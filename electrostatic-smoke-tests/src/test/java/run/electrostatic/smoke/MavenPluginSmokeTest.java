@@ -3,8 +3,10 @@ package run.electrostatic.smoke;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import run.electrostatic.maven.GenerateMojo;
 import run.electrostatic.maven.InitMojo;
+import run.electrostatic.maven.ThemesMojo;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -12,8 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,6 +25,22 @@ class MavenPluginSmokeTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void themesGoalShouldListKnownThemeIds() throws Exception {
+        ThemesMojo themesMojo = new ThemesMojo();
+        CapturingLog capturingLog = new CapturingLog();
+        themesMojo.setLog(capturingLog);
+
+        themesMojo.execute();
+
+        assertEquals(List.of(
+            "Available Electrostatic themes:",
+            "- default",
+            "- docs",
+            "- v2"
+        ), capturingLog.infoMessages);
+    }
 
     @Test
     void initAndGenerateGoalsShouldCreateExpectedSiteStructure() throws Exception {
@@ -133,5 +153,89 @@ class MavenPluginSmokeTest {
         Field field = target.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(target, value);
+    }
+
+    private static final class CapturingLog implements Log {
+        private final List<String> infoMessages = new ArrayList<>();
+
+        @Override
+        public boolean isDebugEnabled() {
+            return false;
+        }
+
+        @Override
+        public void debug(CharSequence content) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public void debug(CharSequence content, Throwable error) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public void debug(Throwable error) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public boolean isInfoEnabled() {
+            return true;
+        }
+
+        @Override
+        public void info(CharSequence content) {
+            infoMessages.add(content.toString());
+        }
+
+        @Override
+        public void info(CharSequence content, Throwable error) {
+            info(content);
+        }
+
+        @Override
+        public void info(Throwable error) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public boolean isWarnEnabled() {
+            return false;
+        }
+
+        @Override
+        public void warn(CharSequence content) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public void warn(CharSequence content, Throwable error) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public void warn(Throwable error) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public boolean isErrorEnabled() {
+            return true;
+        }
+
+        @Override
+        public void error(CharSequence content) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public void error(CharSequence content, Throwable error) {
+            // Not needed in this test.
+        }
+
+        @Override
+        public void error(Throwable error) {
+            // Not needed in this test.
+        }
     }
 }

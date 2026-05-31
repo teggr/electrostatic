@@ -5,6 +5,13 @@
 - CLI and Maven plugin should share underlying code paths through core services and models, not through direct dependencies on each other.
 - Do not add CLI as a dependency of the Maven plugin or Maven plugin as a dependency of the CLI.
 - When introducing a user-facing feature available in both wrappers, implement once in core and wire it in both wrappers using wrapper-specific UX only.
+- Keep wrapper capabilities in sync by default: when adding or changing a user-facing CLI/JBang command, add or update the corresponding Maven plugin goal in the same change (and vice versa) unless the request explicitly scopes to one wrapper.
+
+# Wrapper Feature Parity
+
+- Treat CLI/JBang and Maven plugin as parity surfaces for user-facing commands.
+- For new command features, update both wrappers together, and document both invocation forms together.
+- If parity is intentionally deferred, call it out explicitly in PR notes/docs and include follow-up work.
 
 # JBang Contract
 

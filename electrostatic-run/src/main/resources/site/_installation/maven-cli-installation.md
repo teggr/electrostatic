@@ -48,6 +48,12 @@ Preview locally:
 mvn electrostatic:serve
 ```
 
+List available built-in theme bundles:
+
+```bash
+mvn electrostatic:themes
+```
+
 By default, source content is read from `src/main/resources/site` and output is written to `target/generated-site`.
 
 ## 4. Optional configuration

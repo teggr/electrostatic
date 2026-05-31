@@ -45,6 +45,13 @@ electrostatic build
 electrostatic serve
 ```
 
+List available theme bundles:
+
+```bash
+electrostatic themes
+jbang Electrostatic.java themes
+```
+
 You can still pass `--theme` to `build` or `serve` to override the persisted value for a single run.
 
 JBang works the same way:
@@ -68,7 +75,7 @@ The script boots the CLI from the local Maven cache and is the quickest way to t
 
 ### Maven plugin
 
-Add the plugin to your project and call the `init`, `serve` and `generate` goals:
+Add the plugin to your project and call the `init`, `themes`, `serve` and `generate` goals:
 
 ```xml
 <plugin>
@@ -80,6 +87,7 @@ Add the plugin to your project and call the `init`, `serve` and `generate` goals
 
 ```bash
 mvn electrostatic:init
+mvn electrostatic:themes
 mvn electrostatic:serve
 mvn electrostatic:generate
 ```
@@ -88,6 +96,7 @@ If prefix resolution is not configured in your Maven environment, use fully-qual
 
 ```bash
 mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:init
+mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:themes
 mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:serve
 mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:generate
 ```
@@ -169,8 +178,8 @@ Markdown files support frontmatter fields like `title`, `description`, `order`, 
 ## Modules
 
 - `electrostatic-core` - combined site generation engine and shared `SiteGenerator` facade used by runtime entry points.
-- `electrostatic-cli` - Picocli-based command-line app with `init`, `build`, and `serve` commands for setup, generation, and preview.
-- `electrostatic-maven-plugin` - Maven plugin (`electrostatic-maven-plugin`) exposing `init`, `serve` and `generate` goals for Maven projects.
+- `electrostatic-cli` - Picocli-based command-line app with `init`, `build`, `serve`, and `themes` commands for setup, generation, preview, and theme discovery.
+- `electrostatic-maven-plugin` - Maven plugin (`electrostatic-maven-plugin`) exposing `init`, `themes`, `serve` and `generate` goals for Maven projects.
 - `electrostatic-smoke-tests` - JUnit smoke tests that verify Maven plugin and JBang flows (init, generate/build, and serve behavior) using temporary directories.
 
 ## Build and release

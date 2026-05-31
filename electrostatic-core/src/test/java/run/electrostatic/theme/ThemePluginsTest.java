@@ -8,7 +8,9 @@ import run.electrostatic.theme.v2.V2ThemePlugin;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -16,6 +18,11 @@ class ThemePluginsTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void availableThemeIds_shouldReturnKnownThemeIdsInStableOrder() {
+        assertEquals(List.of("default", "docs", "v2"), ThemePlugins.availableThemeIds());
+    }
 
     @Test
     void resolve_shouldReturnKnownBundles() {

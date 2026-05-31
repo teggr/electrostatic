@@ -57,6 +57,18 @@ jbang Electrostatic.java build --theme v2
 jbang Electrostatic.java serve --theme v2
 ```
 
+List all available built-in theme bundles:
+
+```bash
+jbang Electrostatic.java themes
+```
+
+If you installed the CLI directly, the equivalent command is:
+
+```bash
+electrostatic themes
+```
+
 ## Troubleshooting
 
 - If dependencies changed recently, run a Maven install for the CLI module first so JBang resolves the latest local artifact.

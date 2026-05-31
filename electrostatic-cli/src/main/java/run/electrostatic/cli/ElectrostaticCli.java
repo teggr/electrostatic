@@ -11,7 +11,8 @@ import picocli.CommandLine.Command;
     subcommands = {
         InitCommand.class,
         BuildCommand.class,
-        ServeCommand.class
+        ServeCommand.class,
+        ThemesCommand.class
     }
 )
 public class ElectrostaticCli implements Runnable {
