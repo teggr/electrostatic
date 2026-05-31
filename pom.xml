@@ -14,7 +14,6 @@
 
     <modules>
         <module>electrostatic-core</module>
-        <module>electrostatic-generate-plugin</module>
         <module>electrostatic-cli</module>
         <module>electrostatic-maven-plugin</module>
     </modules>

@@ -36,8 +36,7 @@ By default, the plugin reads site content from `src/main/resources/site` and wri
 
 ## Modules
 
-- `electrostatic-generate-plugin` - main site generation engine (content model, plugins, themes, rendering, feed/content processing).
-- `electrostatic-core` - shared `SiteGenerator` facade used by runtime entry points to invoke the generation engine.
+- `electrostatic-core` - combined site generation engine and shared `SiteGenerator` facade used by runtime entry points.
 - `electrostatic-cli` - Picocli-based command-line app with `build` and `serve` commands for local generation and preview.
 - `electrostatic-maven-plugin` - Maven plugin (`electrostatic-maven-plugin`) exposing the `generate` goal for Maven projects.
 
