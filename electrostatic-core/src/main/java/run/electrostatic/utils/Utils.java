@@ -54,23 +54,25 @@ public class Utils {
     }
 
     public static String urlFromKey(String key) {
-        int index = key.indexOf("-");
-        String year = key.substring(0,index);
-        key = key.substring(index+ 1);
+        String[] parts = key.split("-", 4);
+        if (parts.length == 4 && isDatePart(parts[0], 4) && isDatePart(parts[1], 2) && isDatePart(parts[2], 2)) {
+            return "/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] + ".html";
+        }
 
-        index = key.indexOf("-");
-        String month = key.substring(0,index);
-        key = key.substring(index+ 1);
+        // Fall back to a flat path for non-dated keys (for example scaffold posts like hello-world).
+        return "/" + key + ".html";
+    }
 
-        index = key.indexOf("-");
-        String day = key.substring(0,index);
-        String title = key.substring(index+ 1);
-
-        // = key.indexOf(".");
-        //String title = key.substring(0,index);
-        //key = key.substring(index+ 1);
-
-        return "/" + year + "/" + month + "/" + day + "/" + title + ".html";
+    private static boolean isDatePart(String part, int expectedLength) {
+        if (part == null || part.length() != expectedLength) {
+            return false;
+        }
+        for (int index = 0; index < part.length(); index++) {
+            if (!Character.isDigit(part.charAt(index))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static String formatXmlSchema(LocalDate date) {

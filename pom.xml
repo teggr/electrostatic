@@ -16,6 +16,8 @@
         <module>electrostatic-core</module>
         <module>electrostatic-cli</module>
         <module>electrostatic-maven-plugin</module>
+        <module>electrostatic-smoke-tests</module>
+        <module>electrostatic-run</module>
     </modules>
 
     <properties>

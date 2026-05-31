@@ -36,7 +36,7 @@ public class GenerateMojo extends AbstractMojo {
      * Directory where the generated site will be written.
      */
     @Parameter(
-        defaultValue = "${project.build.directory}/site",
+        defaultValue = "${project.build.directory}/generated-site",
         property = "electrostatic.outputDirectory"
     )
     private File outputDirectory;

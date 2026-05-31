@@ -1,0 +1,7 @@
+<site>
+  <title>My Electrostatic Site</title>
+  <baseUrl>http://localhost:8080</baseUrl>
+  <author>
+    <name>Your Name</name>
+  </author>
+</site>

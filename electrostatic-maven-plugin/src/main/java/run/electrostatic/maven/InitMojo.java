@@ -9,6 +9,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Initializes a new static site structure.
@@ -23,18 +25,25 @@ public class InitMojo extends AbstractMojo {
      * Directory to initialize with Electrostatic content structure.
      */
     @Parameter(
-        defaultValue = "${project.basedir}",
+        defaultValue = "${project.basedir}/src/main/resources/site",
         property = "electrostatic.rootDirectory"
     )
     private File rootDirectory;
 
     @Override
     public void execute() throws MojoExecutionException {
-        getLog().info("Initializing Electrostatic site at: " + rootDirectory);
+        Path targetDirectory = rootDirectory.toPath().toAbsolutePath().normalize();
+        getLog().info("Initializing Electrostatic site at: " + targetDirectory);
 
         try {
-            new SiteInitializer(DefaultThemePlugin.create()).initialize(rootDirectory.toPath());
+            if (Files.exists(targetDirectory)) {
+                throw new MojoExecutionException("Site directory already exists: " + targetDirectory);
+            }
+
+            new SiteInitializer(DefaultThemePlugin.create()).initialize(targetDirectory);
             getLog().info("Initialization complete.");
+        } catch (MojoExecutionException e) {
+            throw e;
         } catch (Exception e) {
             throw new MojoExecutionException("Failed to initialize static site", e);
         }

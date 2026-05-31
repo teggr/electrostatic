@@ -42,7 +42,7 @@ class SiteInitializerIntegrationTest {
 
         assertTrue(Files.exists(root.resolve("site-config.xml")));
         assertTrue(Files.exists(root.resolve("_posts")));
-        assertTrue(Files.exists(root.resolve("_posts/hello-world.md")));
+        assertTrue(Files.exists(root.resolve("_posts/2026-01-01-hello-world.md")));
         assertTrue(Files.exists(root.resolve("_books")));
         assertTrue(Files.exists(root.resolve("_podcasts")));
         assertTrue(Files.exists(root.resolve("_feeds")));

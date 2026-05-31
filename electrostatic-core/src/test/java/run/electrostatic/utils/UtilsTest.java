@@ -14,4 +14,13 @@ class UtilsTest {
         assertEquals("/2018/01/07/first-look-at-java-support-in-visual-studio-code.html", urlFromKey);
 
     }
+
+    @Test
+    void urlFromKeyWithoutDatePrefix() {
+
+        String urlFromKey = Utils.urlFromKey("hello-world");
+
+        assertEquals("/hello-world.html", urlFromKey);
+
+    }
 }

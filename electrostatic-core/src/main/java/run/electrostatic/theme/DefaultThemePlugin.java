@@ -102,7 +102,7 @@ public class DefaultThemePlugin implements ContentTypePlugin, ContentRenderPlugi
             """);
       }
 
-      Path samplePost = sourceDirectory.resolve("_posts/hello-world.md");
+      Path samplePost = sourceDirectory.resolve("_posts/2026-01-01-hello-world.md");
       if (Files.notExists(samplePost)) {
         Files.writeString(samplePost, """
             ---

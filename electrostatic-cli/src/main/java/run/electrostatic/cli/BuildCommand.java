@@ -19,17 +19,17 @@ public class BuildCommand implements Callable<Integer> {
     @Option(names = {"--base-url"}, description = "Override the base URL for the site")
     private String baseUrl;
 
-    @Option(names = {"--input"}, description = "Input directory containing site content (default: src/main/resources/site)")
+    @Option(names = {"--input"}, description = "Input directory containing site content (default: current working directory)")
     private Path inputDirectory;
 
-    @Option(names = {"--output"}, description = "Output directory for the generated site (default: target/site)")
+    @Option(names = {"--output"}, description = "Output directory for the generated site (default: ./generated-site)")
     private Path outputDirectory;
 
     @Override
     public Integer call() throws Exception {
         var workingDir = Paths.get(System.getProperty("workingDirectory", ""));
-        Path input = inputDirectory != null ? inputDirectory : workingDir.resolve("src/main/resources/site");
-        Path output = outputDirectory != null ? outputDirectory : workingDir.resolve("target/site");
+        Path input = inputDirectory != null ? inputDirectory : workingDir;
+        Path output = outputDirectory != null ? outputDirectory : workingDir.resolve("generated-site");
         new SiteGenerator(DefaultThemePlugin.create()).generate(input, output, baseUrl);
         return 0;
     }

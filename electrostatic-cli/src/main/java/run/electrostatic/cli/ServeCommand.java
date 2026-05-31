@@ -1,14 +1,10 @@
 package run.electrostatic.cli;
 
+import run.electrostatic.core.SitePreviewServer;
 import run.electrostatic.theme.DefaultThemePlugin;
-import run.electrostatic.core.SiteGenerator;
-import fi.iki.elonen.NanoHTTPD;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.Callable;
@@ -26,51 +22,29 @@ public class ServeCommand implements Callable<Integer> {
     @Option(names = {"--base-url"}, description = "Override the base URL for the site")
     private String baseUrl;
 
-    @Option(names = {"--input"}, description = "Input directory containing site content (default: src/main/resources/site)")
+    @Option(names = {"--input"}, description = "Input directory containing site content (default: current working directory)")
     private Path inputDirectory;
 
-    @Option(names = {"--output"}, description = "Output directory for the generated site (default: target/site)")
+    @Option(names = {"--output"}, description = "Output directory for the generated site (default: ./generated-site)")
     private Path outputDirectory;
 
     @Override
     public Integer call() throws Exception {
         var workingDir = Paths.get(System.getProperty("workingDirectory", ""));
-        Path input = inputDirectory != null ? inputDirectory : workingDir.resolve("src/main/resources/site");
-        Path siteDirectory = (outputDirectory != null ? outputDirectory : workingDir.resolve("target/site")).toAbsolutePath();
+        Path projectRoot = workingDir.toAbsolutePath().normalize();
+        Path input = inputDirectory != null ? inputDirectory : projectRoot;
+        Path siteDirectory = (outputDirectory != null ? outputDirectory : projectRoot.resolve("generated-site"))
+            .toAbsolutePath()
+            .normalize();
 
-        new SiteGenerator(DefaultThemePlugin.create()).generate(input, siteDirectory, baseUrl);
+        SitePreviewServer.PreviewSession session = new SitePreviewServer(DefaultThemePlugin.create())
+            .start(input, siteDirectory, baseUrl, port, projectRoot);
+        Runtime.getRuntime().addShutdownHook(new Thread(session::close));
 
-        NanoHTTPD server = new NanoHTTPD(port) {
-            @Override
-            public Response serve(IHTTPSession session) {
-                String uri = session.getUri();
-                if (uri.endsWith("/")) {
-                    uri += "index.html";
-                }
-                File file;
-                try {
-                    file = siteDirectory.resolve(uri.substring(1)).toRealPath().toFile();
-                } catch (Exception e) {
-                    return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
-                }
-                if (!file.toPath().startsWith(siteDirectory) || !file.isFile()) {
-                    return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
-                }
-                try {
-                    String mimeType = NanoHTTPD.getMimeTypeForFile(uri);
-                    return newChunkedResponse(Response.Status.OK, mimeType, new FileInputStream(file));
-                } catch (FileNotFoundException e) {
-                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "Not Found: " + uri);
-                }
-            }
-        };
-
-        server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("Serving site from " + siteDirectory);
         System.out.println("Listening on http://localhost:" + port);
         System.out.println("Press Ctrl+C to stop.");
 
-        Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
         Thread.currentThread().join();
 
         return 0;
