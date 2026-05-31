@@ -2,7 +2,7 @@
 //REPOS mavenLocal
 //DEPS run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT
 
-import dev.rebelcraft.electrostatic.cli.ElectrostaticCli;
+import run.electrostatic.cli.ElectrostaticCli;
 
 class Electrostatic {
     public static void main(String... args) {

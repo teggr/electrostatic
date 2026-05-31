@@ -5,8 +5,8 @@ This is the module for building a static website
 # Usage
 
 ```java
-import com.robintegg.web.engine.WebSiteBuilder;
-import com.robintegg.web.theme.DefaultThemePlugin;
+import run.electrostatic.engine.WebSiteBuilder;
+import run.electrostatic.theme.DefaultThemePlugin;
 
 // set configuration + theme
 WebSiteBuilder webSiteBuilder = new WebSiteBuilder(
