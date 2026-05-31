@@ -31,18 +31,28 @@ public class WebSiteBuilder {
         var workingDirectory = Paths.get(System.getProperty("workingDirectory", ""));
         log.info("working directory: {}", workingDirectory.toAbsolutePath());
 
+        build(baseUrl, workingDirectory, workingDirectory.resolve("target/site"));
+
+    }
+
+    @SneakyThrows
+    public void build( String baseUrl, java.nio.file.Path inputDirectory, java.nio.file.Path outputDirectory ) {
+
+        log.info("input directory: {}", inputDirectory.toAbsolutePath());
+        log.info("output directory: {}", outputDirectory.toAbsolutePath());
+
         // register plugins
         themePlugin.registerPlugins();
 
         // load site configuration
-        Site site = SitePlugin.loadFromFile(workingDirectory);
+        Site site = SitePlugin.loadFromFile(inputDirectory);
 
         if( baseUrl != null ) {
             site.setBaseUrl(baseUrl);
         }
 
         // define the source of content
-        var contentSource = new ContentSource(site, workingDirectory);
+        var contentSource = new ContentSource(site, inputDirectory);
 
         // load content into model and populate plugins
         ContentModel contentModel = new ContentModel();
@@ -64,14 +74,10 @@ public class WebSiteBuilder {
 
         // TODO: filesystem plugin for output
         // create output directory
-        var outputDirectory = workingDirectory.resolve("target/site");
-        log.info("output directory: {}", outputDirectory.toAbsolutePath());
-
         cleanOutputDirectory(outputDirectory);
         Files.createDirectories(outputDirectory);
 
         // create render engine
-
         ContentRenderer contentRenderer = new ContentRenderer();
         contentRenderer.render(outputDirectory, layouts, contentModel, context);
 

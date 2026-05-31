@@ -13,4 +13,15 @@
     <artifactId>core</artifactId>
     <name>Electrostatic Core</name>
     <description>Core module for reusable electrostatic generation components</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>dev.rebelcraft</groupId>
+            <artifactId>generate-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
 </project>
