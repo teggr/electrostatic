@@ -18,7 +18,7 @@
 
         <dependency>
             <groupId>dev.rebelcraft</groupId>
-            <artifactId>generate-plugin</artifactId>
+            <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
