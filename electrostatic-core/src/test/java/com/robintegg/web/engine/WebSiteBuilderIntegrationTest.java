@@ -26,6 +26,7 @@ class WebSiteBuilderIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        Plugins.initializationPlugins.clear();
         Plugins.contentTypePlugins.clear();
         Plugins.aggregatorPlugins.clear();
         Plugins.contentRenderPlugins.clear();
@@ -35,6 +36,7 @@ class WebSiteBuilderIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        Plugins.initializationPlugins.clear();
         Plugins.contentTypePlugins.clear();
         Plugins.aggregatorPlugins.clear();
         Plugins.contentRenderPlugins.clear();

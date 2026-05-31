@@ -2,6 +2,7 @@ package com.robintegg.web.content.book;
 
 import com.robintegg.web.engine.ContentModel;
 import com.robintegg.web.plugins.ContentTypePlugin;
+import com.robintegg.web.plugins.InitializationPlugin;
 import com.robintegg.web.plugins.Plugins;
 import com.robintegg.web.site.Site;
 import jakarta.xml.bind.JAXBContext;
@@ -15,7 +16,7 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 @Slf4j
-public class BookPlugin implements ContentTypePlugin {
+public class BookPlugin implements ContentTypePlugin, InitializationPlugin {
 
   public static BookPlugin create() {
     return new BookPlugin();
@@ -76,7 +77,17 @@ public class BookPlugin implements ContentTypePlugin {
   }
 
   public void registerPlugins() {
+    Plugins.initializationPlugins.add(this);
     Plugins.contentTypePlugins.add(this);
+  }
+
+  @Override
+  public void initialize(Path sourceDirectory) {
+    try {
+      Files.createDirectories(sourceDirectory.resolve("_books"));
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize _books directory", e);
+    }
   }
 
 }

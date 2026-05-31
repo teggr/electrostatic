@@ -9,6 +9,7 @@ import picocli.CommandLine.Command;
     version = "0.0.1-SNAPSHOT",
     description = "Electrostatic static site generator",
     subcommands = {
+        InitCommand.class,
         BuildCommand.class,
         ServeCommand.class
     }

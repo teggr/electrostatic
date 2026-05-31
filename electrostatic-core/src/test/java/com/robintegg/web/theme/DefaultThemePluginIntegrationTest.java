@@ -21,6 +21,7 @@ class DefaultThemePluginIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        Plugins.initializationPlugins.clear();
         Plugins.contentTypePlugins.clear();
         Plugins.aggregatorPlugins.clear();
         Plugins.contentRenderPlugins.clear();
@@ -29,6 +30,7 @@ class DefaultThemePluginIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        Plugins.initializationPlugins.clear();
         Plugins.contentTypePlugins.clear();
         Plugins.aggregatorPlugins.clear();
         Plugins.contentRenderPlugins.clear();

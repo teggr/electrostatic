@@ -2,6 +2,7 @@ package com.robintegg.web.content.post;
 
 import com.robintegg.web.engine.ContentModel;
 import com.robintegg.web.plugins.ContentTypePlugin;
+import com.robintegg.web.plugins.InitializationPlugin;
 import com.robintegg.web.plugins.Plugins;
 import com.robintegg.web.site.Site;
 import lombok.SneakyThrows;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Slf4j
-public class PostPlugin implements ContentTypePlugin {
+public class PostPlugin implements ContentTypePlugin, InitializationPlugin {
   public static PostPlugin create() {
     return new PostPlugin();
   }
@@ -79,7 +80,17 @@ public class PostPlugin implements ContentTypePlugin {
   }
 
   public void registerPlugins() {
+    Plugins.initializationPlugins.add(this);
     Plugins.contentTypePlugins.add(this);
+  }
+
+  @Override
+  public void initialize(Path sourceDirectory) {
+    try {
+      Files.createDirectories(sourceDirectory.resolve("_posts"));
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize _posts directory", e);
+    }
   }
 
 }

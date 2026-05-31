@@ -2,6 +2,7 @@ package com.robintegg.web.content.post;
 
 import com.robintegg.web.engine.ContentModel;
 import com.robintegg.web.plugins.ContentTypePlugin;
+import com.robintegg.web.plugins.InitializationPlugin;
 import com.robintegg.web.plugins.Plugins;
 import com.robintegg.web.site.Site;
 import lombok.SneakyThrows;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 import java.util.stream.Stream;
 
 @Slf4j
-public class DraftPostPlugin implements ContentTypePlugin {
+public class DraftPostPlugin implements ContentTypePlugin, InitializationPlugin {
 
   public static DraftPostPlugin create() {
     String drafts = System.getProperty("drafts", "false");
@@ -57,6 +58,16 @@ public class DraftPostPlugin implements ContentTypePlugin {
   }
 
   public void registerPlugins() {
+    Plugins.initializationPlugins.add(this);
     Plugins.contentTypePlugins.add(this);
+  }
+
+  @Override
+  public void initialize(Path sourceDirectory) {
+    try {
+      Files.createDirectories(sourceDirectory.resolve("_drafts"));
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize _drafts directory", e);
+    }
   }
 }

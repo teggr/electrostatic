@@ -2,6 +2,7 @@ package com.robintegg.web.content.staticfiles;
 
 import com.robintegg.web.engine.ContentModel;
 import com.robintegg.web.plugins.ContentTypePlugin;
+import com.robintegg.web.plugins.InitializationPlugin;
 import com.robintegg.web.plugins.Plugins;
 import com.robintegg.web.site.Site;
 import lombok.SneakyThrows;
@@ -13,7 +14,7 @@ import java.util.Collections;
 import java.util.stream.Stream;
 
 @Slf4j
-public class StaticFilesPlugin implements ContentTypePlugin {
+public class StaticFilesPlugin implements ContentTypePlugin, InitializationPlugin {
 
   private final String assetDirectory;
 
@@ -63,6 +64,16 @@ public class StaticFilesPlugin implements ContentTypePlugin {
   }
 
   public void registerPlugins() {
+    Plugins.initializationPlugins.add(this);
     Plugins.contentTypePlugins.add(this);
+  }
+
+  @Override
+  public void initialize(Path sourceDirectory) {
+    try {
+      Files.createDirectories(sourceDirectory.resolve(assetDirectory));
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize static directory " + assetDirectory, e);
+    }
   }
 }
