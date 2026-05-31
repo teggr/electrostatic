@@ -73,8 +73,8 @@ public class GenerateMojo extends AbstractMojo {
     private ClassLoader buildClassLoader(ClassLoader parent) throws MojoExecutionException {
         try {
             URL[] urls = new URL[compileClasspathElements.size()];
-            for (int i = 0; i < compileClasspathElements.size(); i++) {
-                urls[i] = new File(compileClasspathElements.get(i)).toURI().toURL();
+            for (int index = 0; index < compileClasspathElements.size(); index++) {
+                urls[index] = new File(compileClasspathElements.get(index)).toURI().toURL();
             }
             return new URLClassLoader(urls, parent);
         } catch (Exception e) {
