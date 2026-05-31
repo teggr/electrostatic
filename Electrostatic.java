@@ -1,6 +1,6 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //REPOS mavenLocal
-//DEPS dev.rebelcraft:cli:0.0.1-SNAPSHOT
+//DEPS run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT
 
 import dev.rebelcraft.electrostatic.cli.ElectrostaticCli;
 

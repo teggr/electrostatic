@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dev.rebelcraft</groupId>
+    <groupId>run.electrostatic</groupId>
     <artifactId>electrostatic-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -13,10 +13,10 @@
     <url>https://github.com/teggr/electrostatic</url>
 
     <modules>
-        <module>core</module>
-        <module>generate-plugin</module>
-        <module>cli</module>
-        <module>maven-plugin</module>
+        <module>electrostatic-core</module>
+        <module>electrostatic-generate-plugin</module>
+        <module>electrostatic-cli</module>
+        <module>electrostatic-maven-plugin</module>
     </modules>
 
     <properties>

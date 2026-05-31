@@ -14,5 +14,5 @@
 
 # Quick Verification
 
-- Build wrappers with shared core changes: .\mvnw -pl cli,maven-plugin -am clean verify
+- Build wrappers with shared core changes: .\mvnw -pl electrostatic-cli,electrostatic-maven-plugin -am clean verify
 - Verify JBang entrypoint help output: jbang Electrostatic.java --help
