@@ -14,7 +14,7 @@ public class _404Page {
   public static Page create() {
 
     return Page.builder()
-        .path("404.html")
+        .path("/404.html")
         .data(Map.of("layout", List.of("default")))
         .renderFunction(_404Page::render)
         .build();

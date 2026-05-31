@@ -39,8 +39,8 @@ public class ContentModel {
   // currently we wait until the processing occurs
   public <T> List<T> getContentOfType(Class<T> clazz) {
     return this.items.stream()
-        .filter(i -> clazz.isAssignableFrom(i.getClass()))
-        .map(i -> (T) i)
+        .filter(clazz::isInstance)
+        .map(clazz::cast)
         .toList();
   }
 
