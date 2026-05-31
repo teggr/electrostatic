@@ -1,7 +1,6 @@
 package run.electrostatic.content.staticfiles;
 
 import run.electrostatic.engine.ContentItem;
-import run.electrostatic.engine.ContentModel;
 import run.electrostatic.engine.RenderModel;
 import j2html.TagCreator;
 import j2html.tags.DomContent;

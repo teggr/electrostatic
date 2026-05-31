@@ -9,7 +9,6 @@ import run.electrostatic.plugins.AggregatorPlugin;
 import run.electrostatic.plugins.Plugins;
 import run.electrostatic.theme.layouts.PagedContent;
 import run.electrostatic.theme.pages.PostsPage;
-import run.electrostatic.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

@@ -1,7 +1,5 @@
 package run.electrostatic.content;
 
-import run.electrostatic.engine.ContentItem;
-import run.electrostatic.engine.ContentModel;
 import run.electrostatic.engine.RenderModel;
 import j2html.tags.DomContent;
 

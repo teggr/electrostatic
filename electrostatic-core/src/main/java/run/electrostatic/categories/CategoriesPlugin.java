@@ -9,7 +9,6 @@ import run.electrostatic.engine.Page;
 import run.electrostatic.plugins.AggregatorPlugin;
 import run.electrostatic.plugins.Plugins;
 import run.electrostatic.theme.layouts.CategoryLayout;
-import run.electrostatic.theme.layouts.TagLayout;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

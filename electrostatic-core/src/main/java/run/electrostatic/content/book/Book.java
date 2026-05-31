@@ -4,7 +4,6 @@ import run.electrostatic.content.IndexContent;
 import run.electrostatic.content.IndexedContent;
 import run.electrostatic.content.TaggedContent;
 import run.electrostatic.engine.ContentItem;
-import run.electrostatic.engine.ContentModel;
 import run.electrostatic.engine.RenderModel;
 import j2html.TagCreator;
 import j2html.tags.DomContent;

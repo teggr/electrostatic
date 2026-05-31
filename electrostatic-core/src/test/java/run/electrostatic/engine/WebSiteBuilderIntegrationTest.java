@@ -3,7 +3,6 @@ package run.electrostatic.engine;
 import run.electrostatic.content.staticfiles.StaticFile;
 import run.electrostatic.plugins.Plugins;
 import run.electrostatic.plugins.ThemePlugin;
-import run.electrostatic.site.Site;
 import j2html.TagCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

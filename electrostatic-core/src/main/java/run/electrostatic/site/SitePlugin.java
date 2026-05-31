@@ -1,7 +1,5 @@
 package run.electrostatic.site;
 
-import run.electrostatic.github.GitHubClient;
-import run.electrostatic.github.GitHubRepository;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -10,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Set;
 
 @Slf4j
 public class SitePlugin {

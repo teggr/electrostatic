@@ -1,7 +1,6 @@
 package run.electrostatic.theme.includes;
 
 import run.electrostatic.engine.RenderModel;
-import run.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 
 import java.io.UnsupportedEncodingException;

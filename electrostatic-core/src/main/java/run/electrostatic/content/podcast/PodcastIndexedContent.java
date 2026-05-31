@@ -1,7 +1,6 @@
 package run.electrostatic.content.podcast;
 
 import run.electrostatic.content.IndexContent;
-import run.electrostatic.engine.ContentModel;
 import run.electrostatic.engine.RenderModel;
 import j2html.tags.DomContent;
 
