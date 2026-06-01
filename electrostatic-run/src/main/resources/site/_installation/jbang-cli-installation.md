@@ -83,3 +83,4 @@ electrostatic themes
 
 - If dependencies changed recently, run a Maven install for the CLI module first so JBang resolves the latest local artifact.
 - If `init` fails, ensure the target directory is empty.
+- For local static servers, ensure directory index files are enabled. Tag and category detail pages are generated as `.../index.html` paths.

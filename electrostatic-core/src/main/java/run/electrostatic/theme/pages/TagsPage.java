@@ -95,7 +95,7 @@ public class TagsPage {
                                                                                     li().with(
                                                                                             a()
                                                                                                     .withClass("tag-link")
-                                                                                                    .withHref(Utils.relativeUrl("/tags/" + tag))
+                                                                                                    .withHref(Utils.relativeUrl("/tags/" + tag + "/"))
                                                                                                     .withText(Utils.capitalize(tag))
                                                                                     )
                                                                             )

@@ -241,7 +241,7 @@ public class V2HomeLayout {
                                 each(remainingTags, tag ->
                                     li().with(
                                         a()
-                                            .withHref(Utils.relativeUrl("/tags/" + tag))
+                                            .withHref(Utils.relativeUrl("/tags/" + tag + "/"))
                                             .withText(Utils.escape(tag))
                                     )
                                 )

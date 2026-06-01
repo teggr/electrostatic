@@ -55,6 +55,9 @@ public class SitePreviewServer {
 
             String relativeUri = uri.startsWith("/") ? uri.substring(1) : uri;
             File file = resolveFile(relativeUri, outputDirectory, projectRoot);
+            if (file == null && shouldTryDirectoryIndex(relativeUri)) {
+                file = resolveFile(relativeUri + "/index.html", outputDirectory, projectRoot);
+            }
             if (file == null) {
                 sendNotFound(exchange);
                 return;
@@ -74,6 +77,16 @@ public class SitePreviewServer {
         } finally {
             exchange.close();
         }
+    }
+
+    private static boolean shouldTryDirectoryIndex(String relativeUri) {
+        if (relativeUri == null || relativeUri.isEmpty() || relativeUri.endsWith("/")) {
+            return false;
+        }
+
+        int lastSlash = relativeUri.lastIndexOf('/');
+        String lastSegment = lastSlash >= 0 ? relativeUri.substring(lastSlash + 1) : relativeUri;
+        return !lastSegment.contains(".");
     }
 
     private static void sendNotFound(HttpExchange exchange) throws IOException {

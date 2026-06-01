@@ -99,7 +99,7 @@ public class BooksPage {
                                                 return li()
                                                     .with(
                                                         a()
-                                                            .withHref(Utils.relativeUrl("/tags/" + tag))
+                                                            .withHref(Utils.relativeUrl("/tags/" + tag + "/"))
                                                             .withText(tag)
                                                     );
                                               })

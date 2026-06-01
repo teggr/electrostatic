@@ -112,7 +112,7 @@ public class V2PostLayout {
                         each(pageTags, tag ->
                             li().with(
                                 a()
-                                    .withHref(Utils.relativeUrl("/tags/" + tag))
+                                    .withHref(Utils.relativeUrl("/tags/" + tag + "/"))
                                     .withText(Utils.escape(tag))
                             )
                         )

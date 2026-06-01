@@ -42,6 +42,12 @@ class SitePreviewServerIntegrationTest {
             assertEquals(200, outputResponse.statusCode);
             assertTrue(outputResponse.body.contains("<html"));
 
+            HttpResponse tagNoSlashResponse = httpGet("http://localhost:" + port + "/tags/sass");
+            assertEquals(200, tagNoSlashResponse.statusCode);
+
+            HttpResponse tagWithSlashResponse = httpGet("http://localhost:" + port + "/tags/sass/");
+            assertEquals(200, tagWithSlashResponse.statusCode);
+
             HttpResponse rootResponse = httpGet("http://localhost:" + port + "/root-fallback.txt");
             assertEquals(200, rootResponse.statusCode);
             assertEquals("root-content", rootResponse.body.trim());
@@ -93,6 +99,8 @@ class SitePreviewServerIntegrationTest {
             "---\n" +
                 "title: Preview\n" +
                 "author: test\n" +
+                "tags:\n" +
+                "  - sass\n" +
                 "---\n\n" +
                 "Preview content.\n",
             StandardCharsets.UTF_8

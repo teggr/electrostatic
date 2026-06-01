@@ -48,7 +48,7 @@ public class CategoriesPage {
                                     .withClass("post-list-heading")
                                     .with(a()
                                         .withText(Utils.capitalize(category))
-                                        .withHref(Utils.relativeUrl("/categories/" + category))
+                                        .withHref(Utils.relativeUrl("/categories/" + category + "/"))
                                     )
                                 ,
                                 ul()
