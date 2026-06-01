@@ -56,7 +56,7 @@ List available theme bundles:
 
 ```bash
 electrostatic themes
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT themes
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT themes
 ```
 
 You can still pass `--theme` to `build` or `serve` to override the persisted value for a single run.
@@ -64,14 +64,14 @@ You can still pass `--theme` to `build` or `serve` to override the persisted val
 JBang works the same way:
 
 ```bash
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init --theme docs
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init --theme docs
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve
 ```
 
 ```bash
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build --base-url http://localhost:8080 --include-drafts
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve --base-url http://localhost:8080 --include-drafts
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build --base-url http://localhost:8080 --include-drafts
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve --base-url http://localhost:8080 --include-drafts
 ```
 
 ### JBang
@@ -79,8 +79,8 @@ jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve --base-url http:/
 Install JBang, then run the CLI artifact directly:
 
 ```bash
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build
 ```
 
 The command resolves the CLI from your local Maven cache (or configured repositories) and is the quickest way to try the generator in a new project.
@@ -91,7 +91,7 @@ Add the plugin to your project and call the `init`, `themes`, `serve` and `gener
 
 ```xml
 <plugin>
-	<groupId>run.electrostatic</groupId>
+	<groupId>site.electrostatic</groupId>
 	<artifactId>electrostatic-maven-plugin</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 </plugin>
@@ -107,10 +107,10 @@ mvn electrostatic:generate
 If prefix resolution is not configured in your Maven environment, use fully-qualified coordinates:
 
 ```bash
-mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:init
-mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:themes
-mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:serve
-mvn run.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:generate
+mvn site.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:init
+mvn site.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:themes
+mvn site.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:serve
+mvn site.electrostatic:electrostatic-maven-plugin:0.0.1-SNAPSHOT:generate
 ```
 
 Or configure your Maven plugin groups once so `mvn electrostatic:*` works everywhere:
@@ -119,7 +119,7 @@ Or configure your Maven plugin groups once so `mvn electrostatic:*` works everyw
 <!-- ~/.m2/settings.xml -->
 <settings>
 	<pluginGroups>
-		<pluginGroup>run.electrostatic</pluginGroup>
+		<pluginGroup>site.electrostatic</pluginGroup>
 	</pluginGroups>
 </settings>
 ```

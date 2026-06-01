@@ -12,7 +12,7 @@ Add Electrostatic to your `pom.xml`:
 
 ```xml
 <plugin>
-  <groupId>run.electrostatic</groupId>
+  <groupId>site.electrostatic</groupId>
   <artifactId>electrostatic-maven-plugin</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 </plugin>

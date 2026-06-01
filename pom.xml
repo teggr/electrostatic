@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>run.electrostatic</groupId>
+    <groupId>site.electrostatic</groupId>
     <artifactId>electrostatic-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Electrostatic Parent</name>
     <description>Electrostatic static site generator modules</description>
-    <url>https://github.com/teggr/electrostatic</url>
+    <url>https://electrostatic.site</url>
 
     <modules>
         <module>electrostatic-core</module>

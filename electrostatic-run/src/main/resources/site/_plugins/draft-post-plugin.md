@@ -25,7 +25,7 @@ Enable drafts during generation when needed:
 
 ```bash
 mvn electrostatic:generate -Delectrostatic.includeDrafts=true
-jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build --include-drafts
+jbang site.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build --include-drafts
 ```
 
 If you want the localhost shortcut instead of the site-config base URL, pass `--base-url http://localhost:8080` or `-Delectrostatic.baseUrl=http://localhost:8080` alongside the draft flag.
