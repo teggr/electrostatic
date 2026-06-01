@@ -35,7 +35,7 @@ class SitePreviewServerIntegrationTest {
 
         int port = findAvailablePort();
         try (SitePreviewServer.PreviewSession session = new SitePreviewServer(DefaultThemePlugin.create())
-            .start(inputDirectory, outputDirectory, null, port, projectRoot)) {
+            .start(inputDirectory, outputDirectory, GenerationOptions.defaults(), port, projectRoot)) {
             waitForHttpSuccess("http://localhost:" + port + "/index.html", Duration.ofSeconds(30));
 
             HttpResponse outputResponse = httpGet("http://localhost:" + port + "/index.html");

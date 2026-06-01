@@ -5,6 +5,8 @@ import run.electrostatic.plugins.ContentTypePlugin;
 import run.electrostatic.plugins.InitializationPlugin;
 import run.electrostatic.plugins.Plugins;
 import run.electrostatic.site.Site;
+import run.electrostatic.core.GenerationOptions;
+import run.electrostatic.core.GenerationOptionsContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,9 +19,9 @@ import java.util.stream.Stream;
 public class DraftPostPlugin implements ContentTypePlugin, InitializationPlugin {
 
   public static DraftPostPlugin create() {
-    String drafts = System.getProperty("drafts", "false");
-    log.info("includeDrafts={}", drafts);
-    return new DraftPostPlugin(Boolean.valueOf(drafts));
+    GenerationOptions options = GenerationOptionsContext.current();
+    log.info("includeDrafts={}", options.includeDrafts());
+    return new DraftPostPlugin(options.includeDrafts());
   }
 
   private final boolean includeDrafts;

@@ -27,7 +27,17 @@ public class SitePreviewServer {
 
     public PreviewSession start(Path inputDirectory, Path outputDirectory, String baseUrl, int port, Path projectRoot)
         throws IOException {
-        siteGenerator.generate(inputDirectory, outputDirectory, baseUrl);
+        return start(inputDirectory, outputDirectory, GenerationOptions.fromBaseUrl(baseUrl), port, projectRoot);
+    }
+
+    public PreviewSession start(
+        Path inputDirectory,
+        Path outputDirectory,
+        GenerationOptions options,
+        int port,
+        Path projectRoot
+    ) throws IOException {
+        siteGenerator.generate(inputDirectory, outputDirectory, options);
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/", exchange -> serve(exchange, outputDirectory, projectRoot));

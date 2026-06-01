@@ -45,11 +45,18 @@ electrostatic build
 electrostatic serve
 ```
 
+`build` and `serve` now default to the `baseUrl` in `site-config.xml`. If you want the localhost shortcut, pass it explicitly. You can also opt into drafts for a single run:
+
+```bash
+electrostatic build --base-url http://localhost:8080 --include-drafts
+electrostatic serve --base-url http://localhost:8080 --include-drafts
+```
+
 List available theme bundles:
 
 ```bash
 electrostatic themes
-jbang Electrostatic.java themes
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT themes
 ```
 
 You can still pass `--theme` to `build` or `serve` to override the persisted value for a single run.
@@ -57,21 +64,26 @@ You can still pass `--theme` to `build` or `serve` to override the persisted val
 JBang works the same way:
 
 ```bash
-jbang Electrostatic.java init --theme docs
-jbang Electrostatic.java build
-jbang Electrostatic.java serve
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init --theme docs
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve
+```
+
+```bash
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build --base-url http://localhost:8080 --include-drafts
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve --base-url http://localhost:8080 --include-drafts
 ```
 
 ### JBang
 
-Install JBang, then run the root script directly:
+Install JBang, then run the CLI artifact directly:
 
 ```bash
-jbang Electrostatic.java init
-jbang Electrostatic.java build
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build
 ```
 
-The script boots the CLI from the local Maven cache and is the quickest way to try the generator in a new project.
+The command resolves the CLI from your local Maven cache (or configured repositories) and is the quickest way to try the generator in a new project.
 
 ### Maven plugin
 
@@ -129,6 +141,8 @@ mvn electrostatic:init -Delectrostatic.rootDirectory=./src/main/resources/my-sit
 
 By default, the Maven plugin reads site content from `src/main/resources/site` and writes output to `target/generated-site`.
 
+`generate` and `serve` default to the `baseUrl` in `site-config.xml`.
+
 To select the docs bundle in Maven plugin goals:
 
 `--theme` is a CLI/JBang option, not a Maven goal option. For Maven, use `-D` properties.
@@ -146,6 +160,13 @@ mvn electrostatic:init '-Delectrostatic.theme=docs'
 ```
 
 You can still pass `-Delectrostatic.theme=...` to `generate` or `serve` to override the persisted theme for that invocation.
+
+You can also explicitly choose the localhost shortcut and include drafts for a single Maven invocation:
+
+```bash
+mvn electrostatic:generate -Delectrostatic.baseUrl=http://localhost:8080 -Delectrostatic.includeDrafts=true
+mvn electrostatic:serve -Delectrostatic.baseUrl=http://localhost:8080 -Delectrostatic.includeDrafts=true
+```
 
 ## Docs collections configuration
 

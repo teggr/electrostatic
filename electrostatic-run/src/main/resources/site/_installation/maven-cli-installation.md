@@ -42,10 +42,20 @@ Generate static output:
 mvn electrostatic:generate
 ```
 
+By default, Maven generation uses the `baseUrl` from `site-config.xml`. If you want the localhost shortcut, set it explicitly and include drafts when needed:
+
+```bash
+mvn electrostatic:generate -Delectrostatic.baseUrl=http://localhost:8080 -Delectrostatic.includeDrafts=true
+```
+
 Preview locally:
 
 ```bash
 mvn electrostatic:serve
+```
+
+```bash
+mvn electrostatic:serve -Delectrostatic.baseUrl=http://localhost:8080 -Delectrostatic.includeDrafts=true
 ```
 
 List available built-in theme bundles:
@@ -71,6 +81,10 @@ mvn electrostatic:generate -Delectrostatic.theme=v2
 ```
 
 PowerShell note for dotted properties:
+
+```powershell
+mvn electrostatic:generate '-Delectrostatic.baseUrl=http://localhost:8080' '-Delectrostatic.includeDrafts=true'
+```
 
 ```powershell
 mvn electrostatic:init '-Delectrostatic.theme=docs'

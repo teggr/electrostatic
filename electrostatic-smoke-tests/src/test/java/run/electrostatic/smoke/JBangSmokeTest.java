@@ -65,6 +65,89 @@ class JBangSmokeTest {
         }
     }
 
+    @Test
+    void jbangBuildShouldUseSiteConfigBaseUrlUnlessExplicitlyOverridden() throws Exception {
+        Path repoRoot = Path.of("").toAbsolutePath().getParent();
+        Assumptions.assumeTrue(repoRoot != null, "Repository root is not available from test working directory");
+        String jbangCommand = resolveJbangCommand();
+
+        Path scriptPath = repoRoot.resolve("Electrostatic.java");
+        Assumptions.assumeTrue(Files.exists(scriptPath), "Electrostatic.java not found in repository root");
+
+        Path siteRoot = tempDir.resolve("jbang-site-with-drafts");
+        Files.createDirectories(siteRoot);
+
+        runCommand(List.of(jbangCommand, scriptPath.toString(), "init"), siteRoot);
+        rewriteBaseUrl(siteRoot, "https://prod.example");
+        rewriteDefaultPostToDatedPost(siteRoot);
+        Files.writeString(
+            siteRoot.resolve("_drafts/2026-01-02-draft-post.md"),
+            "---\n" +
+                "title: Draft Post\n" +
+                "author: smoke\n" +
+                "---\n\n" +
+                "Draft body for JBang smoke test.\n",
+            StandardCharsets.UTF_8
+        );
+
+        Path defaultOutputDir = siteRoot.resolve("generated-site-default");
+        runCommand(List.of(
+            jbangCommand,
+            scriptPath.toString(),
+            "build",
+            "--output",
+            defaultOutputDir.toString()
+        ), siteRoot);
+
+        assertTrue(Files.readString(defaultOutputDir.resolve("feed.xml")).contains("https://prod.example"));
+        assertTrue(treeDoesNotContain(defaultOutputDir, "Draft body for JBang smoke test."));
+
+        Path draftOutputDir = siteRoot.resolve("generated-site-drafts");
+        runCommand(List.of(
+            jbangCommand,
+            scriptPath.toString(),
+            "build",
+            "--output",
+            draftOutputDir.toString(),
+            "--include-drafts",
+            "--base-url",
+            "https://preview.example"
+        ), siteRoot);
+
+        assertTrue(Files.readString(draftOutputDir.resolve("feed.xml")).contains("https://preview.example"));
+        assertTrue(treeContains(draftOutputDir, "Draft body for JBang smoke test."));
+    }
+
+    @Test
+    void jbangBuildShouldAllowExplicitLocalhostShortcut() throws Exception {
+        Path repoRoot = Path.of("").toAbsolutePath().getParent();
+        Assumptions.assumeTrue(repoRoot != null, "Repository root is not available from test working directory");
+        String jbangCommand = resolveJbangCommand();
+
+        Path scriptPath = repoRoot.resolve("Electrostatic.java");
+        Assumptions.assumeTrue(Files.exists(scriptPath), "Electrostatic.java not found in repository root");
+
+        Path siteRoot = tempDir.resolve("jbang-site-localhost");
+        Files.createDirectories(siteRoot);
+
+        runCommand(List.of(jbangCommand, scriptPath.toString(), "init"), siteRoot);
+        rewriteBaseUrl(siteRoot, "https://prod.example");
+        rewriteDefaultPostToDatedPost(siteRoot);
+
+        Path outputDir = siteRoot.resolve("generated-site-localhost");
+        runCommand(List.of(
+            jbangCommand,
+            scriptPath.toString(),
+            "build",
+            "--output",
+            outputDir.toString(),
+            "--base-url",
+            "http://localhost:8080"
+        ), siteRoot);
+
+        assertTrue(Files.readString(outputDir.resolve("feed.xml")).contains("http://localhost:8080"));
+    }
+
     private static String resolveJbangCommand() {
         String osName = System.getProperty("os.name", "").toLowerCase();
         return osName.contains("win") ? "jbang.cmd" : "jbang";
@@ -130,6 +213,7 @@ class JBangSmokeTest {
     private static void rewriteDefaultPostToDatedPost(Path siteRoot) throws Exception {
         Path postsDirectory = siteRoot.resolve("_posts");
         Files.deleteIfExists(postsDirectory.resolve("hello-world.md"));
+        Files.deleteIfExists(postsDirectory.resolve("2026-01-01-hello-world.md"));
         Files.writeString(
             postsDirectory.resolve("2026-01-01-smoke-test.md"),
             "---\n" +
@@ -139,6 +223,33 @@ class JBangSmokeTest {
                 "Smoke test post content.\n",
             StandardCharsets.UTF_8
         );
+    }
+
+    private static void rewriteBaseUrl(Path siteRoot, String baseUrl) throws Exception {
+        Path siteConfig = siteRoot.resolve("site-config.xml");
+        String updated = Files.readString(siteConfig, StandardCharsets.UTF_8)
+            .replace("<baseUrl>http://localhost:8080</baseUrl>", "<baseUrl>" + baseUrl + "</baseUrl>");
+        Files.writeString(siteConfig, updated, StandardCharsets.UTF_8);
+    }
+
+    private static boolean treeContains(Path root, String expectedText) throws Exception {
+        try (java.util.stream.Stream<Path> paths = Files.walk(root)) {
+            return paths
+                .filter(Files::isRegularFile)
+                .anyMatch(path -> containsText(path, expectedText));
+        }
+    }
+
+    private static boolean treeDoesNotContain(Path root, String expectedText) throws Exception {
+        return !treeContains(root, expectedText);
+    }
+
+    private static boolean containsText(Path path, String expectedText) {
+        try {
+            return Files.readString(path).contains(expectedText);
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     private static HttpResponse httpGet(String endpoint) throws Exception {

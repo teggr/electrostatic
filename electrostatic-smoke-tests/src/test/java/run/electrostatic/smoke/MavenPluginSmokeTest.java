@@ -67,6 +67,71 @@ class MavenPluginSmokeTest {
     }
 
     @Test
+    void generateGoalShouldUseSiteConfigBaseUrlUnlessExplicitlyOverridden() throws Exception {
+        Path siteRoot = tempDir.resolve("plugin-site-with-drafts");
+        Path defaultOutputDir = siteRoot.resolve("target/generated-site-default");
+        Path draftOutputDir = siteRoot.resolve("target/generated-site-drafts");
+
+        InitMojo initMojo = new InitMojo();
+        setField(initMojo, "rootDirectory", siteRoot.toFile());
+        initMojo.execute();
+
+        rewriteBaseUrl(siteRoot, "https://prod.example");
+        rewriteDefaultPostToDatedPost(siteRoot);
+        Files.writeString(
+            siteRoot.resolve("_drafts/2026-01-02-draft-post.md"),
+            "---\n" +
+                "title: Draft Post\n" +
+                "author: smoke\n" +
+                "---\n\n" +
+                "Draft body for Maven smoke test.\n",
+            StandardCharsets.UTF_8
+        );
+
+        GenerateMojo defaultGenerateMojo = new GenerateMojo();
+        setField(defaultGenerateMojo, "inputDirectory", siteRoot.toFile());
+        setField(defaultGenerateMojo, "outputDirectory", defaultOutputDir.toFile());
+        setField(defaultGenerateMojo, "compileClasspathElements", List.<String>of());
+        defaultGenerateMojo.execute();
+
+        assertTrue(Files.readString(defaultOutputDir.resolve("feed.xml")).contains("https://prod.example"));
+        assertTrue(treeDoesNotContain(defaultOutputDir, "Draft body for Maven smoke test."));
+
+        GenerateMojo draftGenerateMojo = new GenerateMojo();
+        setField(draftGenerateMojo, "inputDirectory", siteRoot.toFile());
+        setField(draftGenerateMojo, "outputDirectory", draftOutputDir.toFile());
+        setField(draftGenerateMojo, "compileClasspathElements", List.<String>of());
+        setField(draftGenerateMojo, "includeDrafts", true);
+        setField(draftGenerateMojo, "baseUrl", "https://preview.example");
+        draftGenerateMojo.execute();
+
+        assertTrue(Files.readString(draftOutputDir.resolve("feed.xml")).contains("https://preview.example"));
+        assertTrue(treeContains(draftOutputDir, "Draft body for Maven smoke test."));
+    }
+
+    @Test
+    void generateGoalShouldAllowExplicitLocalhostShortcut() throws Exception {
+        Path siteRoot = tempDir.resolve("plugin-site-localhost");
+        Path outputDir = siteRoot.resolve("target/generated-site-localhost");
+
+        InitMojo initMojo = new InitMojo();
+        setField(initMojo, "rootDirectory", siteRoot.toFile());
+        initMojo.execute();
+
+        rewriteBaseUrl(siteRoot, "https://prod.example");
+        rewriteDefaultPostToDatedPost(siteRoot);
+
+        GenerateMojo generateMojo = new GenerateMojo();
+        setField(generateMojo, "inputDirectory", siteRoot.toFile());
+        setField(generateMojo, "outputDirectory", outputDir.toFile());
+        setField(generateMojo, "compileClasspathElements", List.<String>of());
+        setField(generateMojo, "baseUrl", "http://localhost:8080");
+        generateMojo.execute();
+
+        assertTrue(Files.readString(outputDir.resolve("feed.xml")).contains("http://localhost:8080"));
+    }
+
+    @Test
     void initShouldSucceedInExistingMavenModuleWhenSiteDirectoryDoesNotExist() throws Exception {
         Path moduleRoot = tempDir.resolve("existing-module");
         Path siteDirectory = moduleRoot.resolve("src/main/resources/site");
@@ -147,6 +212,33 @@ class MavenPluginSmokeTest {
                 "Smoke test post content.\n",
             StandardCharsets.UTF_8
         );
+    }
+
+    private static void rewriteBaseUrl(Path siteRoot, String baseUrl) throws Exception {
+        Path siteConfig = siteRoot.resolve("site-config.xml");
+        String updated = Files.readString(siteConfig, StandardCharsets.UTF_8)
+            .replace("<baseUrl>http://localhost:8080</baseUrl>", "<baseUrl>" + baseUrl + "</baseUrl>");
+        Files.writeString(siteConfig, updated, StandardCharsets.UTF_8);
+    }
+
+    private static boolean treeContains(Path root, String expectedText) throws Exception {
+        try (Stream<Path> paths = Files.walk(root)) {
+            return paths
+                .filter(Files::isRegularFile)
+                .anyMatch(path -> containsText(path, expectedText));
+        }
+    }
+
+    private static boolean treeDoesNotContain(Path root, String expectedText) throws Exception {
+        return !treeContains(root, expectedText);
+    }
+
+    private static boolean containsText(Path path, String expectedText) {
+        try {
+            return Files.readString(path).contains(expectedText);
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     private static void setField(Object target, String fieldName, Object value) throws Exception {

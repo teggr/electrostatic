@@ -27,7 +27,7 @@ All user-facing site behavior is implemented in core and reused by wrappers.
 
 ## End-to-End Build Pipeline
 
-The generation flow is orchestrated by WebSiteBuilder.build(baseUrl, inputDirectory, outputDirectory).
+The generation flow is orchestrated by WebSiteBuilder.build(GenerationOptions, inputDirectory, outputDirectory).
 
 ```mermaid
 flowchart LR
@@ -49,7 +49,8 @@ Detailed stage behavior:
 
 2. Site configuration loading
 - run.electrostatic.site.SitePlugin loads site-config.xml into run.electrostatic.site.Site using JAXB.
-- If an explicit base URL override is supplied, it replaces Site.baseUrl for the current run.
+- Wrapper-supplied GenerationOptions can override Site.baseUrl for the current run.
+- Wrapper-supplied GenerationOptions can also enable draft loading for the current run.
 
 3. Content loading
 - run.electrostatic.engine.ContentSource loops through Plugins.contentTypePlugins and calls loadContent for each.
@@ -186,6 +187,8 @@ Naming difference only:
 
 Behavior is otherwise shared by common core services.
 
+Both CLI and Maven wrapper surfaces now build a shared GenerationOptions payload before delegating to core. That payload carries the base URL override and the explicit includeDrafts flag, so both wrappers follow the same override semantics and defer to site-config.xml when no base URL is provided.
+
 ## Preview Server Architecture
 
 run.electrostatic.core.SitePreviewServer.start does the following:
@@ -195,6 +198,8 @@ run.electrostatic.core.SitePreviewServer.start does the following:
 3. Resolves incoming request paths to files under generated output
 4. Falls back to project root for direct file access when present
 5. Returns 404 for unresolved files
+
+The preview flow now forwards the same GenerationOptions object used by build generation, so serve-time preview and one-shot generation stay aligned for both baseUrl and draft inclusion.
 
 Serve commands/goals hold the current thread and install a shutdown hook to close the server cleanly.
 

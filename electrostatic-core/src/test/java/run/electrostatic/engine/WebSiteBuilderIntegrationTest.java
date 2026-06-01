@@ -1,8 +1,10 @@
 package run.electrostatic.engine;
 
+import run.electrostatic.core.GenerationOptions;
 import run.electrostatic.content.staticfiles.StaticFile;
 import run.electrostatic.plugins.Plugins;
 import run.electrostatic.plugins.ThemePlugin;
+import run.electrostatic.theme.DefaultThemePlugin;
 import j2html.TagCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -73,6 +76,59 @@ class WebSiteBuilderIntegrationTest {
         assertTrue(html.contains("Generated page"));
         assertTrue(html.contains("https://override.example"));
         assertEquals("asset-content", Files.readString(renderedAsset));
+    }
+
+    @Test
+    void build_withIncludeDraftsOption_shouldRenderDraftContentWithoutSystemProperty() throws Exception {
+        Files.writeString(tempDir.resolve("site-config.xml"), """
+            <site>
+              <title>Test Site</title>
+              <baseUrl>https://example.test</baseUrl>
+              <theme>default</theme>
+                            <author>
+                                <name>Test Author</name>
+                            </author>
+            </site>
+            """);
+        Files.createDirectories(tempDir.resolve("_books"));
+        Files.createDirectories(tempDir.resolve("_podcasts"));
+        Files.createDirectories(tempDir.resolve("_feeds"));
+        Files.createDirectories(tempDir.resolve("_static"));
+        Files.createDirectories(tempDir.resolve("_posts"));
+        Files.createDirectories(tempDir.resolve("_drafts"));
+        Files.writeString(tempDir.resolve("_drafts/2026-01-02-draft-post.md"), """
+            ---
+            title: Draft Post
+            author: test
+            ---
+
+            Draft body from the explicit includeDrafts option.
+            """);
+
+        System.clearProperty("drafts");
+
+        Path outputDirectory = tempDir.resolve("generated-site");
+        GenerationOptions options = GenerationOptions.fromBaseUrl(null).withIncludeDrafts(true);
+
+        new WebSiteBuilder(DefaultThemePlugin.create()).build(options, tempDir, outputDirectory);
+
+        assertTrue(treeContains(outputDirectory, "Draft body from the explicit includeDrafts option."));
+    }
+
+    private static boolean treeContains(Path root, String expectedText) throws Exception {
+        try (Stream<Path> paths = Files.walk(root)) {
+            return paths
+                .filter(Files::isRegularFile)
+                .anyMatch(path -> containsText(path, expectedText));
+        }
+    }
+
+    private static boolean containsText(Path path, String expectedText) {
+        try {
+            return Files.readString(path).contains(expectedText);
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     private static class TestThemePlugin implements ThemePlugin {

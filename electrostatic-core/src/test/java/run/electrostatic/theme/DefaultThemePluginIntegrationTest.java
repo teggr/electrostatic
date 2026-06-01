@@ -25,7 +25,6 @@ class DefaultThemePluginIntegrationTest {
         Plugins.contentTypePlugins.clear();
         Plugins.aggregatorPlugins.clear();
         Plugins.contentRenderPlugins.clear();
-        System.setProperty("drafts", "false");
     }
 
     @AfterEach
@@ -34,7 +33,6 @@ class DefaultThemePluginIntegrationTest {
         Plugins.contentTypePlugins.clear();
         Plugins.aggregatorPlugins.clear();
         Plugins.contentRenderPlugins.clear();
-        System.clearProperty("drafts");
     }
 
     @Test

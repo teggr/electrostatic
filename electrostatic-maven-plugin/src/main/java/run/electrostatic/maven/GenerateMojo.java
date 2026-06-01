@@ -1,5 +1,6 @@
 package run.electrostatic.maven;
 
+import run.electrostatic.core.GenerationOptions;
 import run.electrostatic.core.SiteGenerator;
 import run.electrostatic.theme.ThemePlugins;
 import org.apache.maven.plugin.AbstractMojo;
@@ -47,6 +48,12 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(property = "electrostatic.baseUrl")
     private String baseUrl;
 
+    /**
+     * Include draft posts from the _drafts directory.
+     */
+    @Parameter(defaultValue = "false", property = "electrostatic.includeDrafts")
+    private boolean includeDrafts;
+
     @Parameter(property = "electrostatic.theme")
     private String theme;
 
@@ -64,8 +71,11 @@ public class GenerateMojo extends AbstractMojo {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(buildClassLoader(originalClassLoader));
+            GenerationOptions options = GenerationOptions.defaults()
+                .withBaseUrl(baseUrl)
+                .withIncludeDrafts(includeDrafts);
             new SiteGenerator(ThemePlugins.resolveForSite(theme, inputDirectory.toPath()))
-                .generate(inputDirectory.toPath(), outputDirectory.toPath(), baseUrl);
+                .generate(inputDirectory.toPath(), outputDirectory.toPath(), options);
         } catch (Exception e) {
             throw new MojoExecutionException("Failed to generate static site", e);
         } finally {

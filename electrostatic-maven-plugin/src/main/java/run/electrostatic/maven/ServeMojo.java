@@ -1,5 +1,6 @@
 package run.electrostatic.maven;
 
+import run.electrostatic.core.GenerationOptions;
 import run.electrostatic.core.SitePreviewServer;
 import run.electrostatic.theme.ThemePlugins;
 import org.apache.maven.plugin.AbstractMojo;
@@ -46,6 +47,12 @@ public class ServeMojo extends AbstractMojo {
     private String baseUrl;
 
     /**
+     * Include draft posts from the _drafts directory.
+     */
+    @Parameter(defaultValue = "false", property = "electrostatic.includeDrafts")
+    private boolean includeDrafts;
+
+    /**
      * Port to serve on.
      */
     @Parameter(defaultValue = "8080", property = "electrostatic.port")
@@ -67,8 +74,11 @@ public class ServeMojo extends AbstractMojo {
         getLog().info("Output directory: " + siteDirectory);
 
         try {
+            GenerationOptions options = GenerationOptions.defaults()
+                .withBaseUrl(baseUrl)
+                .withIncludeDrafts(includeDrafts);
             SitePreviewServer.PreviewSession session = new SitePreviewServer(ThemePlugins.resolveForSite(theme, input))
-                .start(input, siteDirectory, baseUrl, port, projectRoot);
+                .start(input, siteDirectory, options, port, projectRoot);
             Runtime.getRuntime().addShutdownHook(new Thread(session::close));
 
             getLog().info("Serving site from: " + siteDirectory);

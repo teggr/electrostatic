@@ -1,5 +1,6 @@
 package run.electrostatic.cli;
 
+import run.electrostatic.core.GenerationOptions;
 import run.electrostatic.core.SitePreviewServer;
 import run.electrostatic.theme.ThemePlugins;
 import picocli.CommandLine.Command;
@@ -19,8 +20,14 @@ public class ServeCommand implements Callable<Integer> {
     @Option(names = {"-p", "--port"}, defaultValue = "8080", description = "Port to serve on (default: ${DEFAULT-VALUE})")
     private int port;
 
-    @Option(names = {"--base-url"}, description = "Override the base URL for the site")
+    @Option(
+        names = {"--base-url"},
+        description = "Base URL for the site (defaults to site-config.xml; pass http://localhost:8080 for a local preview shortcut)"
+    )
     private String baseUrl;
+
+    @Option(names = {"--include-drafts"}, defaultValue = "false", description = "Include content from _drafts (default: ${DEFAULT-VALUE})")
+    private boolean includeDrafts;
 
     @Option(names = {"--input"}, description = "Input directory containing site content (default: current working directory)")
     private Path inputDirectory;
@@ -39,9 +46,12 @@ public class ServeCommand implements Callable<Integer> {
         Path siteDirectory = (outputDirectory != null ? outputDirectory : projectRoot.resolve("generated-site"))
             .toAbsolutePath()
             .normalize();
+        GenerationOptions options = GenerationOptions.defaults()
+            .withBaseUrl(baseUrl)
+            .withIncludeDrafts(includeDrafts);
 
         SitePreviewServer.PreviewSession session = new SitePreviewServer(ThemePlugins.resolveForSite(theme, input))
-            .start(input, siteDirectory, baseUrl, port, projectRoot);
+            .start(input, siteDirectory, options, port, projectRoot);
         Runtime.getRuntime().addShutdownHook(new Thread(session::close));
 
         System.out.println("Serving site from " + siteDirectory);

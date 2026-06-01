@@ -26,7 +26,18 @@ public class SiteGenerator {
      * @param baseUrl         optional base URL override; {@code null} keeps the value from site-config.xml
      */
     public void generate(Path inputDirectory, Path outputDirectory, String baseUrl) {
-        new WebSiteBuilder(themePlugin).build(baseUrl, inputDirectory, outputDirectory);
+        generate(inputDirectory, outputDirectory, GenerationOptions.fromBaseUrl(baseUrl));
+    }
+
+    /**
+     * Generates the static site.
+     *
+     * @param inputDirectory  directory containing site source content (site-config.xml and content folders)
+     * @param outputDirectory directory where the generated site will be written
+     * @param options         generation options controlling wrapper-supplied overrides
+     */
+    public void generate(Path inputDirectory, Path outputDirectory, GenerationOptions options) {
+        new WebSiteBuilder(themePlugin).build(options, inputDirectory, outputDirectory);
     }
 
 }

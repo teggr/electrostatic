@@ -23,13 +23,13 @@ jbang version
 From the repository root (or any directory where you keep content), run:
 
 ```bash
-jbang Electrostatic.java init
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init
 ```
 
 To initialize docs-focused structure:
 
 ```bash
-jbang Electrostatic.java init --theme docs
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT init --theme docs
 ```
 
 ## 3. Build and preview
@@ -37,13 +37,23 @@ jbang Electrostatic.java init --theme docs
 Generate static output:
 
 ```bash
-jbang Electrostatic.java build
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build
+```
+
+By default, JBang/CLI builds use the `baseUrl` from `site-config.xml`. If you want the localhost shortcut, set it explicitly and include drafts when needed:
+
+```bash
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build --base-url http://localhost:8080 --include-drafts
 ```
 
 Start the preview server:
 
 ```bash
-jbang Electrostatic.java serve --port 8091
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve --port 8091
+```
+
+```bash
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve --port 8091 --base-url http://localhost:8080 --include-drafts
 ```
 
 Open `http://localhost:8091`.
@@ -53,14 +63,14 @@ Open `http://localhost:8091`.
 Theme is persisted in `site-config.xml` during `init`. You can override for one run:
 
 ```bash
-jbang Electrostatic.java build --theme v2
-jbang Electrostatic.java serve --theme v2
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT build --theme v2
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT serve --theme v2
 ```
 
 List all available built-in theme bundles:
 
 ```bash
-jbang Electrostatic.java themes
+jbang run.electrostatic:electrostatic-cli:0.0.1-SNAPSHOT themes
 ```
 
 If you installed the CLI directly, the equivalent command is:
