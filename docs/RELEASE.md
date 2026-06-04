@@ -25,7 +25,11 @@ mvn -Pcentral versions:commit -DprocessAllModules
 # commit and push repository changes
 
 # create GitHub release
+git push --tags  
 https://github.com/teggr/electrostatic/releases
+
+# publish the deployed version
+https://central.sonatype.com/publishing
 ```
 
 ## Plugins
