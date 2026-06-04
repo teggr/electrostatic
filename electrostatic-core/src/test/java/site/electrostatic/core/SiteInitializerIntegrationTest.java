@@ -78,6 +78,7 @@ class SiteInitializerIntegrationTest {
         assertTrue(Files.exists(root.resolve("_installation")));
         assertTrue(Files.exists(root.resolve("_guides")));
         assertTrue(Files.exists(root.resolve("_plugins")));
+        assertTrue(Files.exists(root.resolve("_index.md")));
         assertTrue(Files.exists(root.resolve("_installation/getting-started.md")));
         assertTrue(Files.exists(root.resolve("_guides/first-guide.md")));
         assertTrue(Files.exists(root.resolve("_plugins/plugin-overview.md")));

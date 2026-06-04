@@ -43,6 +43,20 @@ order: 10
 ---
 ```
 
+## Customize the root landing page
+
+Add `_index.md` at the site root to replace the default docs landing copy at `/index.html`.
+The frontmatter `title` becomes the landing page heading, the markdown body is rendered above the generated section cards, and the Browse buttons stay in place.
+
+```md
+---
+title: My Product Docs
+description: Start here
+---
+
+Welcome to the docs for my product.
+```
+
 ## Build workflow
 
 ```bash

@@ -196,6 +196,20 @@ Each section key maps to a markdown folder with an underscore prefix:
 
 Markdown files support frontmatter fields like `title`, `description`, `order`, and optional `slug`.
 
+To override the docs-theme root landing page at `/index.html`, add `_index.md` at the site root.
+Its frontmatter `title` becomes the landing page title, its markdown body is rendered above the generated section cards, and the Browse buttons remain theme-generated.
+
+Example:
+
+```md
+---
+title: CI Ready Maven
+description: Project-specific docs landing page
+---
+
+Build and publish docs for your own project.
+```
+
 ## Modules
 
 - `electrostatic-core` - combined site generation engine and shared `SiteGenerator` facade used by runtime entry points.

@@ -167,6 +167,68 @@ class WebSiteBuilderIntegrationTest {
     }
 
     @Test
+    void build_withDocsThemeAndLandingPageOverride_shouldRenderAuthoredRootContentAndSectionCards() throws Exception {
+        Files.writeString(tempDir.resolve("site-config.xml"), """
+            <site>
+              <title>Docs Site</title>
+              <baseUrl>https://example.test</baseUrl>
+              <theme>docs</theme>
+              <description>Project documentation</description>
+              <author>
+                <name>Docs Author</name>
+              </author>
+              <docsSections>installation,guides,plugins</docsSections>
+              <docsSectionLabels>installation=Installation,guides=Guides,plugins=Plugins</docsSectionLabels>
+            </site>
+            """);
+        Files.createDirectories(tempDir.resolve("_installation"));
+        Files.createDirectories(tempDir.resolve("_guides"));
+        Files.createDirectories(tempDir.resolve("_plugins"));
+        Files.createDirectories(tempDir.resolve("_static"));
+        Files.writeString(tempDir.resolve("_installation/getting-started.md"), """
+            ---
+            title: Getting Started
+            ---
+            Install docs.
+            """);
+        Files.writeString(tempDir.resolve("_guides/first-guide.md"), """
+            ---
+            title: First Guide
+            ---
+            Guide docs.
+            """);
+        Files.writeString(tempDir.resolve("_plugins/plugin-overview.md"), """
+            ---
+            title: Plugin Overview
+            ---
+            Plugin docs.
+            """);
+        Files.writeString(tempDir.resolve("_index.md"), """
+            ---
+            title: CI Ready Maven
+            description: Project-specific landing page
+            ---
+
+            Build docs for your own project.
+
+            - Install the plugin
+            - Publish your site
+            """);
+
+        Path outputDirectory = tempDir.resolve("generated-site");
+        new WebSiteBuilder(DocsThemePlugin.create()).build(GenerationOptions.defaults(), tempDir, outputDirectory);
+
+        String html = Files.readString(outputDirectory.resolve("index.html"));
+        assertTrue(html.contains("<title>CI Ready Maven | Docs Site</title>"));
+        assertTrue(html.contains("<h1>CI Ready Maven</h1>"));
+        assertTrue(html.contains("<p>Build docs for your own project.</p>"));
+        assertTrue(html.contains("<li>Install the plugin</li>"));
+        assertFalse(html.contains("Build and publish documentation sites with Electrostatic."));
+        assertTrue(html.contains(">Browse</a>"));
+        assertTrue(html.contains("href=\"/guides/index.html\""));
+    }
+
+    @Test
     void build_withDocsTheme_shouldAutoLinkAllLocalCssAfterThemeCssAndPreferLocalConflicts() throws Exception {
         Files.writeString(tempDir.resolve("site-config.xml"), """
             <site>
