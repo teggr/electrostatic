@@ -30,7 +30,7 @@ public class DocsThemePlugin implements ContentTypePlugin, ContentRenderPlugin, 
 
   @Override
   public void loadContent(Path sourceDirectory, Site site, ContentModel contentModel) {
-    contentModel.addPage(DocsLandingPage.create());
+    contentModel.addPage(DocsLandingPage.create(sourceDirectory));
   }
 
   @Override
@@ -59,6 +59,8 @@ public class DocsThemePlugin implements ContentTypePlugin, ContentRenderPlugin, 
   @Override
   public void initialize(Path sourceDirectory) {
     try {
+      writeLandingPageIfMissing(sourceDirectory);
+
       for (DocsSection section : DocsSectionConfig.defaults()) {
         Path sectionDirectory = sourceDirectory.resolve(section.folderName());
         Files.createDirectories(sectionDirectory);
@@ -84,6 +86,24 @@ public class DocsThemePlugin implements ContentTypePlugin, ContentRenderPlugin, 
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialize docs theme content", e);
     }
+  }
+
+  private void writeLandingPageIfMissing(Path sourceDirectory) throws Exception {
+    Path landingPage = sourceDirectory.resolve("_index.md");
+    if (Files.exists(landingPage)) {
+      return;
+    }
+
+    Files.writeString(landingPage, """
+        ---
+        title: Documentation
+        description: Introduce your docs site and guide readers to the right section.
+        ---
+
+        Welcome to your documentation site.
+
+        Use this page to explain your project, product, or catalog before readers browse the sections below.
+        """);
   }
 
   private void writeStarterDocIfMissing(DocsSection section, Path sectionDirectory) throws Exception {

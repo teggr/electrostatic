@@ -170,6 +170,7 @@ class MavenPluginSmokeTest {
         setField(initMojo, "theme", "docs");
         initMojo.execute();
 
+        assertTrue(Files.exists(siteRoot.resolve("_index.md")));
         assertTrue(Files.exists(siteRoot.resolve("_installation/getting-started.md")));
         assertTrue(Files.exists(siteRoot.resolve("_guides/first-guide.md")));
         assertTrue(Files.exists(siteRoot.resolve("_plugins/plugin-overview.md")));
