@@ -135,6 +135,13 @@ class WebSiteBuilderIntegrationTest {
         Files.createDirectories(tempDir.resolve("_guides"));
         Files.createDirectories(tempDir.resolve("_plugins"));
         Files.createDirectories(tempDir.resolve("_static"));
+        Files.writeString(tempDir.resolve("_index.md"), """
+            ---
+            title: Docs Site
+            ---
+
+            [Plugins via baseurl]({{site.baseurl}}/plugins/index.html)
+            """);
         Files.writeString(tempDir.resolve("_installation/getting-started.md"), """
             ---
             title: Getting Started
@@ -163,6 +170,7 @@ class WebSiteBuilderIntegrationTest {
         assertTrue(html.contains("href=\"/ci-ready-maven/css/style.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/guides/index.html\""));
+        assertTrue(html.contains("<a href=\"/ci-ready-maven/plugins/index.html\">Plugins via baseurl</a>"));
         assertTrue(pluginsIndexHtml.contains("href=\"/ci-ready-maven/plugins/plugin-overview.html\""));
         assertTrue(html.contains("rel=\"canonical\" href=\"https://teggr.github.io/ci-ready-maven/index.html\""));
         assertFalse(html.contains("ci-ready-maven//"));

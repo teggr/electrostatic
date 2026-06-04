@@ -4,6 +4,7 @@ import org.commonmark.Extension;
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
 import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.Image;
+import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.renderer.html.HtmlRenderer;
 import site.electrostatic.engine.ContentItem;
@@ -81,8 +82,14 @@ public class DocsEntry implements ContentItem {
     document.accept(new AbstractVisitor() {
       @Override
       public void visit(Image image) {
-        image.setDestination(image.getDestination().replaceAll("\\{\\{site\\.baseurl\\}\\}", renderModel.getContext().getSite().getBaseUrl()));
+        image.setDestination(resolveSiteBaseUrlToken(image.getDestination()));
         super.visit(image);
+      }
+
+      @Override
+      public void visit(Link link) {
+        link.setDestination(resolveSiteBaseUrlToken(link.getDestination()));
+        super.visit(link);
       }
     });
 
@@ -99,6 +106,12 @@ public class DocsEntry implements ContentItem {
       return TagCreator.each();
     }
     return TagCreator.p(Utils.escape(description));
+  }
+
+  private static String resolveSiteBaseUrlToken(String destination) {
+    String basePath = Utils.relativeUrl("/");
+    String normalizedBasePath = "/".equals(basePath) ? "" : basePath.replaceAll("/+$", "");
+    return destination.replace("{{site.baseurl}}", normalizedBasePath);
   }
 
 }
