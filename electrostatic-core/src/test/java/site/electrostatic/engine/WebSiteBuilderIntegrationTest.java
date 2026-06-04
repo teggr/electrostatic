@@ -158,10 +158,12 @@ class WebSiteBuilderIntegrationTest {
         new WebSiteBuilder(DocsThemePlugin.create()).build(GenerationOptions.defaults(), tempDir, outputDirectory);
 
         String html = Files.readString(outputDirectory.resolve("index.html"));
+        String pluginsIndexHtml = Files.readString(outputDirectory.resolve("plugins/index.html"));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/main.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/style.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/guides/index.html\""));
+        assertTrue(pluginsIndexHtml.contains("href=\"/ci-ready-maven/plugins/plugin-overview.html\""));
         assertTrue(html.contains("rel=\"canonical\" href=\"https://teggr.github.io/ci-ready-maven/index.html\""));
         assertFalse(html.contains("ci-ready-maven//"));
     }

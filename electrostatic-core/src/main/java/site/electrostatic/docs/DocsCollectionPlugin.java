@@ -14,6 +14,7 @@ import site.electrostatic.plugins.ContentTypePlugin;
 import site.electrostatic.plugins.InitializationPlugin;
 import site.electrostatic.plugins.Plugins;
 import site.electrostatic.site.Site;
+import site.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 
 import java.nio.file.Files;
@@ -182,7 +183,7 @@ public class DocsCollectionPlugin implements ContentTypePlugin, InitializationPl
                 ul().with(
                     each(entries, entry ->
                         li().with(
-                            a().withHref(entry.getUrl()).withText(entry.getTitle()),
+                            a().withHref(Utils.relativeUrl(entry.getUrl())).withText(entry.getTitle()),
                             iff(
                                 entry.getDescription() != null && !entry.getDescription().isBlank(),
                                 p().withText(entry.getDescription())
