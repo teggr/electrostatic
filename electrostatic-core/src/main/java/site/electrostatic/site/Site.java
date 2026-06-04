@@ -36,9 +36,18 @@ public class Site {
     }
 
     public String resolveUrl(String resolveUrl) {
+        if (baseUrl == null || baseUrl.isBlank()) {
+            return resolveUrl;
+        }
+
+        if (resolveUrl == null || resolveUrl.isBlank()) {
+            return baseUrl;
+        }
+
+        String normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         if(!resolveUrl.startsWith("/")) {
             resolveUrl = "/" + resolveUrl;
         }
-        return baseUrl + resolveUrl;
+        return normalizedBaseUrl + resolveUrl;
     }
 }

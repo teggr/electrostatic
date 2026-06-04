@@ -5,6 +5,7 @@ import site.electrostatic.content.staticfiles.StaticFile;
 import site.electrostatic.plugins.Plugins;
 import site.electrostatic.plugins.ThemePlugin;
 import site.electrostatic.theme.DefaultThemePlugin;
+import site.electrostatic.theme.docs.DocsThemePlugin;
 import j2html.TagCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,6 +114,55 @@ class WebSiteBuilderIntegrationTest {
         new WebSiteBuilder(DefaultThemePlugin.create()).build(options, tempDir, outputDirectory);
 
         assertTrue(treeContains(outputDirectory, "Draft body from the explicit includeDrafts option."));
+    }
+
+    @Test
+    void build_withDocsThemeAndSubpathBaseUrl_shouldPrefixAssetsAndNavLinks() throws Exception {
+        Files.writeString(tempDir.resolve("site-config.xml"), """
+            <site>
+              <title>Docs Site</title>
+              <baseUrl>https://teggr.github.io/ci-ready-maven/</baseUrl>
+              <theme>docs</theme>
+              <description>Project documentation</description>
+              <author>
+                <name>Docs Author</name>
+              </author>
+              <docsSections>installation,guides,plugins</docsSections>
+              <docsSectionLabels>installation=Installation,guides=Guides,plugins=Plugins</docsSectionLabels>
+            </site>
+            """);
+        Files.createDirectories(tempDir.resolve("_installation"));
+        Files.createDirectories(tempDir.resolve("_guides"));
+        Files.createDirectories(tempDir.resolve("_plugins"));
+        Files.createDirectories(tempDir.resolve("_static"));
+        Files.writeString(tempDir.resolve("_installation/getting-started.md"), """
+            ---
+            title: Getting Started
+            ---
+            Install docs.
+            """);
+        Files.writeString(tempDir.resolve("_guides/first-guide.md"), """
+            ---
+            title: First Guide
+            ---
+            Guide docs.
+            """);
+        Files.writeString(tempDir.resolve("_plugins/plugin-overview.md"), """
+            ---
+            title: Plugin Overview
+            ---
+            Plugin docs.
+            """);
+
+        Path outputDirectory = tempDir.resolve("generated-site");
+        new WebSiteBuilder(DocsThemePlugin.create()).build(GenerationOptions.defaults(), tempDir, outputDirectory);
+
+        String html = Files.readString(outputDirectory.resolve("index.html"));
+        assertTrue(html.contains("href=\"/ci-ready-maven/css/main.css\""));
+        assertTrue(html.contains("href=\"/ci-ready-maven/css/style.css\""));
+        assertTrue(html.contains("href=\"/ci-ready-maven/guides/index.html\""));
+        assertTrue(html.contains("rel=\"canonical\" href=\"https://teggr.github.io/ci-ready-maven/index.html\""));
+        assertFalse(html.contains("ci-ready-maven//"));
     }
 
     private static boolean treeContains(Path root, String expectedText) throws Exception {
