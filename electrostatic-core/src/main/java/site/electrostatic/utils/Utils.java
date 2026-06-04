@@ -11,7 +11,7 @@ import java.time.format.FormatStyle;
 
 public class Utils {
     public static String relativeUrl(String url) {
-        if (url == null || url.isBlank() || !url.startsWith("/") || isAbsoluteUrl(url)) {
+        if (url == null || url.isBlank() || !url.startsWith("/") || isExternalUrl(url)) {
             return url;
         }
 
@@ -20,7 +20,7 @@ public class Utils {
             return url;
         }
 
-        if (url.startsWith(basePath + "/") || url.equals(basePath) || ("/".equals(url) && (basePath + "/").equals(url))) {
+        if (url.startsWith(basePath + "/") || url.equals(basePath)) {
             return url;
         }
 
@@ -31,7 +31,7 @@ public class Utils {
         return basePath + url;
     }
 
-    private static boolean isAbsoluteUrl(String url) {
+    private static boolean isExternalUrl(String url) {
         String lowerCaseUrl = url.toLowerCase();
         return lowerCaseUrl.startsWith("http://")
             || lowerCaseUrl.startsWith("https://")
@@ -50,10 +50,7 @@ public class Utils {
                 return "";
             }
 
-            String normalizedPath = path;
-            while (normalizedPath.endsWith("/") && normalizedPath.length() > 1) {
-                normalizedPath = normalizedPath.substring(0, normalizedPath.length() - 1);
-            }
+            String normalizedPath = path.replaceAll("/+$", "");
 
             return normalizedPath.startsWith("/") ? normalizedPath : "/" + normalizedPath;
         } catch (IllegalArgumentException ignored) {

@@ -160,6 +160,7 @@ class WebSiteBuilderIntegrationTest {
         String html = Files.readString(outputDirectory.resolve("index.html"));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/main.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/style.css\""));
+        assertTrue(html.contains("href=\"/ci-ready-maven/\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/guides/index.html\""));
         assertTrue(html.contains("rel=\"canonical\" href=\"https://teggr.github.io/ci-ready-maven/index.html\""));
         assertFalse(html.contains("ci-ready-maven//"));
