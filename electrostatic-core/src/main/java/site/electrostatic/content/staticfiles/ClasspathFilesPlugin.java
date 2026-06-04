@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class ClasspathFilesPlugin implements ContentTypePlugin {
@@ -45,14 +45,20 @@ public class ClasspathFilesPlugin implements ContentTypePlugin {
 
       // Strip the theme prefix (e.g. "theme/default" or "theme/v2") to produce a web-root-relative path
       String rootPath = path.replaceAll("theme/[^/]+", "");
-      String filename = Path.of(rootPath).getFileName().toString();
-      int dotIndex = filename.lastIndexOf('.');
-      String filenameWithoutExtension = (dotIndex == -1) ? filename : filename.substring(0, dotIndex);
-      String fileExtension = (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
-
       InputStream resourceAsStream = ClasspathFilesPlugin.class.getClassLoader().getResourceAsStream(path);
-
-      return new StaticFile(rootPath, Collections.emptyMap(), resourceAsStream.readAllBytes());
+      if (resourceAsStream == null) {
+        throw new IllegalStateException("Missing classpath resource: " + path);
+      }
+      try (resourceAsStream) {
+        return new StaticFile(
+            rootPath,
+            Map.of(
+                "assetSourceType", List.of("classpath"),
+                "assetSourcePath", List.of(path)
+            ),
+            resourceAsStream.readAllBytes()
+        );
+      }
 
     } catch (Exception e) {
       throw new RuntimeException(e);

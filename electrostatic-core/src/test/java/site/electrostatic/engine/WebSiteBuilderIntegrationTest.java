@@ -166,6 +166,47 @@ class WebSiteBuilderIntegrationTest {
         assertFalse(html.contains("ci-ready-maven//"));
     }
 
+    @Test
+    void build_withDocsTheme_shouldAutoLinkAllLocalCssAfterThemeCssAndPreferLocalConflicts() throws Exception {
+        Files.writeString(tempDir.resolve("site-config.xml"), """
+            <site>
+              <title>Docs Site</title>
+              <baseUrl>https://example.test</baseUrl>
+              <theme>docs</theme>
+              <description>Project documentation</description>
+              <author>
+                <name>Docs Author</name>
+              </author>
+              <docsSections>installation</docsSections>
+              <docsSectionLabels>installation=Installation</docsSectionLabels>
+            </site>
+            """);
+        Files.createDirectories(tempDir.resolve("_installation"));
+        Files.writeString(tempDir.resolve("_installation/getting-started.md"), """
+            ---
+            title: Getting Started
+            ---
+            Install docs.
+            """);
+        Files.createDirectories(tempDir.resolve("_static/css"));
+        Files.writeString(tempDir.resolve("_static/css/style.css"), ".local-style{color:green;}");
+        Files.writeString(tempDir.resolve("_static/css/styles-ext.css"), ".local-ext{color:blue;}");
+
+        Path outputDirectory = tempDir.resolve("generated-site");
+        new WebSiteBuilder(DocsThemePlugin.create()).build(GenerationOptions.defaults(), tempDir, outputDirectory);
+
+        String html = Files.readString(outputDirectory.resolve("index.html"));
+        assertTrue(html.contains("href=\"/css/main.css\""));
+        assertTrue(html.contains("href=\"/css/style.css\""));
+        assertTrue(html.contains("href=\"/css/styles-ext.css\""));
+        int styleCssIndex = html.indexOf("href=\"/css/style.css\"");
+        int stylesExtCssIndex = html.indexOf("href=\"/css/styles-ext.css\"");
+        assertTrue(styleCssIndex >= 0);
+        assertTrue(stylesExtCssIndex >= 0);
+        assertTrue(styleCssIndex < stylesExtCssIndex);
+        assertEquals(".local-style{color:green;}", Files.readString(outputDirectory.resolve("css/style.css")));
+    }
+
     private static boolean treeContains(Path root, String expectedText) throws Exception {
         try (Stream<Path> paths = Files.walk(root)) {
             return paths

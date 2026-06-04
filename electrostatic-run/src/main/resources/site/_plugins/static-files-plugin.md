@@ -17,6 +17,9 @@ order: 8
 
 - Copies files to generated output paths.
 - Preserves relative paths for static references.
+- If a local `_static` file conflicts with a theme/plugin asset path, the local file wins.
+- A warning is logged for each conflicting output path, including both sources.
+- Local CSS files are auto-linked in generated HTML after the theme stylesheet links.
 
 ## Example
 

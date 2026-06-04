@@ -6,6 +6,8 @@ import site.electrostatic.theme.includes.SEO;
 import site.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 
+import java.util.Set;
+
 import static j2html.TagCreator.*;
 
 public class V2Head {
@@ -34,6 +36,12 @@ public class V2Head {
         link()
             .withRel("stylesheet")
             .withHref(Utils.relativeUrl("/css/theme.css")),
+        each(renderModel.getContentModel().getLocalCssPaths().stream()
+            .filter(path -> !Set.of("/css/theme.css").contains(path))
+            .map(path -> link()
+                .withRel("stylesheet")
+                .withHref(Utils.relativeUrl(path)))
+            .toArray(DomContent[]::new)),
         link()
             .withType("application/atom+xml")
             .withRel("alternate")
