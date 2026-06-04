@@ -33,6 +33,14 @@ Section key `installation` maps to folder `_installation/`.
 
 Each markdown file in a section folder becomes a docs page.
 
+Markdown links and images are resolved against your configured `baseUrl` path during generation:
+
+- Root-relative destinations like `/guides/index.html` are prefixed with the configured base path.
+- Page-relative destinations like `plugin-overview.html` or `../guides/first-guide.html` are resolved from the current page path, then prefixed with the configured base path.
+- External URLs (`https://...`, `//...`), anchors (`#...`), and URI schemes (`mailto:`, `tel:`, `data:`) are not changed.
+
+Do not use `{{site.baseurl}}` placeholders in markdown content.
+
 Use frontmatter for ordering:
 
 ```yaml

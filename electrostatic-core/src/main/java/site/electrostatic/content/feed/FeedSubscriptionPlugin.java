@@ -1,22 +1,19 @@
 package site.electrostatic.content.feed;
 
 import site.electrostatic.engine.ContentModel;
+import site.electrostatic.markdown.MarkdownParserFactory;
 import site.electrostatic.plugins.ContentTypePlugin;
 import site.electrostatic.plugins.InitializationPlugin;
 import site.electrostatic.plugins.Plugins;
 import site.electrostatic.site.Site;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.commonmark.Extension;
-import org.commonmark.ext.front.matter.YamlFrontMatterExtension;
 import org.commonmark.ext.front.matter.YamlFrontMatterVisitor;
-import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -56,13 +53,7 @@ public class FeedSubscriptionPlugin implements ContentTypePlugin, Initialization
       String fileExtension = (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
 
       if (fileExtension.equals("md")) {
-        List<Extension> extensions = List.of(
-            YamlFrontMatterExtension.create(),
-            HeadingAnchorExtension.create()
-        );
-        Parser parser = Parser.builder()
-            .extensions(extensions)
-            .build();
+        Parser parser = MarkdownParserFactory.create();
 
         Node document = parser.parseReader(Files.newBufferedReader(path));
 

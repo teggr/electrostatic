@@ -1,20 +1,16 @@
 package site.electrostatic.theme.pages;
 
-import org.commonmark.Extension;
-import org.commonmark.ext.front.matter.YamlFrontMatterExtension;
 import org.commonmark.ext.front.matter.YamlFrontMatterVisitor;
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
-import org.commonmark.node.AbstractVisitor;
-import org.commonmark.node.Image;
-import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-import site.electrostatic.docs.DocsMarkdownUrlResolver;
 import site.electrostatic.docs.DocsSection;
 import site.electrostatic.docs.DocsSectionConfig;
 import site.electrostatic.engine.Page;
 import site.electrostatic.engine.RenderModel;
+import site.electrostatic.markdown.MarkdownParserFactory;
+import site.electrostatic.markdown.MarkdownUrlResolver;
 import site.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 
@@ -38,6 +34,10 @@ import static j2html.TagCreator.rawHtml;
 public class DocsLandingPage {
 
   public static Page create(Path sourceDirectory) {
+    return create(sourceDirectory, new MarkdownUrlResolver());
+  }
+
+  public static Page create(Path sourceDirectory, MarkdownUrlResolver markdownUrlResolver) {
     LandingContent landingContent = loadLandingContent(sourceDirectory);
 
     Map<String, List<String>> data = new LinkedHashMap<>();
@@ -50,17 +50,17 @@ public class DocsLandingPage {
     return Page.builder()
         .path("/index.html")
         .data(data)
-        .renderFunction(renderModel -> render(renderModel, landingContent))
+        .renderFunction(renderModel -> render(renderModel, landingContent, markdownUrlResolver))
         .build();
   }
 
-  private static DomContent render(RenderModel renderModel, LandingContent landingContent) {
+  private static DomContent render(RenderModel renderModel, LandingContent landingContent, MarkdownUrlResolver markdownUrlResolver) {
     List<DocsSection> sections = DocsSectionConfig.fromSite(renderModel.getContext().getSite());
 
     return div()
         .withClass("docs-landing")
         .with(
-            landingContent != null ? renderLandingContent(renderModel, landingContent) : renderDefaultIntro(renderModel),
+          landingContent != null ? renderLandingContent(renderModel, landingContent, markdownUrlResolver) : renderDefaultIntro(renderModel),
             div()
                 .withClass("docs-section-grid")
                 .with(
@@ -87,21 +87,12 @@ public class DocsLandingPage {
     return "Documentation";
   }
 
-  private static DomContent renderLandingContent(RenderModel renderModel, LandingContent landingContent) {
-    String docsBasePath = DocsMarkdownUrlResolver.docsBasePath(renderModel.getContext().getSite().getBaseUrl());
-    landingContent.document().accept(new AbstractVisitor() {
-      @Override
-      public void visit(Image image) {
-        image.setDestination(DocsMarkdownUrlResolver.resolve(image.getDestination(), docsBasePath));
-        super.visit(image);
-      }
-
-      @Override
-      public void visit(Link link) {
-        link.setDestination(DocsMarkdownUrlResolver.resolve(link.getDestination(), docsBasePath));
-        super.visit(link);
-      }
-    });
+  private static DomContent renderLandingContent(RenderModel renderModel, LandingContent landingContent, MarkdownUrlResolver markdownUrlResolver) {
+    markdownUrlResolver.resolveDocumentDestinations(
+        landingContent.document(),
+        renderModel.getContext().getSite().getBaseUrl(),
+        renderModel.getPage() != null ? renderModel.getPage().getPath() : null
+    );
 
     HtmlRenderer renderer = HtmlRenderer.builder()
         .extensions(List.of(HeadingAnchorExtension.create()))
@@ -142,14 +133,7 @@ public class DocsLandingPage {
 
     try {
       String markdown = Files.readString(landingPage);
-      List<Extension> extensions = List.of(
-          YamlFrontMatterExtension.create(),
-          HeadingAnchorExtension.create()
-      );
-
-      Parser parser = Parser.builder()
-          .extensions(extensions)
-          .build();
+        Parser parser = MarkdownParserFactory.create();
 
       Node document = parser.parse(markdown);
 

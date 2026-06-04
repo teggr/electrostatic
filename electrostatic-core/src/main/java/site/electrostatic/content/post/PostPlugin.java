@@ -1,26 +1,26 @@
 package site.electrostatic.content.post;
 
 import site.electrostatic.engine.ContentModel;
+import site.electrostatic.markdown.MarkdownParserFactory;
+import site.electrostatic.markdown.MarkdownUrlResolver;
 import site.electrostatic.plugins.ContentTypePlugin;
 import site.electrostatic.plugins.InitializationPlugin;
 import site.electrostatic.plugins.Plugins;
 import site.electrostatic.site.Site;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.commonmark.Extension;
-import org.commonmark.ext.front.matter.YamlFrontMatterExtension;
 import org.commonmark.ext.front.matter.YamlFrontMatterVisitor;
-import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 @Slf4j
 public class PostPlugin implements ContentTypePlugin, InitializationPlugin {
+  private final MarkdownUrlResolver markdownUrlResolver = new MarkdownUrlResolver();
+
   public static PostPlugin create() {
     return new PostPlugin();
   }
@@ -37,12 +37,16 @@ public class PostPlugin implements ContentTypePlugin, InitializationPlugin {
       paths
           .filter(Files::isRegularFile)
           .peek(f -> log.info("{}", f))
-          .map(PostPlugin::readPost)
+            .map(path -> readPost(path, markdownUrlResolver))
           .forEach(contentModel::add);
     }
   }
 
-  static Post readPost(Path path) {
+          static Post readPost(Path path) {
+            return readPost(path, new MarkdownUrlResolver());
+          }
+
+          static Post readPost(Path path, MarkdownUrlResolver markdownUrlResolver) {
 
     try {
       // Extract filename, filename without extension, and extension using Path methods
@@ -52,21 +56,14 @@ public class PostPlugin implements ContentTypePlugin, InitializationPlugin {
       String fileExtension = (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
 
       if (fileExtension.equals("md")) {
-
-        List<Extension> extensions = List.of(
-            YamlFrontMatterExtension.create(),
-            HeadingAnchorExtension.create()
-        );
-        Parser parser = Parser.builder()
-            .extensions(extensions)
-            .build();
+        Parser parser = MarkdownParserFactory.create();
 
         Node document = parser.parseReader(Files.newBufferedReader(path));
 
         YamlFrontMatterVisitor yamlFrontMatterVisitor = new YamlFrontMatterVisitor();
         document.accept(yamlFrontMatterVisitor);
 
-        return new Post(filenameWithoutExtension, yamlFrontMatterVisitor.getData(), document);
+        return new Post(filenameWithoutExtension, yamlFrontMatterVisitor.getData(), document, markdownUrlResolver);
 
 
       }

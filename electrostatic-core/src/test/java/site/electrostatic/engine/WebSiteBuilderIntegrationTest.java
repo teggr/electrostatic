@@ -140,7 +140,8 @@ class WebSiteBuilderIntegrationTest {
             title: Docs Site
             ---
 
-            [Plugins via baseurl]({{site.baseurl}}/plugins/index.html)
+            [Plugins root relative](/plugins/index.html)
+            [Plugins page relative](plugins/index.html)
             [Guides absolute path](/guides/index.html)
             """);
         Files.writeString(tempDir.resolve("_installation/getting-started.md"), """
@@ -160,6 +161,7 @@ class WebSiteBuilderIntegrationTest {
             title: Plugin Overview
             ---
             Plugin docs.
+            [Docs collection plugin](docs-collection-plugin.html)
             [Guides absolute path](/guides/index.html)
             """);
 
@@ -173,9 +175,11 @@ class WebSiteBuilderIntegrationTest {
         assertTrue(html.contains("href=\"/ci-ready-maven/css/style.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/guides/index.html\""));
-        assertTrue(html.contains("<a href=\"/ci-ready-maven/plugins/index.html\">Plugins via baseurl</a>"));
+        assertTrue(html.contains("<a href=\"/ci-ready-maven/plugins/index.html\">Plugins root relative</a>"));
+        assertTrue(html.contains("<a href=\"/ci-ready-maven/plugins/index.html\">Plugins page relative</a>"));
         assertTrue(html.contains("<a href=\"/ci-ready-maven/guides/index.html\">Guides absolute path</a>"));
         assertTrue(pluginsIndexHtml.contains("href=\"/ci-ready-maven/plugins/plugin-overview.html\""));
+        assertTrue(pluginOverviewHtml.contains("<a href=\"/ci-ready-maven/plugins/docs-collection-plugin.html\">Docs collection plugin</a>"));
         assertTrue(pluginOverviewHtml.contains("<a href=\"/ci-ready-maven/guides/index.html\">Guides absolute path</a>"));
         assertTrue(html.contains("rel=\"canonical\" href=\"https://teggr.github.io/ci-ready-maven/index.html\""));
         assertFalse(html.contains("ci-ready-maven//"));

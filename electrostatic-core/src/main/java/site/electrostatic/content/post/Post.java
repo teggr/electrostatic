@@ -6,6 +6,7 @@ import site.electrostatic.content.IndexedContent;
 import site.electrostatic.content.TaggedContent;
 import site.electrostatic.engine.ContentItem;
 import site.electrostatic.engine.RenderModel;
+import site.electrostatic.markdown.MarkdownUrlResolver;
 import site.electrostatic.utils.Utils;
 import j2html.TagCreator;
 import j2html.tags.DomContent;
@@ -14,7 +15,6 @@ import org.commonmark.Extension;
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
 import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.FencedCodeBlock;
-import org.commonmark.node.Image;
 import org.commonmark.node.Node;
 import org.commonmark.node.Paragraph;
 import org.commonmark.renderer.NodeRenderer;
@@ -32,12 +32,18 @@ public class Post implements ContentItem, TaggedContent, CategorisedContent, Ind
   private final Map<String, List<String>> data;
   @ToString.Exclude
   private final Node document;
+  private final MarkdownUrlResolver markdownUrlResolver;
   private String url;
 
   public Post(String key, Map<String, List<String>> data, Node document) {
+    this(key, data, document, new MarkdownUrlResolver());
+  }
+
+  public Post(String key, Map<String, List<String>> data, Node document, MarkdownUrlResolver markdownUrlResolver) {
     this.key = key;
     this.data = data;
     this.document = document;
+    this.markdownUrlResolver = markdownUrlResolver;
     this.url = Utils.urlFromKey(key);
   }
 
@@ -75,13 +81,11 @@ public class Post implements ContentItem, TaggedContent, CategorisedContent, Ind
   }
 
   public DomContent getContent(RenderModel renderModel) {
-    document.accept(new AbstractVisitor() {
-      @Override
-      public void visit(Image image) {
-        image.setDestination(image.getDestination().replaceAll("\\{\\{site\\.baseurl\\}\\}", renderModel.getContext().getSite().getBaseUrl()));
-        super.visit(image);
-      }
-    });
+    markdownUrlResolver.resolveDocumentDestinations(
+        document,
+        renderModel.getContext().getSite().getBaseUrl(),
+        renderModel.getPage() != null ? renderModel.getPage().getPath() : null
+    );
     List<Extension> extensions = List.of(HeadingAnchorExtension.create());
     HtmlRenderer renderer = HtmlRenderer.builder()
         .extensions(extensions)
@@ -109,13 +113,11 @@ public class Post implements ContentItem, TaggedContent, CategorisedContent, Ind
     Node firstParagraph = extractor.getFirstParagraph();
     
     if (firstParagraph != null) {
-      firstParagraph.accept(new AbstractVisitor() {
-        @Override
-        public void visit(Image image) {
-          image.setDestination(image.getDestination().replaceAll("\\{\\{site\\.baseurl\\}\\}", renderModel.getContext().getSite().getBaseUrl()));
-          super.visit(image);
-        }
-      });
+      markdownUrlResolver.resolveDocumentDestinations(
+          firstParagraph,
+          renderModel.getContext().getSite().getBaseUrl(),
+          renderModel.getPage() != null ? renderModel.getPage().getPath() : null
+      );
       HtmlRenderer renderer = HtmlRenderer.builder()
           .build();
       return TagCreator.rawHtml(

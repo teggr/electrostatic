@@ -1,10 +1,9 @@
 package site.electrostatic.docs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.commonmark.Extension;
-import org.commonmark.ext.front.matter.YamlFrontMatterExtension;
 import org.commonmark.ext.front.matter.YamlFrontMatterVisitor;
-import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
+import site.electrostatic.markdown.MarkdownParserFactory;
+import site.electrostatic.markdown.MarkdownUrlResolver;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import site.electrostatic.engine.ContentModel;
@@ -41,6 +40,7 @@ import static j2html.TagCreator.ul;
 public class DocsCollectionPlugin implements ContentTypePlugin, InitializationPlugin {
 
   private final Map<String, List<DocsEntry>> entriesBySection = new HashMap<>();
+  private final MarkdownUrlResolver markdownUrlResolver = new MarkdownUrlResolver();
 
   public static DocsCollectionPlugin create() {
     return new DocsCollectionPlugin();
@@ -105,15 +105,7 @@ public class DocsCollectionPlugin implements ContentTypePlugin, InitializationPl
   private DocsEntry readEntry(DocsSection section, Path path) {
     try {
       String markdown = Files.readString(path);
-
-      List<Extension> extensions = List.of(
-          YamlFrontMatterExtension.create(),
-          HeadingAnchorExtension.create()
-      );
-
-      Parser parser = Parser.builder()
-          .extensions(extensions)
-          .build();
+      Parser parser = MarkdownParserFactory.create();
 
       Node document = parser.parse(markdown);
 
@@ -150,7 +142,7 @@ public class DocsCollectionPlugin implements ContentTypePlugin, InitializationPl
       frontmatter.put("title", List.of(title));
 
       String url = section.basePath() + slug + ".html";
-      return new DocsEntry(section, slug, title, description, order, url, document, frontmatter);
+      return new DocsEntry(section, slug, title, description, order, url, document, markdownUrlResolver, frontmatter);
     } catch (Exception e) {
       throw new RuntimeException("Failed to parse docs entry: " + path, e);
     }

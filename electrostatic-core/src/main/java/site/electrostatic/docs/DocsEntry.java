@@ -2,13 +2,11 @@ package site.electrostatic.docs;
 
 import org.commonmark.Extension;
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
-import org.commonmark.node.AbstractVisitor;
-import org.commonmark.node.Image;
-import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.renderer.html.HtmlRenderer;
 import site.electrostatic.engine.ContentItem;
 import site.electrostatic.engine.RenderModel;
+import site.electrostatic.markdown.MarkdownUrlResolver;
 import site.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 import j2html.TagCreator;
@@ -25,6 +23,7 @@ public class DocsEntry implements ContentItem {
   private final int order;
   private final String url;
   private final Node document;
+  private final MarkdownUrlResolver markdownUrlResolver;
   private final Map<String, List<String>> data;
 
   public DocsEntry(
@@ -35,6 +34,7 @@ public class DocsEntry implements ContentItem {
       int order,
       String url,
       Node document,
+        MarkdownUrlResolver markdownUrlResolver,
       Map<String, List<String>> data
   ) {
     this.section = section;
@@ -44,6 +44,7 @@ public class DocsEntry implements ContentItem {
     this.order = order;
     this.url = url;
     this.document = document;
+    this.markdownUrlResolver = markdownUrlResolver;
     this.data = data;
   }
 
@@ -79,20 +80,11 @@ public class DocsEntry implements ContentItem {
 
   @Override
   public DomContent getContent(RenderModel renderModel) {
-    String docsBasePath = DocsMarkdownUrlResolver.docsBasePath(renderModel.getContext().getSite().getBaseUrl());
-    document.accept(new AbstractVisitor() {
-      @Override
-      public void visit(Image image) {
-        image.setDestination(DocsMarkdownUrlResolver.resolve(image.getDestination(), docsBasePath));
-        super.visit(image);
-      }
-
-      @Override
-      public void visit(Link link) {
-        link.setDestination(DocsMarkdownUrlResolver.resolve(link.getDestination(), docsBasePath));
-        super.visit(link);
-      }
-    });
+    markdownUrlResolver.resolveDocumentDestinations(
+        document,
+        renderModel.getContext().getSite().getBaseUrl(),
+        renderModel.getPage() != null ? renderModel.getPage().getPath() : null
+    );
 
     List<Extension> extensions = List.of(HeadingAnchorExtension.create());
     HtmlRenderer renderer = HtmlRenderer.builder()

@@ -13,6 +13,13 @@
 - For new command features, update both wrappers together, and document both invocation forms together.
 - If parity is intentionally deferred, call it out explicitly in PR notes/docs and include follow-up work.
 
+# Markdown Processing Principle
+
+- Treat base-url-aware markdown destination resolution as a core library rule.
+- For markdown links/images, resolve destinations through shared core markdown utilities so generated output remains correct when Site.baseUrl includes a subpath.
+- Do not rely on `{{site.baseurl}}` placeholders in markdown content. Markdown processors should resolve destinations from runtime site configuration.
+- New markdown-backed plugins must reuse shared markdown parser and URL transformation utilities from core rather than introducing plugin-specific markdown URL handling.
+
 # Architecture Documentation Maintenance
 
 - Keep docs/ARCHITECTURE.md current whenever architecture changes in a meaningful way.

@@ -114,10 +114,18 @@ This means aggregators see content items as they are added, then publish final d
 
 ## Markdown, Front Matter, and URL Resolution
 
-Markdown loaders (for example PostPlugin and DocsCollectionPlugin) use CommonMark with:
+Markdown loaders (for example PostPlugin and DocsCollectionPlugin) use shared core parser configuration (site.electrostatic.markdown.MarkdownParserFactory) with CommonMark:
 
 - YamlFrontMatterExtension for front matter
 - HeadingAnchorExtension for heading anchors
+
+Markdown link/image destination behavior is centralized in site.electrostatic.markdown.MarkdownUrlResolver:
+
+- Link and image destinations are transformed in a shared AST pass before HTML rendering.
+- Root-relative destinations (for example /guides/index.html) are prefixed with the configured Site.baseUrl path segment.
+- Page-relative destinations (for example plugin-overview.html or ../guides/first-guide.html) are resolved against the current page path and then prefixed with the configured Site.baseUrl path segment.
+- External and special-scheme destinations (http/https, //, #, mailto, tel, data) are left unchanged.
+- `{{site.baseurl}}` placeholder resolution is not part of the content model.
 
 Post URL behavior:
 
