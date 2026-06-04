@@ -19,6 +19,7 @@ import j2html.tags.DomContent;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,16 +88,17 @@ public class DocsLandingPage {
   }
 
   private static DomContent renderLandingContent(RenderModel renderModel, LandingContent landingContent) {
+    String docsBasePath = docsBasePath(renderModel);
     landingContent.document().accept(new AbstractVisitor() {
       @Override
       public void visit(Image image) {
-        image.setDestination(resolveSiteBaseUrlToken(image.getDestination()));
+        image.setDestination(resolveMarkdownDestination(image.getDestination(), docsBasePath));
         super.visit(image);
       }
 
       @Override
       public void visit(Link link) {
-        link.setDestination(resolveSiteBaseUrlToken(link.getDestination()));
+        link.setDestination(resolveMarkdownDestination(link.getDestination(), docsBasePath));
         super.visit(link);
       }
     });
@@ -183,10 +185,41 @@ public class DocsLandingPage {
     };
   }
 
-  private static String resolveSiteBaseUrlToken(String destination) {
-    String basePath = Utils.relativeUrl("/");
-    String normalizedBasePath = "/".equals(basePath) ? "" : basePath.replaceAll("/+$", "");
-    return destination.replace("{{site.baseurl}}", normalizedBasePath);
+  private static String resolveMarkdownDestination(String destination, String docsBasePath) {
+    if (destination == null || destination.isBlank()) {
+      return destination;
+    }
+
+    String resolvedDestination = destination.replace("{{site.baseurl}}", docsBasePath);
+    if (!resolvedDestination.startsWith("/") || resolvedDestination.startsWith("//")) {
+      return resolvedDestination;
+    }
+
+    if (docsBasePath.isBlank()) {
+      return resolvedDestination;
+    }
+
+    if (resolvedDestination.equals(docsBasePath) || resolvedDestination.startsWith(docsBasePath + "/")) {
+      return resolvedDestination;
+    }
+
+    if ("/".equals(resolvedDestination)) {
+      return docsBasePath + "/";
+    }
+
+    return docsBasePath + resolvedDestination;
+  }
+
+  private static String docsBasePath(RenderModel renderModel) {
+    try {
+      String basePath = URI.create(renderModel.getContext().getSite().getBaseUrl()).getPath();
+      if (basePath == null || basePath.isBlank() || "/".equals(basePath)) {
+        return "";
+      }
+      return basePath.replaceAll("/+$", "");
+    } catch (Exception ignored) {
+      return "";
+    }
   }
 
   private record LandingContent(String title, String description, Node document) {

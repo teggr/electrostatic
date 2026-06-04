@@ -141,6 +141,7 @@ class WebSiteBuilderIntegrationTest {
             ---
 
             [Plugins via baseurl]({{site.baseurl}}/plugins/index.html)
+            [Guides absolute path](/guides/index.html)
             """);
         Files.writeString(tempDir.resolve("_installation/getting-started.md"), """
             ---
@@ -159,6 +160,7 @@ class WebSiteBuilderIntegrationTest {
             title: Plugin Overview
             ---
             Plugin docs.
+            [Guides absolute path](/guides/index.html)
             """);
 
         Path outputDirectory = tempDir.resolve("generated-site");
@@ -166,12 +168,15 @@ class WebSiteBuilderIntegrationTest {
 
         String html = Files.readString(outputDirectory.resolve("index.html"));
         String pluginsIndexHtml = Files.readString(outputDirectory.resolve("plugins/index.html"));
+        String pluginOverviewHtml = Files.readString(outputDirectory.resolve("plugins/plugin-overview.html"));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/main.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/style.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/guides/index.html\""));
         assertTrue(html.contains("<a href=\"/ci-ready-maven/plugins/index.html\">Plugins via baseurl</a>"));
+        assertTrue(html.contains("<a href=\"/ci-ready-maven/guides/index.html\">Guides absolute path</a>"));
         assertTrue(pluginsIndexHtml.contains("href=\"/ci-ready-maven/plugins/plugin-overview.html\""));
+        assertTrue(pluginOverviewHtml.contains("<a href=\"/ci-ready-maven/guides/index.html\">Guides absolute path</a>"));
         assertTrue(html.contains("rel=\"canonical\" href=\"https://teggr.github.io/ci-ready-maven/index.html\""));
         assertFalse(html.contains("ci-ready-maven//"));
     }
