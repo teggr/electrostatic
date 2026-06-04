@@ -1,15 +1,61 @@
 package site.electrostatic.utils;
 
+import site.electrostatic.core.GenerationOptionsContext;
 import site.electrostatic.site.Site;
 import org.apache.commons.lang3.StringUtils;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 public class Utils {
     public static String relativeUrl(String url) {
-        return url;
+        if (url == null || url.isBlank() || !url.startsWith("/") || isExternalUrl(url)) {
+            return url;
+        }
+
+        String basePath = basePathFromConfiguredBaseUrl();
+        if (basePath.isEmpty() || "/".equals(basePath)) {
+            return url;
+        }
+
+        if (url.startsWith(basePath + "/") || url.equals(basePath)) {
+            return url;
+        }
+
+        if ("/".equals(url)) {
+            return basePath + "/";
+        }
+
+        return basePath + url;
+    }
+
+    private static boolean isExternalUrl(String url) {
+        String lowerCaseUrl = url.toLowerCase();
+        return lowerCaseUrl.startsWith("http://")
+            || lowerCaseUrl.startsWith("https://")
+            || lowerCaseUrl.startsWith("//");
+    }
+
+    private static String basePathFromConfiguredBaseUrl() {
+        String baseUrl = GenerationOptionsContext.current().baseUrl();
+        if (baseUrl == null || baseUrl.isBlank()) {
+            return "";
+        }
+
+        try {
+            String path = URI.create(baseUrl).getPath();
+            if (path == null || path.isBlank() || "/".equals(path)) {
+                return "";
+            }
+
+            String normalizedPath = path.replaceAll("/+$", "");
+
+            return normalizedPath.startsWith("/") ? normalizedPath : "/" + normalizedPath;
+        } catch (IllegalArgumentException ignored) {
+            return "";
+        }
     }
 
     public static String escape(String title) {

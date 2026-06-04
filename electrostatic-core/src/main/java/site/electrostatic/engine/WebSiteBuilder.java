@@ -64,6 +64,7 @@ public class WebSiteBuilder {
             if( options.baseUrl() != null ) {
                 site.setBaseUrl(options.baseUrl());
             }
+            GenerationOptionsContext.set(options.withBaseUrl(site.getBaseUrl()));
 
             // define the source of content
             var contentSource = new ContentSource(site, inputDirectory);
