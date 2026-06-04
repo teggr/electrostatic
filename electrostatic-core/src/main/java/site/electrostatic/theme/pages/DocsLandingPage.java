@@ -10,6 +10,7 @@ import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import site.electrostatic.docs.DocsMarkdownUrlResolver;
 import site.electrostatic.docs.DocsSection;
 import site.electrostatic.docs.DocsSectionConfig;
 import site.electrostatic.engine.Page;
@@ -19,7 +20,6 @@ import j2html.tags.DomContent;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,17 +88,17 @@ public class DocsLandingPage {
   }
 
   private static DomContent renderLandingContent(RenderModel renderModel, LandingContent landingContent) {
-    String docsBasePath = docsBasePath(renderModel);
+    String docsBasePath = DocsMarkdownUrlResolver.docsBasePath(renderModel.getContext().getSite().getBaseUrl());
     landingContent.document().accept(new AbstractVisitor() {
       @Override
       public void visit(Image image) {
-        image.setDestination(resolveMarkdownDestination(image.getDestination(), docsBasePath));
+        image.setDestination(DocsMarkdownUrlResolver.resolve(image.getDestination(), docsBasePath));
         super.visit(image);
       }
 
       @Override
       public void visit(Link link) {
-        link.setDestination(resolveMarkdownDestination(link.getDestination(), docsBasePath));
+        link.setDestination(DocsMarkdownUrlResolver.resolve(link.getDestination(), docsBasePath));
         super.visit(link);
       }
     });
@@ -183,43 +183,6 @@ public class DocsLandingPage {
       case "plugins" -> "Understand built-in plugins and when to use each one.";
       default -> "Explore this section for " + label.toLowerCase() + " docs.";
     };
-  }
-
-  private static String resolveMarkdownDestination(String destination, String docsBasePath) {
-    if (destination == null || destination.isBlank()) {
-      return destination;
-    }
-
-    String resolvedDestination = destination.replace("{{site.baseurl}}", docsBasePath);
-    if (!resolvedDestination.startsWith("/") || resolvedDestination.startsWith("//")) {
-      return resolvedDestination;
-    }
-
-    if (docsBasePath.isBlank()) {
-      return resolvedDestination;
-    }
-
-    if (resolvedDestination.equals(docsBasePath) || resolvedDestination.startsWith(docsBasePath + "/")) {
-      return resolvedDestination;
-    }
-
-    if ("/".equals(resolvedDestination)) {
-      return docsBasePath + "/";
-    }
-
-    return docsBasePath + resolvedDestination;
-  }
-
-  private static String docsBasePath(RenderModel renderModel) {
-    try {
-      String basePath = URI.create(renderModel.getContext().getSite().getBaseUrl()).getPath();
-      if (basePath == null || basePath.isBlank() || "/".equals(basePath)) {
-        return "";
-      }
-      return basePath.replaceAll("/+$", "");
-    } catch (Exception ignored) {
-      return "";
-    }
   }
 
   private record LandingContent(String title, String description, Node document) {

@@ -13,7 +13,6 @@ import site.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 import j2html.TagCreator;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -80,17 +79,17 @@ public class DocsEntry implements ContentItem {
 
   @Override
   public DomContent getContent(RenderModel renderModel) {
-    String docsBasePath = docsBasePath(renderModel);
+    String docsBasePath = DocsMarkdownUrlResolver.docsBasePath(renderModel.getContext().getSite().getBaseUrl());
     document.accept(new AbstractVisitor() {
       @Override
       public void visit(Image image) {
-        image.setDestination(resolveMarkdownDestination(image.getDestination(), docsBasePath));
+        image.setDestination(DocsMarkdownUrlResolver.resolve(image.getDestination(), docsBasePath));
         super.visit(image);
       }
 
       @Override
       public void visit(Link link) {
-        link.setDestination(resolveMarkdownDestination(link.getDestination(), docsBasePath));
+        link.setDestination(DocsMarkdownUrlResolver.resolve(link.getDestination(), docsBasePath));
         super.visit(link);
       }
     });
@@ -108,43 +107,6 @@ public class DocsEntry implements ContentItem {
       return TagCreator.each();
     }
     return TagCreator.p(Utils.escape(description));
-  }
-
-  private static String resolveMarkdownDestination(String destination, String docsBasePath) {
-    if (destination == null || destination.isBlank()) {
-      return destination;
-    }
-
-    String resolvedDestination = destination.replace("{{site.baseurl}}", docsBasePath);
-    if (!resolvedDestination.startsWith("/") || resolvedDestination.startsWith("//")) {
-      return resolvedDestination;
-    }
-
-    if (docsBasePath.isBlank()) {
-      return resolvedDestination;
-    }
-
-    if (resolvedDestination.equals(docsBasePath) || resolvedDestination.startsWith(docsBasePath + "/")) {
-      return resolvedDestination;
-    }
-
-    if ("/".equals(resolvedDestination)) {
-      return docsBasePath + "/";
-    }
-
-    return docsBasePath + resolvedDestination;
-  }
-
-  private static String docsBasePath(RenderModel renderModel) {
-    try {
-      String basePath = URI.create(renderModel.getContext().getSite().getBaseUrl()).getPath();
-      if (basePath == null || basePath.isBlank() || "/".equals(basePath)) {
-        return "";
-      }
-      return basePath.replaceAll("/+$", "");
-    } catch (Exception ignored) {
-      return "";
-    }
   }
 
 }
