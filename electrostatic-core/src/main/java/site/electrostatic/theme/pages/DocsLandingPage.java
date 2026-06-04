@@ -127,7 +127,7 @@ public class DocsLandingPage {
 
   private static LandingContent loadLandingContent(Path sourceDirectory) {
     Path landingPage = sourceDirectory.resolve("_index.md");
-    if (Files.notExists(landingPage)) {
+    if (!Files.exists(landingPage)) {
       return null;
     }
 
@@ -155,7 +155,7 @@ public class DocsLandingPage {
           document
       );
     } catch (Exception e) {
-      throw new RuntimeException("Failed to parse docs landing page: " + landingPage, e);
+      throw new RuntimeException("Failed to parse docs landing page " + landingPage + ": " + e.getMessage(), e);
     }
   }
 
