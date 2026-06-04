@@ -8,6 +8,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +68,63 @@ class ContentModelIntegrationTest {
             visitedPages
         );
         assertEquals(List.of("/assets/site.css"), visitedFiles);
+    }
+
+    @Test
+    void addFile_shouldPreferLocalAssetsOnConflictsAndExposeLocalCssInStableOrder() {
+        ContentModel contentModel = new ContentModel();
+
+        ByteArrayOutputStream errBuffer = new ByteArrayOutputStream();
+        PrintStream originalErr = System.err;
+        System.setErr(new PrintStream(errBuffer));
+        try {
+            contentModel.addFile(new StaticFile(
+                "/css/style.css",
+                Map.of(
+                    "assetSourceType", List.of("classpath"),
+                    "assetSourcePath", List.of("theme/default/css/style.css")
+                ),
+                "theme".getBytes(StandardCharsets.UTF_8)
+            ));
+            contentModel.addFile(new StaticFile(
+                "/css/style.css",
+                Map.of(
+                    "assetSourceType", List.of("local"),
+                    "assetSourcePath", List.of("/repo/_static/css/style.css")
+                ),
+                "local".getBytes(StandardCharsets.UTF_8)
+            ));
+            contentModel.addFile(new StaticFile(
+                "css/styles-ext.css",
+                Map.of(
+                    "assetSourceType", List.of("local"),
+                    "assetSourcePath", List.of("/repo/_static/css/styles-ext.css")
+                ),
+                "ext".getBytes(StandardCharsets.UTF_8)
+            ));
+        } finally {
+            System.setErr(originalErr);
+        }
+
+        List<StaticFile> visitedFiles = new ArrayList<>();
+        contentModel.visit(new ContentModelVisitor() {
+            @Override
+            public void page(Page page) {
+            }
+
+            @Override
+            public void file(StaticFile file) {
+                visitedFiles.add(file);
+            }
+        });
+
+        assertEquals(2, visitedFiles.size());
+        assertEquals("/css/style.css", visitedFiles.getFirst().getPath());
+        assertEquals("local", new String(visitedFiles.getFirst().getRenderFunction().apply(new RenderModel()), StandardCharsets.UTF_8));
+        assertEquals(List.of("/css/style.css", "/css/styles-ext.css"), contentModel.getLocalCssPaths());
+        assertTrue(errBuffer.toString(StandardCharsets.UTF_8).contains("Static asset conflict at /css/style.css"));
+        assertTrue(errBuffer.toString(StandardCharsets.UTF_8).contains("classpath:theme/default/css/style.css"));
+        assertTrue(errBuffer.toString(StandardCharsets.UTF_8).contains("local:/repo/_static/css/style.css"));
     }
 
     private static class RecordingAggregatorPlugin implements AggregatorPlugin {

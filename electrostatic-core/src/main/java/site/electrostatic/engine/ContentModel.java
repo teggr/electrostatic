@@ -7,10 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @ToString
 public class ContentModel {
+  private static final String ASSET_SOURCE_TYPE = "assetSourceType";
+  private static final String ASSET_SOURCE_PATH = "assetSourcePath";
 
   // TODO: these should be streamed to the rendering engine
   private final List<Page> pages = new ArrayList<>();
@@ -27,7 +30,37 @@ public class ContentModel {
   }
 
   public void addFile(StaticFile staticFile) {
+    String incomingPath = normalizePath(staticFile.getPath());
+    for (int index = 0; index < files.size(); index++) {
+      StaticFile existingFile = files.get(index);
+      if (!normalizePath(existingFile.getPath()).equals(incomingPath)) {
+        continue;
+      }
+
+      boolean existingLocal = isLocalAsset(existingFile);
+      boolean incomingLocal = isLocalAsset(staticFile);
+      if (existingLocal && !incomingLocal) {
+        log.warn("Static asset conflict at {}: {} overrides {}", incomingPath, source(existingFile), source(staticFile));
+        return;
+      }
+
+      log.warn("Static asset conflict at {}: {} overrides {}", incomingPath, source(staticFile), source(existingFile));
+      files.set(index, staticFile);
+      return;
+    }
+
     this.files.add(staticFile);
+  }
+
+  public List<String> getLocalCssPaths() {
+    return files.stream()
+        .filter(ContentModel::isLocalAsset)
+        .map(StaticFile::getPath)
+        .map(ContentModel::normalizePath)
+        .filter(path -> path.toLowerCase(Locale.ROOT).endsWith(".css"))
+        .distinct()
+        .sorted()
+        .toList();
   }
 
   public void addPage(Page page) {
@@ -76,6 +109,36 @@ public class ContentModel {
   // TODO: replace with menu plugin?
   public List<Page> getPages() {
     return pages;
+  }
+
+  private static String normalizePath(String path) {
+    String normalized = path.replace("\\", "/");
+    return normalized.startsWith("/") ? normalized : "/" + normalized;
+  }
+
+  private static boolean isLocalAsset(StaticFile staticFile) {
+    return "local".equals(firstValue(staticFile, ASSET_SOURCE_TYPE));
+  }
+
+  private static String source(StaticFile staticFile) {
+    String sourceType = firstValue(staticFile, ASSET_SOURCE_TYPE);
+    if (sourceType == null) {
+      sourceType = "unknown";
+    }
+
+    String sourcePath = firstValue(staticFile, ASSET_SOURCE_PATH);
+    if (sourcePath == null) {
+      sourcePath = staticFile.getPath();
+    }
+    return sourceType + ":" + sourcePath;
+  }
+
+  private static String firstValue(StaticFile staticFile, String key) {
+    List<String> values = staticFile.getData().get(key);
+    if (values == null || values.isEmpty()) {
+      return null;
+    }
+    return values.get(0);
   }
 
 }

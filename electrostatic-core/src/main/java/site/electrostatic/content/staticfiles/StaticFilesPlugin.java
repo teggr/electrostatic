@@ -10,7 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -48,14 +49,14 @@ public class StaticFilesPlugin implements ContentTypePlugin, InitializationPlugi
     try {
 
       Path relativize = staticDirectory.relativize(path);
-
-      // Extract filename, filename without extension, and extension using Path methods
-      String filename = path.getFileName().toString();
-      int dotIndex = filename.lastIndexOf('.');
-      String filenameWithoutExtension = (dotIndex == -1) ? filename : filename.substring(0, dotIndex);
-      String fileExtension = (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
-
-      return new StaticFile(relativize.toString(), Collections.emptyMap(), Files.readAllBytes(path));
+      return new StaticFile(
+          relativize.toString().replace("\\", "/"),
+          Map.of(
+              "assetSourceType", List.of("local"),
+              "assetSourcePath", List.of(path.toAbsolutePath().normalize().toString())
+          ),
+          Files.readAllBytes(path)
+      );
 
     } catch (Exception e) {
       throw new RuntimeException(e);
