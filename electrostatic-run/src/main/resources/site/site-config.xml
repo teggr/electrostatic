@@ -1,6 +1,6 @@
 <site>
   <title>Electrostatic Documentation</title>
-  <baseUrl>http://localhost:8080</baseUrl>
+  <baseUrl>https://teggr.github.io/electrostatic/</baseUrl>
   <theme>docs</theme>
   <description>Install, theme, and plugin guides for building static sites with Electrostatic.</description>
   <author>

@@ -15,3 +15,7 @@ Use these guides to choose a theme, understand how content is organized, and bui
 ## Customization
 
 - [Create your own theme](create-your-own-theme.html)
+
+## Publishing
+
+- [Publish to GitHub Pages](github-pages-guide.html)

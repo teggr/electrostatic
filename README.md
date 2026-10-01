@@ -226,3 +226,16 @@ mvn -B -ntp test
 ```
 
 Maven Central release instructions are in [`docs/RELEASE.md`](docs/RELEASE.md).
+
+## Project website
+
+The documentation site at https://teggr.github.io/electrostatic/ is built with Electrostatic from `electrostatic-run/src/main/resources/site` and deployed to GitHub Pages by [`.github/workflows/build-site.yml`](.github/workflows/build-site.yml) on every push to `main`.
+
+Build and preview it locally:
+
+```bash
+jbang --fresh site.electrostatic:electrostatic-cli:0.0.3 build --input ./electrostatic-run/src/main/resources/site --output ./generated-site
+jbang --fresh site.electrostatic:electrostatic-cli:0.0.3 serve --input ./electrostatic-run/src/main/resources/site --output ./generated-site --base-url=http://localhost:8080
+```
+
+To publish your own Electrostatic site the same way, see the "Publish to GitHub Pages" guide (`electrostatic-run/src/main/resources/site/_guides/github-pages-guide.md`).
