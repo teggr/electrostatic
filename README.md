@@ -168,6 +168,28 @@ mvn electrostatic:generate -Delectrostatic.baseUrl=http://localhost:8080 -Delect
 mvn electrostatic:serve -Delectrostatic.baseUrl=http://localhost:8080 -Delectrostatic.includeDrafts=true
 ```
 
+### Watch and live reload
+
+Enable watch mode to rebuild when source files change and automatically reload open preview pages:
+
+```bash
+electrostatic serve --watch --base-url http://localhost:8080
+# JBang CLI artifact supports the same --watch option.
+mvn electrostatic:serve -Delectrostatic.watch=true -Delectrostatic.baseUrl=http://localhost:8080
+```
+
+Watch mode is off by default. It recursively watches the input directory (`--input` or
+`electrostatic.inputDirectory`, defaulting to the working directory for CLI/JBang and
+`src/main/resources/site` for Maven), including newly created directories. Edits, additions,
+deletions, and renames trigger a debounced rebuild with the same generation options.
+Generated output and `.git` directories are ignored to avoid rebuild loops.
+
+Open the local preview URL printed by `serve`. In watch mode, served HTML includes a
+preview-only reload script that checks for successful builds once per second; generated
+files remain unchanged. Pages and assets are served without caching so content, images,
+and styling stay current. Failed builds are logged, and watching continues so a corrected
+source file can trigger another build. Ctrl+C stops both serving and watching.
+
 ## Docs collections configuration
 
 The docs bundle uses a generic section-collection model configured in `site-config.xml`.

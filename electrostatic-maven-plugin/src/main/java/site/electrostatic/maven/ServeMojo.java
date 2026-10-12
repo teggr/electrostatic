@@ -53,6 +53,12 @@ public class ServeMojo extends AbstractMojo {
     private boolean includeDrafts;
 
     /**
+     * Rebuild on source changes and automatically reload the browser.
+     */
+    @Parameter(defaultValue = "false", property = "electrostatic.watch")
+    private boolean watch;
+
+    /**
      * Port to serve on.
      */
     @Parameter(defaultValue = "8080", property = "electrostatic.port")
@@ -78,11 +84,14 @@ public class ServeMojo extends AbstractMojo {
                 .withBaseUrl(baseUrl)
                 .withIncludeDrafts(includeDrafts);
             SitePreviewServer.PreviewSession session = new SitePreviewServer(ThemePlugins.resolveForSite(theme, input))
-                .start(input, siteDirectory, options, port, projectRoot);
+                .start(input, siteDirectory, options, port, projectRoot, watch);
             Runtime.getRuntime().addShutdownHook(new Thread(session::close));
 
             getLog().info("Serving site from: " + siteDirectory);
             getLog().info("Listening on http://localhost:" + port);
+            if (watch) {
+                getLog().info("Watching for changes in: " + input);
+            }
             getLog().info("Press Ctrl+C to stop.");
 
             Thread.currentThread().join();

@@ -201,7 +201,17 @@ site.electrostatic.core.SitePreviewServer.start does the following:
 
 The preview flow now forwards the same GenerationOptions object used by build generation, so serve-time preview and one-shot generation stay aligned for both baseUrl and draft inclusion.
 
-Serve commands/goals hold the current thread and install a shutdown hook to close the server cleanly.
+CLI/JBang `serve --watch` and Maven `serve -Delectrostatic.watch=true` enable the same optional watch flow in core:
+
+- `SiteSourceWatcher` uses the JDK WatchService to register the input tree recursively, including newly created directories, without following directory symlinks.
+- Generated output and `.git` trees are excluded. Output must not contain the input tree.
+- Source create/modify/delete events (including renames) are coalesced until 250 ms of quiet, then trigger a serial full rebuild with the original GenerationOptions and selected theme.
+- Each watched build clears the global plugin registries before the theme registers fresh plugins, preventing duplicate registration and accumulated aggregator content.
+- Rebuilds and HTTP file reads share a lock so requests do not observe output partway through a build. Failed builds are logged and do not advance the browser reload revision; watching continues.
+- Successful rebuilds advance a revision served at `/__electrostatic/reload`. A preview-only script injected into HTML responses polls this same-origin endpoint every second and reloads on revision changes.
+- Watch responses disable caching for fresh images and styles. The reload script is not written into generated files, and non-watch serving is unchanged.
+
+Serve commands/goals hold the current thread and install a shutdown hook to close the server cleanly. Closing a PreviewSession also closes its WatchService and stops its background watcher thread.
 
 ## Configuration Model
 
