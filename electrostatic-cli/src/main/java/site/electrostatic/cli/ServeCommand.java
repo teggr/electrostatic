@@ -64,7 +64,11 @@ public class ServeCommand implements Callable<Integer> {
         }
         System.out.println("Press Ctrl+C to stop.");
 
-        Thread.currentThread().join();
+        try {
+            Thread.currentThread().join();
+        } finally {
+            session.close();
+        }
 
         return 0;
     }

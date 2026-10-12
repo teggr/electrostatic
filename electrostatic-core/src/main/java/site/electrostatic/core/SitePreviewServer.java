@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 /**
  * Shared preview server for serving generated sites locally.
@@ -23,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class SitePreviewServer {
 
     private static final String RELOAD_PATH = "/__electrostatic/reload";
+    private static final Pattern BODY_END = Pattern.compile("</body>", Pattern.CASE_INSENSITIVE);
     private final SiteGenerator siteGenerator;
 
     public SitePreviewServer(ThemePlugin themePlugin) {
@@ -157,7 +159,11 @@ public class SitePreviewServer {
             byte[] bytes = Files.readAllBytes(file.toPath());
             if (watch && "text/html".equals(contentType)) {
                 String html = new String(bytes, StandardCharsets.UTF_8);
-                int bodyEnd = html.toLowerCase(java.util.Locale.ROOT).lastIndexOf("</body>");
+                var bodyMatcher = BODY_END.matcher(html);
+                int bodyEnd = -1;
+                while (bodyMatcher.find()) {
+                    bodyEnd = bodyMatcher.start();
+                }
                 String script = reloadScript(revision);
                 html = bodyEnd >= 0
                     ? html.substring(0, bodyEnd) + script + html.substring(bodyEnd)

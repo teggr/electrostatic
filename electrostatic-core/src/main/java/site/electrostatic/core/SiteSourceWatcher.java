@@ -78,6 +78,11 @@ final class SiteSourceWatcher implements AutoCloseable {
         for (var event : key.pollEvents()) {
             if (event.kind() == StandardWatchEventKinds.OVERFLOW) {
                 changed = true;
+                try {
+                    registerDirectories(inputDirectory);
+                } catch (IOException e) {
+                    log.warn("Unable to refresh watched directories after event overflow", e);
+                }
                 continue;
             }
             if (directory == null) {

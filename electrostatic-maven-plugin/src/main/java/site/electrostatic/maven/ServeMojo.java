@@ -94,7 +94,11 @@ public class ServeMojo extends AbstractMojo {
             }
             getLog().info("Press Ctrl+C to stop.");
 
-            Thread.currentThread().join();
+            try {
+                Thread.currentThread().join();
+            } finally {
+                session.close();
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new MojoExecutionException("Failed while serving static site", e);

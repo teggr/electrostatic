@@ -96,9 +96,11 @@ class SitePreviewServerWatchTest {
             int pluginCount = Plugins.contentTypePlugins.size();
 
             Path guide = input.resolve("_guides/first-guide.md");
-            Files.writeString(guide, "---\ntitle: Watched guide\n---\n\nUpdated content.\n");
+            Files.writeString(guide, "---\ntitle: Watched İ guide\n---\n\nUpdated content.\n");
             awaitRevisionChange(originalRevision);
-            assertTrue(get("/guides/first-guide.html").body.contains("Updated content."));
+            String updatedHtml = get("/guides/first-guide.html").body;
+            assertTrue(updatedHtml.contains("Updated content."));
+            assertTrue(updatedHtml.contains("</script>\n</body>"));
             assertEquals(endpoint + "|true", get("/options.txt").body);
             assertEquals(pluginCount, Plugins.contentTypePlugins.size());
 
