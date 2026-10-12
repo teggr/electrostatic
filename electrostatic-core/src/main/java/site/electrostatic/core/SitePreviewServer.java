@@ -1,6 +1,7 @@
 package site.electrostatic.core;
 
 import site.electrostatic.plugins.ThemePlugin;
+import site.electrostatic.plugins.Plugins;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -10,15 +11,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 /**
  * Shared preview server for serving generated sites locally.
  */
 public class SitePreviewServer {
 
+    private static final String RELOAD_PATH = "/__electrostatic/reload";
+    private static final Pattern BODY_END = Pattern.compile("</body>", Pattern.CASE_INSENSITIVE);
     private final SiteGenerator siteGenerator;
 
     public SitePreviewServer(ThemePlugin themePlugin) {
@@ -37,18 +43,100 @@ public class SitePreviewServer {
         int port,
         Path projectRoot
     ) throws IOException {
-        siteGenerator.generate(inputDirectory, outputDirectory, options);
-
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext("/", exchange -> serve(exchange, outputDirectory, projectRoot));
-        server.start();
-
-        return new PreviewSession(server, outputDirectory);
+        return start(inputDirectory, outputDirectory, options, port, projectRoot, false);
     }
 
-    private static void serve(HttpExchange exchange, Path outputDirectory, Path projectRoot) throws IOException {
+    public PreviewSession start(
+        Path inputDirectory,
+        Path outputDirectory,
+        GenerationOptions options,
+        int port,
+        Path projectRoot,
+        boolean watch
+    ) throws IOException {
+        Path input = inputDirectory.toAbsolutePath().normalize();
+        Path output = outputDirectory.toAbsolutePath().normalize();
+        Path root = projectRoot.toAbsolutePath().normalize();
+        if (watch && input.startsWith(output)) {
+            throw new IllegalArgumentException("Watch output directory must not contain the input directory");
+        }
+        Object generationLock = new Object();
+        AtomicLong revision = new AtomicLong();
+        SiteSourceWatcher watcher = watch ? new SiteSourceWatcher(input, output, () -> {
+            synchronized (generationLock) {
+                generateWatchedSite(input, output, options);
+                revision.incrementAndGet();
+            }
+        }) : null;
+        HttpServer server = null;
+        try {
+            if (watch) {
+                generateWatchedSite(input, output, options);
+            } else {
+                siteGenerator.generate(input, output, options);
+            }
+            server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext("/", exchange -> {
+                synchronized (generationLock) {
+                    serve(exchange, output, root, watch, revision.get());
+                }
+            });
+            server.start();
+            if (watcher != null) {
+                watcher.start();
+            }
+            return new PreviewSession(server, output, watcher);
+        } catch (Exception e) {
+            if (watcher != null) {
+                watcher.close();
+            }
+            if (server != null) {
+                server.stop(0);
+            }
+            throw e;
+        }
+    }
+
+    private void generateWatchedSite(Path input, Path output, GenerationOptions options) {
+        Plugins.initializationPlugins.clear();
+        Plugins.contentTypePlugins.clear();
+        Plugins.aggregatorPlugins.clear();
+        Plugins.contentRenderPlugins.clear();
+        siteGenerator.generate(input, output, options);
+    }
+
+    private static String reloadScript(long revision) {
+        return """
+            <script>
+            (() => {
+              const revision = '%d';
+              setInterval(async () => {
+                try {
+                  const response = await fetch('%s', {cache: 'no-store'});
+                  if (response.ok && (await response.text()) !== revision) location.reload();
+                } catch (_) {}
+              }, 1000);
+            })();
+            </script>
+            """.formatted(revision, RELOAD_PATH);
+    }
+
+    private static void serve(HttpExchange exchange, Path outputDirectory, Path projectRoot,
+                              boolean watch, long revision) throws IOException {
         try {
             String uri = exchange.getRequestURI().getPath();
+            if (watch) {
+                exchange.getResponseHeaders().set("Cache-Control", "no-store");
+                if (RELOAD_PATH.equals(uri)) {
+                    byte[] bytes = Long.toString(revision).getBytes(StandardCharsets.UTF_8);
+                    exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+                    exchange.sendResponseHeaders(200, bytes.length);
+                    try (OutputStream output = exchange.getResponseBody()) {
+                        output.write(bytes);
+                    }
+                    return;
+                }
+            }
             if (uri.endsWith("/")) {
                 uri += "index.html";
             }
@@ -69,6 +157,20 @@ public class SitePreviewServer {
             }
 
             byte[] bytes = Files.readAllBytes(file.toPath());
+            if (watch && "text/html".equals(contentType)) {
+                String html = new String(bytes, StandardCharsets.UTF_8);
+                var bodyMatcher = BODY_END.matcher(html);
+                int bodyEnd = -1;
+                while (bodyMatcher.find()) {
+                    bodyEnd = bodyMatcher.start();
+                }
+                String script = reloadScript(revision);
+                html = bodyEnd >= 0
+                    ? html.substring(0, bodyEnd) + script + html.substring(bodyEnd)
+                    : html + script;
+                bytes = html.getBytes(StandardCharsets.UTF_8);
+                contentType = "text/html; charset=utf-8";
+            }
             exchange.getResponseHeaders().set("Content-Type", contentType);
             exchange.sendResponseHeaders(200, bytes.length);
             try (OutputStream output = exchange.getResponseBody()) {
@@ -127,10 +229,12 @@ public class SitePreviewServer {
 
         private final HttpServer server;
         private final Path outputDirectory;
+        private final SiteSourceWatcher watcher;
 
-        private PreviewSession(HttpServer server, Path outputDirectory) {
+        private PreviewSession(HttpServer server, Path outputDirectory, SiteSourceWatcher watcher) {
             this.server = server;
             this.outputDirectory = outputDirectory;
+            this.watcher = watcher;
         }
 
         public Path getOutputDirectory() {
@@ -139,6 +243,9 @@ public class SitePreviewServer {
 
         @Override
         public void close() {
+            if (watcher != null) {
+                watcher.close();
+            }
             server.stop(0);
         }
 

@@ -29,6 +29,9 @@ public class ServeCommand implements Callable<Integer> {
     @Option(names = {"--include-drafts"}, defaultValue = "false", description = "Include content from _drafts (default: ${DEFAULT-VALUE})")
     private boolean includeDrafts;
 
+    @Option(names = {"--watch"}, description = "Rebuild on source changes and automatically reload the browser")
+    private boolean watch;
+
     @Option(names = {"--input"}, description = "Input directory containing site content (default: current working directory)")
     private Path inputDirectory;
 
@@ -51,14 +54,21 @@ public class ServeCommand implements Callable<Integer> {
             .withIncludeDrafts(includeDrafts);
 
         SitePreviewServer.PreviewSession session = new SitePreviewServer(ThemePlugins.resolveForSite(theme, input))
-            .start(input, siteDirectory, options, port, projectRoot);
+            .start(input, siteDirectory, options, port, projectRoot, watch);
         Runtime.getRuntime().addShutdownHook(new Thread(session::close));
 
         System.out.println("Serving site from " + siteDirectory);
         System.out.println("Listening on http://localhost:" + port);
+        if (watch) {
+            System.out.println("Watching for changes in " + input.toAbsolutePath().normalize());
+        }
         System.out.println("Press Ctrl+C to stop.");
 
-        Thread.currentThread().join();
+        try {
+            Thread.currentThread().join();
+        } finally {
+            session.close();
+        }
 
         return 0;
     }
