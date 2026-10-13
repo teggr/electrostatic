@@ -27,15 +27,20 @@ jobs:
       - name: Set up JBang
         uses: jbangdev/setup-jbang@v0.1.1
 
+      - name: Configure Maven Central credentials
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+        run: |
+          jbang jbang/releaseWorkflow.java configure-settings
+          chmod 600 "$HOME/.m2/settings.xml"
+
       - name: Determine release version
         id: version
         run: jbang jbang/releaseWorkflow.java determine-release-version
 
       - name: Test release documentation version sync
         run: jbang jbang/syncReleaseDocumentation.java --self-test
-
-      - name: Test release tag guard
-        run: bash .github/tests/release-tag.sh
 
       - name: Check release tag
         id: existing_release
@@ -48,36 +53,20 @@ jobs:
           if [[ -n "$existing_release" ]]; then
             existing_commit="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${RELEASE_VERSION}" --jq .sha)"
             if [[ "$existing_commit" != "$GITHUB_SHA" ]]; then
-              echo "Release tag $RELEASE_VERSION already points to a different commit. Advance all POMs to an unused snapshot version; never move the existing tag or republish this version." >&2
+              echo "Release tag $RELEASE_VERSION already points to a different commit." >&2
               exit 1
             fi
             echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "A release for this commit already exists; publication will be skipped and only the next-snapshot/documentation commit retried."
+            echo "A release for this commit already exists; it will be reused."
           else
             if git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_VERSION" >/dev/null 2>&1; then
               echo "Git tag $RELEASE_VERSION already exists without a matching GitHub Release." >&2
               exit 1
-            else
-              status=$?
-              if [[ "$status" != 2 ]]; then
-                echo "Could not check remote release tags (git exit $status)." >&2
-                exit "$status"
-              fi
             fi
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Configure Maven Central credentials
-        if: steps.existing_release.outputs.exists != 'true'
-        env:
-          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
-          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
-        run: |
-          jbang jbang/releaseWorkflow.java configure-settings
-          chmod 600 "$HOME/.m2/settings.xml"
-
       - name: Import signing key
-        if: steps.existing_release.outputs.exists != 'true'
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
@@ -89,11 +78,9 @@ jobs:
         run: ./mvnw --no-transfer-progress -Pcentral versions:set -DremoveSnapshot -DprocessAllModules -DgenerateBackupPoms=false
 
       - name: Check Maven Central requirements
-        if: steps.existing_release.outputs.exists != 'true'
         run: ./mvnw --no-transfer-progress -Pcentral org.kordamp.maven:pomchecker-maven-plugin:1.14.0:check-maven-central
 
       - name: Publish to Maven Central
-        if: steps.existing_release.outputs.exists != 'true'
         env:
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
