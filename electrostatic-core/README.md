@@ -5,8 +5,8 @@ This is the module for building a static website
 # Usage
 
 ```java
-import site.electrostatic.engine.WebSiteBuilder;
-import site.electrostatic.theme.DefaultThemePlugin;
+import io.github.teggr.electrostatic.engine.WebSiteBuilder;
+import io.github.teggr.electrostatic.theme.DefaultThemePlugin;
 
 // set configuration + theme
 WebSiteBuilder webSiteBuilder = new WebSiteBuilder(
