@@ -56,7 +56,7 @@ List available theme bundles:
 
 ```bash
 electrostatic themes
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT themes
+jbang io.github.teggr:electrostatic-cli:0.0.3 themes
 ```
 
 You can still pass `--theme` to `build` or `serve` to override the persisted value for a single run.
@@ -64,14 +64,14 @@ You can still pass `--theme` to `build` or `serve` to override the persisted val
 JBang works the same way:
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT init --theme docs
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT build
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT serve
+jbang io.github.teggr:electrostatic-cli:0.0.3 init --theme docs
+jbang io.github.teggr:electrostatic-cli:0.0.3 build
+jbang io.github.teggr:electrostatic-cli:0.0.3 serve
 ```
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT build --base-url http://localhost:8080 --include-drafts
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT serve --base-url http://localhost:8080 --include-drafts
+jbang io.github.teggr:electrostatic-cli:0.0.3 build --base-url http://localhost:8080 --include-drafts
+jbang io.github.teggr:electrostatic-cli:0.0.3 serve --base-url http://localhost:8080 --include-drafts
 ```
 
 ### JBang
@@ -79,8 +79,8 @@ jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT serve --base-url http://l
 Install JBang, then run the CLI artifact directly:
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT init
-jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT build
+jbang io.github.teggr:electrostatic-cli:0.0.3 init
+jbang io.github.teggr:electrostatic-cli:0.0.3 build
 ```
 
 The command resolves the CLI from your local Maven cache (or configured repositories) and is the quickest way to try the generator in a new project.
@@ -93,7 +93,7 @@ Add the plugin to your project and call the `init`, `themes`, `serve` and `gener
 <plugin>
 	<groupId>io.github.teggr</groupId>
 	<artifactId>electrostatic-maven-plugin</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3</version>
 </plugin>
 ```
 
@@ -107,10 +107,10 @@ mvn electrostatic:generate
 If prefix resolution is not configured in your Maven environment, use fully-qualified coordinates:
 
 ```bash
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.1-SNAPSHOT:init
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.1-SNAPSHOT:themes
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.1-SNAPSHOT:serve
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.1-SNAPSHOT:generate
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:init
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:themes
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:serve
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:generate
 ```
 
 Or configure your Maven plugin groups once so `mvn electrostatic:*` works everywhere:
@@ -240,6 +240,8 @@ Build and publish docs for your own project.
 - `electrostatic-smoke-tests` - JUnit smoke tests that verify Maven plugin and JBang flows (init, generate/build, and serve behavior) using temporary directories.
 
 ## Build and release
+
+The current development version of Electrostatic is `0.0.3-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
 
 Run tests from the repository root:
 
