@@ -4,7 +4,7 @@ description: Practical walkthroughs for themes and customization.
 order: 1
 ---
 
-Use these guides to choose a theme, understand how content is organized, and build a custom theme when the built-ins are not enough.
+Use these guides to configure a site, choose a theme, understand how content is organized, and build a custom theme when the built-ins are not enough.
 
 ## Local preview with watch mode
 
@@ -34,6 +34,7 @@ Watch mode is opt-in, and Ctrl+C stops the server and watcher together.
 
 ## Theme guides
 
+- [Configuration and troubleshooting](configuration-guide.html)
 - [Default theme guide](default-theme-guide.html)
 - [Docs theme guide](docs-theme-guide.html)
 - [V2 theme guide](v2-theme-guide.html)
