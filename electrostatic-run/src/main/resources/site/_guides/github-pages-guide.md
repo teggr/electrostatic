@@ -29,8 +29,8 @@ For example:
 Install **Java 21** and **JBang**, then build and preview locally:
 
 ```bash
-jbang --fresh site.electrostatic:electrostatic-cli:0.0.3 build
-jbang --fresh site.electrostatic:electrostatic-cli:0.0.3 serve --base-url=http://localhost:8080
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 serve --base-url=http://localhost:8080
 ```
 
 The build output is written to `generated-site/`. Add `generated-site/` to your `.gitignore`; GitHub Actions builds it for you.
@@ -74,7 +74,7 @@ jobs:
         uses: jbangdev/setup-jbang@v0.1.1
 
       - name: Build site
-        run: jbang --fresh site.electrostatic:electrostatic-cli:0.0.3 build
+        run: jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -102,7 +102,7 @@ If your site source is not at the repository root, pass `--input` and `--output`
 ```yaml
       - name: Build site
         run: >-
-          jbang --fresh site.electrostatic:electrostatic-cli:0.0.3 build
+          jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
           --input ./docs-site
           --output ./generated-site
 ```

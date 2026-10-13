@@ -20,9 +20,9 @@ All user-facing site behavior is implemented in core and reused by wrappers.
 
 | Module | Responsibility | Key Entrypoints |
 |---|---|---|
-| electrostatic-core | Source loading, content aggregation, layout rendering, output writing, preview serving | site.electrostatic.engine.WebSiteBuilder, site.electrostatic.core.SiteGenerator, site.electrostatic.core.SiteInitializer, site.electrostatic.core.SitePreviewServer |
-| electrostatic-cli | Terminal UX and argument parsing | site.electrostatic.cli.ElectrostaticCli and command classes |
-| electrostatic-maven-plugin | Maven lifecycle integration and goal parameters | site.electrostatic.maven.*Mojo |
+| electrostatic-core | Source loading, content aggregation, layout rendering, output writing, preview serving | io.github.teggr.electrostatic.engine.WebSiteBuilder, io.github.teggr.electrostatic.core.SiteGenerator, io.github.teggr.electrostatic.core.SiteInitializer, io.github.teggr.electrostatic.core.SitePreviewServer |
+| electrostatic-cli | Terminal UX and argument parsing | io.github.teggr.electrostatic.cli.ElectrostaticCli and command classes |
+| electrostatic-maven-plugin | Maven lifecycle integration and goal parameters | io.github.teggr.electrostatic.maven.*Mojo |
 | Root JBang launcher | Script entrypoint convenience | Electrostatic.java |
 
 ## End-to-End Build Pipeline
@@ -45,15 +45,15 @@ flowchart LR
 Detailed stage behavior:
 
 1. Plugin registration
-- Active theme calls registerPlugins and pushes implementations into global registries in site.electrostatic.plugins.Plugins.
+- Active theme calls registerPlugins and pushes implementations into global registries in io.github.teggr.electrostatic.plugins.Plugins.
 
 2. Site configuration loading
-- site.electrostatic.site.SitePlugin loads site-config.xml into site.electrostatic.site.Site using JAXB.
+- io.github.teggr.electrostatic.site.SitePlugin loads site-config.xml into io.github.teggr.electrostatic.site.Site using JAXB.
 - Wrapper-supplied GenerationOptions can override Site.baseUrl for the current run.
 - Wrapper-supplied GenerationOptions can also enable draft loading for the current run.
 
 3. Content loading
-- site.electrostatic.engine.ContentSource loops through Plugins.contentTypePlugins and calls loadContent for each.
+- io.github.teggr.electrostatic.engine.ContentSource loops through Plugins.contentTypePlugins and calls loadContent for each.
 - Content loaders add three kinds of artifacts into ContentModel:
 - Pages (already assembled page definitions)
 - Content items (domain content that is later rendered as pages)
@@ -65,21 +65,21 @@ Detailed stage behavior:
 
 5. Layout loading and rendering
 - WebSiteBuilder collects layouts from Plugins.contentRenderPlugins.
-- site.electrostatic.engine.ContentRenderer walks the model and writes:
+- io.github.teggr.electrostatic.engine.ContentRenderer walks the model and writes:
 - Static files from StaticFile render functions
 - Pages and content items transformed to pages
 - Layout wrapping with default layout fallback and optional one-level outer layout chaining
 
 ## Plugin System
 
-Plugin interfaces live under site.electrostatic.plugins.
+Plugin interfaces live under io.github.teggr.electrostatic.plugins.
 
 | Interface | Registry | Purpose | Typical Built-ins |
 |---|---|---|---|
 | ThemePlugin | n/a | Registers all plugin implementations for a theme | DefaultThemePlugin, DocsThemePlugin, V2ThemePlugin |
 | InitializationPlugin | Plugins.initializationPlugins | Creates scaffold directories/files during init | DefaultThemePlugin, DocsThemePlugin, PostPlugin, StaticFilesPlugin |
 | ContentTypePlugin | Plugins.contentTypePlugins | Loads source content into ContentModel | PostPlugin, DraftPostPlugin, BookPlugin, PodcastPlugin, FeedSubscriptionPlugin, DocsCollectionPlugin, StaticFilesPlugin, ClasspathFilesPlugin |
-| AggregatorPlugin | Plugins.aggregatorPlugins | Collects content and emits derived artifacts | TagPlugin, FeedPlugin, IndexPlugin, site.electrostatic.posts.PostsPlugin |
+| AggregatorPlugin | Plugins.aggregatorPlugins | Collects content and emits derived artifacts | TagPlugin, FeedPlugin, IndexPlugin, io.github.teggr.electrostatic.posts.PostsPlugin |
 | ContentRenderPlugin | Plugins.contentRenderPlugins | Contributes named layouts | DefaultThemePlugin, DocsThemePlugin, V2ThemePlugin |
 
 ### Built-in Theme Behavior
@@ -135,7 +135,7 @@ Docs section behavior:
 
 ## Rendering and Layout Composition
 
-site.electrostatic.engine.ContentRenderer performs rendering with site.electrostatic.engine.RenderModel.
+io.github.teggr.electrostatic.engine.ContentRenderer performs rendering with io.github.teggr.electrostatic.engine.RenderModel.
 
 RenderModel carries:
 
@@ -154,7 +154,7 @@ Layout flow per page:
 
 ## Theme Resolution
 
-Theme resolution is centralized in site.electrostatic.theme.ThemePlugins:
+Theme resolution is centralized in io.github.teggr.electrostatic.theme.ThemePlugins:
 
 1. If wrapper provides explicit theme option/property, use it
 2. Otherwise, if site-config.xml has theme, use it
@@ -172,12 +172,12 @@ Wrappers call shared core facades rather than implementing generation logic them
 
 | User Surface | Entrypoint | Shared Core Facade |
 |---|---|---|
-| CLI init | site.electrostatic.cli.InitCommand | SiteInitializer.initialize |
-| CLI build | site.electrostatic.cli.BuildCommand | SiteGenerator.generate |
-| CLI serve | site.electrostatic.cli.ServeCommand | SitePreviewServer.start |
-| Maven init | site.electrostatic.maven.InitMojo | SiteInitializer.initialize |
-| Maven generate | site.electrostatic.maven.GenerateMojo | SiteGenerator.generate |
-| Maven serve | site.electrostatic.maven.ServeMojo | SitePreviewServer.start |
+| CLI init | io.github.teggr.electrostatic.cli.InitCommand | SiteInitializer.initialize |
+| CLI build | io.github.teggr.electrostatic.cli.BuildCommand | SiteGenerator.generate |
+| CLI serve | io.github.teggr.electrostatic.cli.ServeCommand | SitePreviewServer.start |
+| Maven init | io.github.teggr.electrostatic.maven.InitMojo | SiteInitializer.initialize |
+| Maven generate | io.github.teggr.electrostatic.maven.GenerateMojo | SiteGenerator.generate |
+| Maven serve | io.github.teggr.electrostatic.maven.ServeMojo | SitePreviewServer.start |
 | JBang command | Electrostatic.java -> ElectrostaticCli.main | same CLI path as above |
 
 Naming difference only:
@@ -191,7 +191,7 @@ Both CLI and Maven wrapper surfaces now build a shared GenerationOptions payload
 
 ## Preview Server Architecture
 
-site.electrostatic.core.SitePreviewServer.start does the following:
+io.github.teggr.electrostatic.core.SitePreviewServer.start does the following:
 
 1. Generates site output first via SiteGenerator
 2. Starts JDK HttpServer on the requested port
@@ -217,7 +217,7 @@ Serve commands/goals hold the current thread and install a shutdown hook to clos
 
 Primary configuration file: site-config.xml at site input root.
 
-Key fields in site.electrostatic.site.Site include:
+Key fields in io.github.teggr.electrostatic.site.Site include:
 
 - title, description, baseUrl, feedUrl
 - author and social handles

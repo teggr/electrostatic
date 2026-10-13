@@ -33,7 +33,7 @@ jobs:
 
       - name: Build site
         run: >-
-          jbang --fresh site.electrostatic:electrostatic-cli:0.0.3 build
+          jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
           --input ./electrostatic-run/src/main/resources/site
           --output ./generated-site
 
