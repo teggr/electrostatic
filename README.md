@@ -241,7 +241,7 @@ Build and publish docs for your own project.
 
 ## Build and release
 
-The current development version of Electrostatic is `0.0.4-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
+The current development version of Electrostatic is `0.0.5-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
 
 Run tests from the repository root:
 
