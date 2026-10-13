@@ -53,6 +53,36 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.4</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <electrostatic.test.repositoryRoot>${maven.multiModuleProjectDirectory}</electrostatic.test.repositoryRoot>
+                        <electrostatic.test.version>${project.version}</electrostatic.test.version>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.5.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <electrostatic.test.version>${project.version}</electrostatic.test.version>
+                        <electrostatic.test.repositoryRoot>${maven.multiModuleProjectDirectory}</electrostatic.test.repositoryRoot>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

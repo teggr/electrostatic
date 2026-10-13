@@ -26,6 +26,8 @@ For example:
 </site>
 ```
 
+For a project Pages site, keep the repository name in `baseUrl` (for example, `/my-project/`). Electrostatic uses that path for generated asset and navigation URLs as well as canonical links. A user or organization Pages site served from the domain root normally does not include a repository segment.
+
 Install **Java 21** and **JBang**, then build and preview locally:
 
 ```bash

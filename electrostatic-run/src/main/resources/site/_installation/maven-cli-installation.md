@@ -6,19 +6,31 @@ order: 3
 
 Use the Maven plugin when your site is part of a Maven module or build pipeline.
 
-## 1. Add the plugin
+## 1. Create a Maven project and add the plugin
 
-Add Electrostatic to your `pom.xml`:
+Maven goals run inside a Maven project. For a new site, create a directory and add this minimal `pom.xml`:
 
 ```xml
-<plugin>
-  <groupId>io.github.teggr</groupId>
-  <artifactId>electrostatic-maven-plugin</artifactId>
-  <version>0.0.4</version>
-</plugin>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>example</groupId>
+  <artifactId>my-site</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.teggr</groupId>
+        <artifactId>electrostatic-maven-plugin</artifactId>
+        <version>0.0.4</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
 ```
 
-If plugin prefix resolution is not configured, use fully qualified goals.
+Run the commands below from the directory containing this POM. They use fully qualified goals so they work even if plugin prefix resolution is not configured.
 
 ## 2. Initialize site content
 

@@ -33,5 +33,5 @@ jobs:
       - name: Test release helper scripts
         run: jbang jbang/syncReleaseDocumentation.java --self-test
 
-      - name: Run tests
-        run: ./mvnw --no-transfer-progress test
+      - name: Run tests and end-to-end smoke checks
+        run: ./mvnw --no-transfer-progress install
