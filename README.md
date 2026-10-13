@@ -56,7 +56,7 @@ List available theme bundles:
 
 ```bash
 electrostatic themes
-jbang io.github.teggr:electrostatic-cli:0.0.3 themes
+jbang io.github.teggr:electrostatic-cli:0.0.4 themes
 ```
 
 You can still pass `--theme` to `build` or `serve` to override the persisted value for a single run.
@@ -64,14 +64,14 @@ You can still pass `--theme` to `build` or `serve` to override the persisted val
 JBang works the same way:
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.3 init --theme docs
-jbang io.github.teggr:electrostatic-cli:0.0.3 build
-jbang io.github.teggr:electrostatic-cli:0.0.3 serve
+jbang io.github.teggr:electrostatic-cli:0.0.4 init --theme docs
+jbang io.github.teggr:electrostatic-cli:0.0.4 build
+jbang io.github.teggr:electrostatic-cli:0.0.4 serve
 ```
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.3 build --base-url http://localhost:8080 --include-drafts
-jbang io.github.teggr:electrostatic-cli:0.0.3 serve --base-url http://localhost:8080 --include-drafts
+jbang io.github.teggr:electrostatic-cli:0.0.4 build --base-url http://localhost:8080 --include-drafts
+jbang io.github.teggr:electrostatic-cli:0.0.4 serve --base-url http://localhost:8080 --include-drafts
 ```
 
 ### JBang
@@ -79,8 +79,8 @@ jbang io.github.teggr:electrostatic-cli:0.0.3 serve --base-url http://localhost:
 Install JBang, then run the CLI artifact directly:
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.3 init
-jbang io.github.teggr:electrostatic-cli:0.0.3 build
+jbang io.github.teggr:electrostatic-cli:0.0.4 init
+jbang io.github.teggr:electrostatic-cli:0.0.4 build
 ```
 
 The command resolves the CLI from your local Maven cache (or configured repositories) and is the quickest way to try the generator in a new project.
@@ -93,7 +93,7 @@ Add the plugin to your project and call the `init`, `themes`, `serve` and `gener
 <plugin>
 	<groupId>io.github.teggr</groupId>
 	<artifactId>electrostatic-maven-plugin</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 </plugin>
 ```
 
@@ -107,10 +107,10 @@ mvn electrostatic:generate
 If prefix resolution is not configured in your Maven environment, use fully-qualified coordinates:
 
 ```bash
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:init
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:themes
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:serve
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.3:generate
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:init
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:themes
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:serve
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:generate
 ```
 
 Or configure your Maven plugin groups once so `mvn electrostatic:*` works everywhere:
@@ -258,8 +258,8 @@ The documentation site at https://teggr.github.io/electrostatic/ is built with E
 Build and preview it locally:
 
 ```bash
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build --input ./electrostatic-run/src/main/resources/site --output ./generated-site
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 serve --input ./electrostatic-run/src/main/resources/site --output ./generated-site --base-url=http://localhost:8080
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build --input ./electrostatic-run/src/main/resources/site --output ./generated-site
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 serve --input ./electrostatic-run/src/main/resources/site --output ./generated-site --base-url=http://localhost:8080
 ```
 
 To publish your own Electrostatic site the same way, see the "Publish to GitHub Pages" guide (`electrostatic-run/src/main/resources/site/_guides/github-pages-guide.md`).

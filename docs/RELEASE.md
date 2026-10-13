@@ -2,7 +2,7 @@
 
 Releases are started manually from GitHub Actions. The workflow publishes the current snapshot version, creates a matching GitHub Release, then advances the selected branch to the next patch snapshot.
 
-The current development version of Electrostatic is `0.0.4-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
+The current development version of Electrostatic is `0.0.5-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
 
 ## Configure repository secrets
 
