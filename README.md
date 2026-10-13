@@ -4,62 +4,61 @@ A Java-based static site generator with a multi-module Maven structure.
 
 ## Quick start
 
-This repo supports two out-of-the-box ways to run Electrostatic:
+Start in an empty directory with either JBang or Maven. Electrostatic requires Java 21 or newer.
 
-### Initialize a site
+### JBang and CLI
 
-Create a new site scaffold in the current directory:
-
-```bash
-electrostatic init
-```
-
-Create a new site scaffold in a specific directory:
+Install [JBang](https://www.jbang.dev/download/), then create and enter a site directory:
 
 ```bash
-electrostatic init ./my-site
+mkdir my-site
+cd my-site
+jbang io.github.teggr:electrostatic-cli:0.0.4 init
+jbang io.github.teggr:electrostatic-cli:0.0.4 build
+jbang io.github.teggr:electrostatic-cli:0.0.4 serve --port 8091
 ```
 
-The CLI/JBang `init` command requires an empty target directory and creates a starter structure including:
+Open `http://localhost:8091`; press Ctrl+C to stop the preview server. The generated site is written to `generated-site/`.
 
-- `site-config.xml`
-- `_posts/2026-01-01-hello-world.md`
-- `_books/`
-- `_podcasts/`
-- `_feeds/`
-- `_static/`
-- `_drafts/`
+### Maven plugin
 
-For the JBang/CLI flow, `build` and `serve` default to reading site content from the current working directory and writing output to `./generated-site`.
+Create an empty project directory with this `pom.xml`:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>example</groupId>
+  <artifactId>my-site</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.teggr</groupId>
+        <artifactId>electrostatic-maven-plugin</artifactId>
+        <version>0.0.4</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+From that directory, initialize the site, generate it, and preview it:
+
+```bash
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:init
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:generate
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:serve
+```
+
+The Maven plugin initializes content in `src/main/resources/site` and writes generated output to `target/generated-site`. Open the local URL printed by `serve`; press Ctrl+C to stop the preview server.
+
+Start with a new empty site directory; the Maven init goal also requires that the site target directory does not already exist. `build`/`generate` and `serve` read `baseUrl` from `site-config.xml` unless explicitly overridden.
 
 ### Use the docs theme bundle
 
-Electrostatic now supports selecting a theme bundle.
-The selected theme is persisted to `site-config.xml` during `init`, so `build` and `serve` automatically use it.
-
-For a docs-focused site profile (landing page + section collections), use:
-
-```bash
-electrostatic init --theme docs
-electrostatic build
-electrostatic serve
-```
-
-`build` and `serve` now default to the `baseUrl` in `site-config.xml`. If you want the localhost shortcut, pass it explicitly. You can also opt into drafts for a single run:
-
-```bash
-electrostatic build --base-url http://localhost:8080 --include-drafts
-electrostatic serve --base-url http://localhost:8080 --include-drafts
-```
-
-List available theme bundles:
-
-```bash
-electrostatic themes
-jbang io.github.teggr:electrostatic-cli:0.0.4 themes
-```
-
-You can still pass `--theme` to `build` or `serve` to override the persisted value for a single run.
+For a docs-focused site profile (landing page + section collections), pass `--theme docs` to JBang/CLI init, or `-Delectrostatic.theme=docs` to Maven init. The selected theme is saved to `site-config.xml` and used by later build and serve commands.
 
 JBang works the same way:
 
@@ -246,8 +245,10 @@ The current development version of Electrostatic is `0.0.5-SNAPSHOT`, as declare
 Run tests from the repository root:
 
 ```bash
-mvn -B -ntp test
+mvn -B -ntp install
 ```
+
+This runs unit tests and the end-to-end smoke tests, including real Maven goal invocations in a temporary project. Maven artifacts are installed only into the local Maven repository.
 
 Maven Central release instructions are in [`docs/RELEASE.md`](docs/RELEASE.md).
 

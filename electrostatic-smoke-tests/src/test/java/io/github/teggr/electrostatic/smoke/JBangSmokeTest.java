@@ -26,36 +26,40 @@ class JBangSmokeTest {
 
     @Test
     void jbangInitBuildAndServeShouldGenerateAndServeFromOutputAndRoot() throws Exception {
-        Path repoRoot = Path.of("").toAbsolutePath().getParent();
-        Assumptions.assumeTrue(repoRoot != null, "Repository root is not available from test working directory");
         String jbangCommand = resolveJbangCommand();
-
-        Path scriptPath = repoRoot.resolve("Electrostatic.java");
-        Assumptions.assumeTrue(Files.exists(scriptPath), "Electrostatic.java not found in repository root");
 
         Path siteRoot = tempDir.resolve("jbang-site");
         Files.createDirectories(siteRoot);
 
-        runCommand(List.of(jbangCommand, scriptPath.toString(), "init"), siteRoot);
+        runCommand(List.of(jbangCommand, cliArtifact(), "init", siteRoot.toString()), tempDir);
         rewriteDefaultPostToDatedPost(siteRoot);
 
         Path rootFallbackFile = siteRoot.resolve("root-fallback.txt");
         Files.writeString(rootFallbackFile, "root-content", StandardCharsets.UTF_8);
 
-        runCommand(List.of(jbangCommand, scriptPath.toString(), "build"), siteRoot);
+        runCommand(List.of(jbangCommand, cliArtifact(), "build"), siteRoot);
 
         Path outputDir = siteRoot.resolve("generated-site");
         assertTrue(Files.isDirectory(outputDir));
         assertTrue(Files.exists(outputDir.resolve("index.html")));
+        assertTrue(Files.exists(outputDir.resolve("css/main.css")));
+        String generatedIndex = Files.readString(outputDir.resolve("index.html"), StandardCharsets.UTF_8);
+        assertTrue(generatedIndex.contains("<html"));
+        assertTrue(generatedIndex.contains("site-header"));
+        assertTrue(generatedIndex.contains("Smoke Test Post"));
 
         int port = findAvailablePort();
-        Process serveProcess = startProcess(List.of(jbangCommand, scriptPath.toString(), "serve", "--port", String.valueOf(port)), siteRoot);
+        Process serveProcess = startProcess(List.of(jbangCommand, cliArtifact(), "serve", "--port", String.valueOf(port)), siteRoot);
         try {
             waitForHttpSuccess("http://localhost:" + port + "/index.html", Duration.ofSeconds(30));
 
             HttpResponse outputResponse = httpGet("http://localhost:" + port + "/index.html");
             assertEquals(200, outputResponse.statusCode);
             assertTrue(outputResponse.body.contains("<html"));
+
+            HttpResponse assetResponse = httpGet("http://localhost:" + port + "/css/main.css");
+            assertEquals(200, assetResponse.statusCode);
+            assertTrue(assetResponse.body.contains("body"));
 
             HttpResponse rootResponse = httpGet("http://localhost:" + port + "/root-fallback.txt");
             assertEquals(200, rootResponse.statusCode);
@@ -67,17 +71,12 @@ class JBangSmokeTest {
 
     @Test
     void jbangBuildShouldUseSiteConfigBaseUrlUnlessExplicitlyOverridden() throws Exception {
-        Path repoRoot = Path.of("").toAbsolutePath().getParent();
-        Assumptions.assumeTrue(repoRoot != null, "Repository root is not available from test working directory");
         String jbangCommand = resolveJbangCommand();
-
-        Path scriptPath = repoRoot.resolve("Electrostatic.java");
-        Assumptions.assumeTrue(Files.exists(scriptPath), "Electrostatic.java not found in repository root");
 
         Path siteRoot = tempDir.resolve("jbang-site-with-drafts");
         Files.createDirectories(siteRoot);
 
-        runCommand(List.of(jbangCommand, scriptPath.toString(), "init"), siteRoot);
+        runCommand(List.of(jbangCommand, cliArtifact(), "init", siteRoot.toString()), tempDir);
         rewriteBaseUrl(siteRoot, "https://prod.example");
         rewriteDefaultPostToDatedPost(siteRoot);
         Files.writeString(
@@ -93,7 +92,7 @@ class JBangSmokeTest {
         Path defaultOutputDir = siteRoot.resolve("generated-site-default");
         runCommand(List.of(
             jbangCommand,
-            scriptPath.toString(),
+            cliArtifact(),
             "build",
             "--output",
             defaultOutputDir.toString()
@@ -105,7 +104,7 @@ class JBangSmokeTest {
         Path draftOutputDir = siteRoot.resolve("generated-site-drafts");
         runCommand(List.of(
             jbangCommand,
-            scriptPath.toString(),
+            cliArtifact(),
             "build",
             "--output",
             draftOutputDir.toString(),
@@ -120,24 +119,19 @@ class JBangSmokeTest {
 
     @Test
     void jbangBuildShouldAllowExplicitLocalhostShortcut() throws Exception {
-        Path repoRoot = Path.of("").toAbsolutePath().getParent();
-        Assumptions.assumeTrue(repoRoot != null, "Repository root is not available from test working directory");
         String jbangCommand = resolveJbangCommand();
-
-        Path scriptPath = repoRoot.resolve("Electrostatic.java");
-        Assumptions.assumeTrue(Files.exists(scriptPath), "Electrostatic.java not found in repository root");
 
         Path siteRoot = tempDir.resolve("jbang-site-localhost");
         Files.createDirectories(siteRoot);
 
-        runCommand(List.of(jbangCommand, scriptPath.toString(), "init"), siteRoot);
+        runCommand(List.of(jbangCommand, cliArtifact(), "init", siteRoot.toString()), tempDir);
         rewriteBaseUrl(siteRoot, "https://prod.example");
         rewriteDefaultPostToDatedPost(siteRoot);
 
         Path outputDir = siteRoot.resolve("generated-site-localhost");
         runCommand(List.of(
             jbangCommand,
-            scriptPath.toString(),
+            cliArtifact(),
             "build",
             "--output",
             outputDir.toString(),
@@ -148,28 +142,69 @@ class JBangSmokeTest {
         assertTrue(Files.readString(outputDir.resolve("feed.xml")).contains("http://localhost:8080"));
     }
 
+    @Test
+    void jbangBuildShouldKeepProjectSubpathInGeneratedAssetAndNavigationUrls() throws Exception {
+        String jbangCommand = resolveJbangCommand();
+
+        Path siteRoot = tempDir.resolve("jbang-site-pages-subpath");
+        Files.createDirectories(siteRoot);
+
+        runCommand(List.of(jbangCommand, cliArtifact(), "init", siteRoot.toString()), tempDir);
+        rewriteBaseUrl(siteRoot, "https://example.github.io/smoke-project/");
+        rewriteDefaultPostToDatedPost(siteRoot);
+
+        Path outputDir = siteRoot.resolve("generated-site");
+        runCommand(List.of(
+            jbangCommand,
+            cliArtifact(),
+            "build",
+            "--output",
+            outputDir.toString()
+        ), siteRoot);
+
+        String generatedIndex = Files.readString(outputDir.resolve("index.html"), StandardCharsets.UTF_8);
+        assertTrue(generatedIndex.contains("href=\"/smoke-project/css/main.css\""));
+        assertTrue(generatedIndex.contains("href=\"/smoke-project/\""));
+        assertTrue(Files.readString(outputDir.resolve("feed.xml"), StandardCharsets.UTF_8)
+            .contains("https://example.github.io/smoke-project/"));
+    }
+
     private static String resolveJbangCommand() {
         String osName = System.getProperty("os.name", "").toLowerCase();
         return osName.contains("win") ? "jbang.cmd" : "jbang";
     }
 
-    private static void runCommand(List<String> command, Path workingDirectory) throws Exception {
+    private static String cliArtifact() {
+        String version = System.getProperty("electrostatic.test.version");
+        if (version == null || version.isBlank()) {
+            throw new IllegalStateException("electrostatic.test.version was not configured for JBang smoke tests");
+        }
+        return "io.github.teggr:electrostatic-cli:" + version;
+    }
+
+    private void runCommand(List<String> command, Path workingDirectory) throws Exception {
         Process process = startProcess(command, workingDirectory);
         boolean finished = process.waitFor(2, java.util.concurrent.TimeUnit.MINUTES);
         if (!finished) {
-            process.destroyForcibly();
-            throw new IllegalStateException("Command timed out: " + String.join(" ", command));
+            stopProcessTree(process);
+            throw new IllegalStateException(
+                "Command timed out: " + String.join(" ", command) + System.lineSeparator() + readProcessLog()
+            );
         }
 
         if (process.exitValue() != 0) {
-            throw new IllegalStateException("Command failed with exit code " + process.exitValue() + ": " + String.join(" ", command));
+            throw new IllegalStateException(
+                "Command failed with exit code " + process.exitValue() + ": " + String.join(" ", command) +
+                    System.lineSeparator() + readProcessLog()
+            );
         }
     }
 
-    private static Process startProcess(List<String> command, Path workingDirectory) throws Exception {
+    private Process startProcess(List<String> command, Path workingDirectory) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder(command)
             .directory(workingDirectory.toFile())
-            .inheritIO();
+            .redirectErrorStream(true)
+            .redirectOutput(tempDir.resolve("jbang-process.log").toFile());
 
         try {
             return processBuilder.start();
@@ -179,6 +214,11 @@ class JBangSmokeTest {
             }
             throw e;
         }
+    }
+
+    private String readProcessLog() throws IOException {
+        Path logFile = tempDir.resolve("jbang-process.log");
+        return Files.exists(logFile) ? Files.readString(logFile, StandardCharsets.UTF_8) : "JBang output log not found.";
     }
 
     private static void stopProcessTree(Process process) throws Exception {

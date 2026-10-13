@@ -18,11 +18,13 @@ Then verify:
 jbang version
 ```
 
-## 2. Initialize a site
+## 2. Initialize a new site
 
-From the repository root (or any directory where you keep content), run:
+Create an empty directory and run the commands from inside it:
 
 ```bash
+mkdir my-site
+cd my-site
 jbang io.github.teggr:electrostatic-cli:0.0.4 init
 ```
 
@@ -57,6 +59,8 @@ jbang io.github.teggr:electrostatic-cli:0.0.4 serve --port 8091 --base-url http:
 ```
 
 Open `http://localhost:8091`.
+
+The generated files are written to `generated-site/`. Press Ctrl+C to stop the preview server.
 
 ## 4. Theme selection
 

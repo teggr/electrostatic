@@ -64,6 +64,9 @@ class MavenPluginSmokeTest {
 
         assertTrue(Files.isDirectory(outputDir));
         assertTrue(hasHtmlFile(outputDir));
+        assertTrue(Files.exists(outputDir.resolve("index.html")));
+        assertTrue(Files.exists(outputDir.resolve("css/main.css")));
+        assertTrue(Files.readString(outputDir.resolve("index.html")).contains("site-header"));
     }
 
     @Test
@@ -188,6 +191,10 @@ class MavenPluginSmokeTest {
         assertTrue(Files.exists(outputDir.resolve("installation/getting-started.html")));
         assertTrue(Files.exists(outputDir.resolve("guides/first-guide.html")));
         assertTrue(Files.exists(outputDir.resolve("plugins/plugin-overview.html")));
+        String landingPage = Files.readString(outputDir.resolve("index.html"), StandardCharsets.UTF_8);
+        assertTrue(landingPage.contains("Installation"));
+        assertTrue(landingPage.contains("href=\"/installation/index.html\""));
+        assertTrue(landingPage.contains("Guides"));
     }
 
     private static boolean hasHtmlFile(Path outputDirectory) throws Exception {
