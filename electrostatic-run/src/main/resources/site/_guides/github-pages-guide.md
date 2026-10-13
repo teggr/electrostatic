@@ -29,8 +29,8 @@ For example:
 Install **Java 21** and **JBang**, then build and preview locally:
 
 ```bash
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 serve --base-url=http://localhost:8080
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 serve --base-url=http://localhost:8080
 ```
 
 The build output is written to `generated-site/`. Add `generated-site/` to your `.gitignore`; GitHub Actions builds it for you.
@@ -74,7 +74,7 @@ jobs:
         uses: jbangdev/setup-jbang@v0.1.1
 
       - name: Build site
-        run: jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
+        run: jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -102,12 +102,12 @@ If your site source is not at the repository root, pass `--input` and `--output`
 ```yaml
       - name: Build site
         run: >-
-          jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
+          jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build
           --input ./docs-site
           --output ./generated-site
 ```
 
-This is how the Electrostatic project publishes this documentation site from `electrostatic-run/src/main/resources/site`.
+The Electrostatic project publishes this documentation site from `electrostatic-run/src/main/resources/site`. Its workflow builds the CLI from the checked-out source first, so each deployment uses the code from the same commit rather than waiting for a Maven Central release.
 
 ## 3. Enable GitHub Pages
 

@@ -27,15 +27,18 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+          cache: maven
 
-      - name: Set up JBang
-        uses: jbangdev/setup-jbang@v0.1.1
+      - name: Build CLI
+        run: ./mvnw --batch-mode --no-transfer-progress --projects electrostatic-cli --also-make package
 
       - name: Build site
-        run: >-
-          jbang --fresh io.github.teggr:electrostatic-cli:0.0.3 build
-          --input ./electrostatic-run/src/main/resources/site
-          --output ./generated-site
+        run: |
+          CLI_JAR=$(find electrostatic-cli/target -maxdepth 1 -type f -name 'electrostatic-cli-*.jar' ! -name 'original-*' -print -quit)
+          test -n "$CLI_JAR"
+          java -jar "$CLI_JAR" build \
+            --input ./electrostatic-run/src/main/resources/site \
+            --output ./generated-site
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
