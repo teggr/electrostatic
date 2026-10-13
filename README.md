@@ -4,7 +4,15 @@ A Java-based static site generator with a multi-module Maven structure.
 
 ## Quick start
 
-Start in an empty directory with either JBang or Maven. Electrostatic requires Java 21 or newer.
+Choose the wrapper that fits your project. Both delegate to the shared generation core.
+Electrostatic requires Java 21 or newer; the repository Maven Wrapper pins Maven 3.9.16.
+The plugin does not declare a separate minimum Maven version. `0.0.4` is the latest
+published release; the current development version is `0.0.5-SNAPSHOT`.
+
+| Workflow | Source directory by default | Output directory by default |
+| --- | --- | --- |
+| JBang / CLI | Current directory | `generated-site/` |
+| Maven plugin | `src/main/resources/site/` | `target/generated-site/` |
 
 ### JBang and CLI
 
@@ -59,6 +67,9 @@ Start with a new empty site directory; the Maven init goal also requires that th
 ### Use the docs theme bundle
 
 For a docs-focused site profile (landing page + section collections), pass `--theme docs` to JBang/CLI init, or `-Delectrostatic.theme=docs` to Maven init. The selected theme is saved to `site-config.xml` and used by later build and serve commands.
+For every configuration key, wrapper default, theme/plugin precedence, local asset override,
+and troubleshooting step, see the
+[Configuration and Troubleshooting guide](electrostatic-run/src/main/resources/site/_guides/configuration-guide.md).
 
 JBang works the same way:
 
