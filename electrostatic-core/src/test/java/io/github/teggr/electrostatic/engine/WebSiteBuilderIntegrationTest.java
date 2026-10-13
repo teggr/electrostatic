@@ -114,6 +114,9 @@ class WebSiteBuilderIntegrationTest {
         new WebSiteBuilder(DefaultThemePlugin.create()).build(options, tempDir, outputDirectory);
 
         assertTrue(treeContains(outputDirectory, "Draft body from the explicit includeDrafts option."));
+        String html = Files.readString(outputDirectory.resolve("index.html"));
+        assertTrue(html.contains("href=\"https://example.test/feed.xml\""));
+        assertTrue(Files.exists(outputDirectory.resolve("feed.xml")));
     }
 
     @Test
@@ -135,17 +138,21 @@ class WebSiteBuilderIntegrationTest {
         Files.createDirectories(tempDir.resolve("_guides"));
         Files.createDirectories(tempDir.resolve("_plugins"));
         Files.createDirectories(tempDir.resolve("_static"));
+        Files.createDirectories(tempDir.resolve("_static/images"));
+        Files.writeString(tempDir.resolve("_static/images/logo.svg"), "<svg></svg>");
         Files.writeString(tempDir.resolve("_installation/getting-started.md"), """
             ---
             title: Getting Started
             ---
-            Install docs.
+            Install docs. [First guide]({{site.baseurl}}/guides/first-guide.html)
+
+            ![Project logo]({{site.baseurl}}/images/logo.svg)
             """);
         Files.writeString(tempDir.resolve("_guides/first-guide.md"), """
             ---
             title: First Guide
             ---
-            Guide docs.
+            Guide docs. [Plugin overview](../plugins/plugin-overview.html)
             """);
         Files.writeString(tempDir.resolve("_plugins/plugin-overview.md"), """
             ---
@@ -159,12 +166,24 @@ class WebSiteBuilderIntegrationTest {
 
         String html = Files.readString(outputDirectory.resolve("index.html"));
         String pluginsIndexHtml = Files.readString(outputDirectory.resolve("plugins/index.html"));
+        String gettingStartedHtml = Files.readString(outputDirectory.resolve("installation/getting-started.html"));
+        String firstGuideHtml = Files.readString(outputDirectory.resolve("guides/first-guide.html"));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/main.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/css/style.css\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/\""));
         assertTrue(html.contains("href=\"/ci-ready-maven/guides/index.html\""));
         assertTrue(pluginsIndexHtml.contains("href=\"/ci-ready-maven/plugins/plugin-overview.html\""));
         assertTrue(html.contains("rel=\"canonical\" href=\"https://teggr.github.io/ci-ready-maven/index.html\""));
+        assertTrue(html.contains("property=\"og:url\" content=\"https://teggr.github.io/ci-ready-maven/index.html\""));
+        assertFalse(html.contains("feed.xml"));
+        assertTrue(gettingStartedHtml.contains(
+            "href=\"https://teggr.github.io/ci-ready-maven/guides/first-guide.html\""));
+        assertTrue(gettingStartedHtml.contains(
+            "src=\"https://teggr.github.io/ci-ready-maven/images/logo.svg\""));
+        assertTrue(firstGuideHtml.contains("href=\"../plugins/plugin-overview.html\""));
+        assertTrue(Files.exists(outputDirectory.resolve("css/main.css")));
+        assertTrue(Files.exists(outputDirectory.resolve("css/style.css")));
+        assertTrue(Files.exists(outputDirectory.resolve("images/logo.svg")));
         assertFalse(html.contains("ci-ready-maven//"));
     }
 
@@ -191,7 +210,7 @@ class WebSiteBuilderIntegrationTest {
             ---
             title: Getting Started
             ---
-            Install docs.
+            Install docs. [First guide]({{site.baseurl}}/guides/first-guide.html)
             """);
         Files.writeString(tempDir.resolve("_guides/first-guide.md"), """
             ---
@@ -221,6 +240,7 @@ class WebSiteBuilderIntegrationTest {
         new WebSiteBuilder(DocsThemePlugin.create()).build(GenerationOptions.defaults(), tempDir, outputDirectory);
 
         String html = Files.readString(outputDirectory.resolve("index.html"));
+        String gettingStartedHtml = Files.readString(outputDirectory.resolve("installation/getting-started.html"));
         assertTrue(html.contains("<title>CI Ready Maven | Docs Site</title>"));
         assertTrue(html.contains("<h1>CI Ready Maven</h1>"));
         assertTrue(html.contains("<p>Build docs for your own project.</p>"));
@@ -228,6 +248,12 @@ class WebSiteBuilderIntegrationTest {
         assertFalse(html.contains("Build and publish documentation sites with Electrostatic."));
         assertTrue(html.contains(">Browse</a>"));
         assertTrue(html.contains("href=\"/guides/index.html\""));
+        assertTrue(html.contains("href=\"/css/main.css\""));
+        assertTrue(html.contains("rel=\"canonical\" href=\"https://example.test/index.html\""));
+        assertTrue(html.contains("property=\"og:url\" content=\"https://example.test/index.html\""));
+        assertFalse(html.contains("feed.xml"));
+        assertTrue(gettingStartedHtml.contains("href=\"https://example.test/guides/first-guide.html\""));
+        assertTrue(Files.exists(outputDirectory.resolve("css/main.css")));
     }
 
     @Test

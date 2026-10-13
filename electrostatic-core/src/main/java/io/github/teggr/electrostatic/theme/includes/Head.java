@@ -2,6 +2,7 @@ package io.github.teggr.electrostatic.theme.includes;
 
 import io.github.teggr.electrostatic.engine.RenderModel;
 import io.github.teggr.electrostatic.feed.FeedPlugin;
+import io.github.teggr.electrostatic.plugins.Plugins;
 import io.github.teggr.electrostatic.utils.Utils;
 import j2html.tags.DomContent;
 
@@ -33,11 +34,14 @@ public class Head {
                 .withRel("stylesheet")
                 .withHref(Utils.relativeUrl(path)))
             .toArray(DomContent[]::new)),
-        link()
-            .withType("application/atom+xml")
-            .withRel("alternate")
-            .withHref(renderModel.getContext().getSite().resolveUrl("/" + FeedPlugin.INSTANCE.getFeed().getPath()))
-            .withTitle(renderModel.getContext().getSite().getTitle())
+        iff(
+            Plugins.aggregatorPlugins.contains(FeedPlugin.INSTANCE),
+            link()
+                .withType("application/atom+xml")
+                .withRel("alternate")
+                .withHref(renderModel.getContext().getSite().resolveUrl("/" + FeedPlugin.INSTANCE.getFeed().getPath()))
+                .withTitle(renderModel.getContext().getSite().getTitle())
+        )
     );
   }
 }

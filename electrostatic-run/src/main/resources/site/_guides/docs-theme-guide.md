@@ -29,6 +29,17 @@ In `site-config.xml`, set section keys and labels:
 
 Section key `installation` maps to folder `_installation/`.
 
+## Use the base URL in Markdown
+
+You can use `{{site.baseurl}}` in Markdown links and image destinations to create absolute URLs that work on both domain-root and project-subpath deployments:
+
+```md
+[First guide]({{site.baseurl}}/guides/first-guide.html)
+![Project logo]({{site.baseurl}}/images/logo.svg)
+```
+
+If `baseUrl` ends with a slash, the docs theme avoids adding a second slash before the rest of the URL.
+
 ## Author section pages
 
 Each markdown file in a section folder becomes a docs page.

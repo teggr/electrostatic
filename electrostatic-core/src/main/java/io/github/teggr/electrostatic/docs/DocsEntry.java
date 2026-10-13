@@ -4,6 +4,7 @@ import org.commonmark.Extension;
 import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
 import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.Image;
+import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.renderer.html.HtmlRenderer;
 import io.github.teggr.electrostatic.engine.ContentItem;
@@ -81,8 +82,16 @@ public class DocsEntry implements ContentItem {
     document.accept(new AbstractVisitor() {
       @Override
       public void visit(Image image) {
-        image.setDestination(image.getDestination().replaceAll("\\{\\{site\\.baseurl\\}\\}", renderModel.getContext().getSite().getBaseUrl()));
+        image.setDestination(Utils.resolveBaseUrlPlaceholder(
+            image.getDestination(), renderModel.getContext().getSite()));
         super.visit(image);
+      }
+
+      @Override
+      public void visit(Link link) {
+        link.setDestination(Utils.resolveBaseUrlPlaceholder(
+            link.getDestination(), renderModel.getContext().getSite()));
+        super.visit(link);
       }
     });
 

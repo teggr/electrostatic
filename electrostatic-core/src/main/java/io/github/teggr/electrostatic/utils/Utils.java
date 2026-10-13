@@ -66,6 +66,17 @@ public class Utils {
         return path;
     }
 
+    public static String resolveBaseUrlPlaceholder(String url, Site site) {
+        if (url == null || site == null || site.getBaseUrl() == null) {
+            return url;
+        }
+
+        String baseUrl = site.getBaseUrl();
+        String baseUrlWithoutTrailingSlash = baseUrl.replaceFirst("/+$", "");
+        return url.replace("{{site.baseurl}}/", baseUrlWithoutTrailingSlash + "/")
+            .replace("{{site.baseurl}}", baseUrl);
+    }
+
     /**
      * Resolves an image URL to an absolute URL.
      * If the imageUrl is null, returns null.
