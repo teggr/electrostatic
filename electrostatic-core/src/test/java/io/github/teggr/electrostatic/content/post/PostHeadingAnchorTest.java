@@ -112,6 +112,25 @@ class PostHeadingAnchorTest {
         assertTrue(html.contains("id=\"subtitle-two\""), "h2 should have id");
     }
 
+    @Test
+    void getContent_shouldResolveBaseUrlPlaceholdersInMarkdownLinksAndImages() {
+        Map<String, List<String>> data = new HashMap<>();
+        data.put("title", List.of("Test Post"));
+        data.put("date", List.of("2024-01-01"));
+
+        Node document = Parser.builder()
+            .build()
+            .parse("[Guide]({{site.baseurl}}/guide.html)\n\n![Logo]({{site.baseurl}}/images/logo.svg)");
+        Post post = new Post("2024-01-01-test-post", data, document);
+        RenderModel renderModel = createRenderModel();
+        renderModel.getContext().getSite().setBaseUrl("https://example.com/project/");
+
+        String html = post.getContent(renderModel).render();
+
+        assertTrue(html.contains("href=\"https://example.com/project/guide.html\""));
+        assertTrue(html.contains("src=\"https://example.com/project/images/logo.svg\""));
+    }
+
     private RenderModel createRenderModel() {
         RenderModel renderModel = new RenderModel();
         Context context = new Context();

@@ -14,7 +14,7 @@ Add Electrostatic to your `pom.xml`:
 <plugin>
   <groupId>io.github.teggr</groupId>
   <artifactId>electrostatic-maven-plugin</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.4</version>
 </plugin>
 ```
 

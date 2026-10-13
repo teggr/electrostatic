@@ -15,6 +15,7 @@ import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
 import org.commonmark.node.AbstractVisitor;
 import org.commonmark.node.FencedCodeBlock;
 import org.commonmark.node.Image;
+import org.commonmark.node.Link;
 import org.commonmark.node.Node;
 import org.commonmark.node.Paragraph;
 import org.commonmark.renderer.NodeRenderer;
@@ -78,8 +79,16 @@ public class Post implements ContentItem, TaggedContent, CategorisedContent, Ind
     document.accept(new AbstractVisitor() {
       @Override
       public void visit(Image image) {
-        image.setDestination(image.getDestination().replaceAll("\\{\\{site\\.baseurl\\}\\}", renderModel.getContext().getSite().getBaseUrl()));
+        image.setDestination(Utils.resolveBaseUrlPlaceholder(
+            image.getDestination(), renderModel.getContext().getSite()));
         super.visit(image);
+      }
+
+      @Override
+      public void visit(Link link) {
+        link.setDestination(Utils.resolveBaseUrlPlaceholder(
+            link.getDestination(), renderModel.getContext().getSite()));
+        super.visit(link);
       }
     });
     List<Extension> extensions = List.of(HeadingAnchorExtension.create());
@@ -112,8 +121,16 @@ public class Post implements ContentItem, TaggedContent, CategorisedContent, Ind
       firstParagraph.accept(new AbstractVisitor() {
         @Override
         public void visit(Image image) {
-          image.setDestination(image.getDestination().replaceAll("\\{\\{site\\.baseurl\\}\\}", renderModel.getContext().getSite().getBaseUrl()));
+          image.setDestination(Utils.resolveBaseUrlPlaceholder(
+              image.getDestination(), renderModel.getContext().getSite()));
           super.visit(image);
+        }
+
+        @Override
+        public void visit(Link link) {
+          link.setDestination(Utils.resolveBaseUrlPlaceholder(
+              link.getDestination(), renderModel.getContext().getSite()));
+          super.visit(link);
         }
       });
       HtmlRenderer renderer = HtmlRenderer.builder()
