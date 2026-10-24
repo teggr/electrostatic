@@ -139,6 +139,16 @@ class SitePreviewServerWatchTest {
             Path git = Files.createDirectories(input.resolve(".git/objects"));
             Files.writeString(git.resolve("ignored"), "metadata");
             assertStableBuildCount(before, Duration.ofMillis(800));
+
+            Files.writeString(input.resolve(".gitignore"), "**/target/\n*.swp\n");
+            int beforeIgnoreFileChange = builds.get();
+            await(() -> builds.get() > beforeIgnoreFileChange);
+            assertStableBuildCount(builds.get(), Duration.ofMillis(300));
+            before = builds.get();
+            Files.createDirectories(input.resolve("target/classes"));
+            Files.writeString(input.resolve("target/classes/build-info"), "generated");
+            Files.writeString(input.resolve("editor.swp"), "temporary");
+            assertStableBuildCount(before, Duration.ofMillis(800));
         } finally {
             session.close();
         }
