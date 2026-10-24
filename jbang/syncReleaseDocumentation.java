@@ -54,7 +54,7 @@ public class syncReleaseDocumentation {
         String updatedReadme = replaceAll(readme, CLI_COORDINATE, releaseVersion, 1, "README CLI coordinates");
         updatedReadme = replaceAll(updatedReadme, PLUGIN_COORDINATE, releaseVersion, 1,
                 "README Maven plugin coordinates");
-        updatedReadme = replaceExactlyOnce(updatedReadme, PLUGIN_XML_VERSION, releaseVersion,
+        updatedReadme = replaceAllXmlVersions(updatedReadme, releaseVersion, 1,
                 "README Maven plugin declaration");
         updatedReadme = replaceExactlyOnce(updatedReadme, DEVELOPMENT_VERSION, snapshotVersion,
                 "README development version");
@@ -189,13 +189,18 @@ public class syncReleaseDocumentation {
                 jbang io.github.teggr:electrostatic-cli:0.0.1-SNAPSHOT build
                 mvn io.github.teggr:electrostatic-maven-plugin:0.0.1-SNAPSHOT:init
                 <artifactId>electrostatic-maven-plugin</artifactId><version>0.0.1-SNAPSHOT</version>
+                <artifactId>electrostatic-maven-plugin</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
                 """;
         String updatedReadme = replaceAll(readme, CLI_COORDINATE, "1.2.3", 1, "test CLI coordinate");
         updatedReadme = replaceAll(updatedReadme, PLUGIN_COORDINATE, "1.2.3", 1, "test plugin coordinate");
-        updatedReadme = replaceExactlyOnce(updatedReadme, PLUGIN_XML_VERSION, "1.2.3", "test plugin declaration");
+        updatedReadme = replaceAllXmlVersions(updatedReadme, "1.2.3", 1, "test plugin declaration");
         requireContains(updatedReadme, "io.github.teggr:electrostatic-cli:1.2.3 build");
         requireContains(updatedReadme, "io.github.teggr:electrostatic-maven-plugin:1.2.3:init");
         requireContains(updatedReadme, "<version>1.2.3</version>");
+        if (countMatches(updatedReadme, PLUGIN_XML_VERSION) != 2 || updatedReadme.contains("0.0.1-SNAPSHOT")) {
+            throw new IllegalStateException("The self-test did not update every README Maven plugin declaration.");
+        }
         String updatedReadmeDevelopmentVersion = replaceExactlyOnce(
                 "The current development version of Electrostatic is `stale`, as declared by the root POM.",
                 DEVELOPMENT_VERSION, "1.2.4-SNAPSHOT", "test README development version");
