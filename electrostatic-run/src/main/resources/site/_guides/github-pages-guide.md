@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -79,9 +79,10 @@ jobs:
         run: jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./generated-site
+          include-hidden-files: true
 
   deploy:
     runs-on: ubuntu-latest
@@ -92,7 +93,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 ```
 
 Change `main` if your project uses a different deployment branch. The workflow builds on pushes to that branch, and `workflow_dispatch` lets you run it manually from the **Actions** tab.
