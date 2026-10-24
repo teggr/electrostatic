@@ -204,9 +204,9 @@ The preview flow now forwards the same GenerationOptions object used by build ge
 CLI/JBang `serve --watch` and Maven `serve -Delectrostatic.watch=true` enable the same optional watch flow in core:
 
 - `SiteSourceWatcher` uses the JDK WatchService to register the input tree recursively, including newly created directories, without following directory symlinks.
-- Generated output, `.git` trees, and paths matched by `.gitignore` rules under the input tree are excluded. Output must not contain the input tree.
+- Generated output, `.git` trees, and paths matched by `.gitignore` rules from the input directory up to the repository root are excluded. Output must not contain the input tree.
 - Source create/modify/delete events (including renames) are coalesced until 250 ms of quiet, then trigger a serial full rebuild with the original GenerationOptions and selected theme.
-- Rebuild logs include de-duplicated triggering paths; filesystem event overflow is warned as a possible incomplete path list and triggers a defensive full rebuild. Changes to `.gitignore` refresh the watched directory registrations.
+- Rebuild logs include de-duplicated triggering paths; filesystem event overflow is warned as a possible incomplete path list and triggers a defensive full rebuild. Changes to relevant `.gitignore` files, including ancestor files, refresh watched directory registrations.
 - Each watched build clears the global plugin registries before the theme registers fresh plugins, preventing duplicate registration and accumulated aggregator content.
 - Rebuilds and HTTP file reads share a lock so requests do not observe output partway through a build. Failed builds are logged and do not advance the browser reload revision; watching continues.
 - Successful rebuilds advance a revision served at `/__electrostatic/reload`. A preview-only script injected into HTML responses polls this same-origin endpoint every second and reloads on revision changes.
