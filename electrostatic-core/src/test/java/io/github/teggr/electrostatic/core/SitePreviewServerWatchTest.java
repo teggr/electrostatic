@@ -132,22 +132,31 @@ class SitePreviewServerWatchTest {
 
     @Test
     void watchShouldIgnoreOutputAndGitAndStopWhenSessionCloses() throws Exception {
+        Path repository = input.getParent();
+        Files.createDirectory(repository.resolve(".git"));
+        Files.writeString(repository.resolve(".gitignore"), "**/target/\n");
         SitePreviewServer.PreviewSession session = start(true);
         try {
+            Thread.sleep(500);
             int before = builds.get();
             Files.writeString(output.resolve("ignored.txt"), "generated");
             Path git = Files.createDirectories(input.resolve(".git/objects"));
             Files.writeString(git.resolve("ignored"), "metadata");
             assertStableBuildCount(before, Duration.ofMillis(800));
 
-            Files.writeString(input.resolve(".gitignore"), "**/target/\n*.swp\n");
-            int beforeIgnoreFileChange = builds.get();
-            await(() -> builds.get() > beforeIgnoreFileChange);
+            int beforeRootIgnoreChange = builds.get();
+            Files.writeString(repository.resolve(".gitignore"), "**/target/\n*.swp\n");
+            await(() -> builds.get() > beforeRootIgnoreChange);
             assertStableBuildCount(builds.get(), Duration.ofMillis(300));
+
+            int beforeNestedIgnoreChange = builds.get();
+            Files.writeString(input.resolve(".gitignore"), "*.log\n");
+            await(() -> builds.get() > beforeNestedIgnoreChange);
             before = builds.get();
             Files.createDirectories(input.resolve("target/classes"));
             Files.writeString(input.resolve("target/classes/build-info"), "generated");
             Files.writeString(input.resolve("editor.swp"), "temporary");
+            Files.writeString(input.resolve("build.log"), "ignored");
             assertStableBuildCount(before, Duration.ofMillis(800));
         } finally {
             session.close();

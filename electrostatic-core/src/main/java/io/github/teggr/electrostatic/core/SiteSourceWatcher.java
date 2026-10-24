@@ -27,6 +27,7 @@ final class SiteSourceWatcher implements AutoCloseable {
 
     private final Path inputDirectory;
     private final Path outputDirectory;
+    private final Path repositoryRoot;
     private final WatchService watchService;
     private final Map<WatchKey, Path> directories = new HashMap<>();
     private final Map<Path, List<IgnoreRule>> ignoreRules = new HashMap<>();
@@ -35,8 +36,10 @@ final class SiteSourceWatcher implements AutoCloseable {
     SiteSourceWatcher(Path inputDirectory, Path outputDirectory, Runnable rebuild) throws IOException {
         this.inputDirectory = inputDirectory;
         this.outputDirectory = outputDirectory;
+        this.repositoryRoot = findRepositoryRoot(inputDirectory);
         this.watchService = inputDirectory.getFileSystem().newWatchService();
         try {
+            registerIgnoreAncestorDirectories();
             registerDirectories(inputDirectory);
         } catch (IOException | RuntimeException e) {
             watchService.close();
@@ -67,11 +70,17 @@ final class SiteSourceWatcher implements AutoCloseable {
             return false;
         }
         boolean ignored = false;
-        Path relative = inputDirectory.relativize(path);
-        for (int ruleDirectoryDepth = 0; ruleDirectoryDepth < relative.getNameCount(); ruleDirectoryDepth++) {
-            Path ruleDirectory = ruleDirectoryDepth == 0
-                ? inputDirectory
-                : inputDirectory.resolve(relative.subpath(0, ruleDirectoryDepth));
+        Path ruleDirectory = path.getParent();
+        List<Path> ruleDirectories = new ArrayList<>();
+        while (ruleDirectory != null && ruleDirectory.startsWith(repositoryRoot)) {
+            ruleDirectories.add(ruleDirectory);
+            if (ruleDirectory.equals(repositoryRoot)) {
+                break;
+            }
+            ruleDirectory = ruleDirectory.getParent();
+        }
+        for (int depth = ruleDirectories.size() - 1; depth >= 0; depth--) {
+            ruleDirectory = ruleDirectories.get(depth);
             List<IgnoreRule> rules = ignoreRules.get(ruleDirectory);
             if (rules == null) {
                 continue;
@@ -84,6 +93,17 @@ final class SiteSourceWatcher implements AutoCloseable {
             }
         }
         return ignored;
+    }
+
+    private Path findRepositoryRoot(Path path) {
+        Path directory = path;
+        while (directory != null) {
+            if (Files.exists(directory.resolve(".git"))) {
+                return directory;
+            }
+            directory = directory.getParent();
+        }
+        return inputDirectory;
     }
 
     private void loadIgnoreRules(Path directory) {
@@ -108,7 +128,24 @@ final class SiteSourceWatcher implements AutoCloseable {
         directories.keySet().forEach(WatchKey::cancel);
         directories.clear();
         ignoreRules.clear();
+        registerIgnoreAncestorDirectories();
         registerDirectories(inputDirectory);
+    }
+
+    private void registerIgnoreAncestorDirectories() throws IOException {
+        Path directory = repositoryRoot;
+        while (directory != null && !directory.equals(inputDirectory)) {
+            WatchKey key = directory.register(watchService,
+                StandardWatchEventKinds.ENTRY_CREATE,
+                StandardWatchEventKinds.ENTRY_MODIFY,
+                StandardWatchEventKinds.ENTRY_DELETE);
+            directories.put(key, directory);
+            loadIgnoreRules(directory);
+            if (directory.equals(inputDirectory.getParent())) {
+                break;
+            }
+            directory = directory.getParent();
+        }
     }
 
     private void registerDirectories(Path root) throws IOException {
@@ -156,6 +193,9 @@ final class SiteSourceWatcher implements AutoCloseable {
                 } catch (IOException e) {
                     log.warn("Unable to refresh watched directories after ignore rules changed", e);
                 }
+                continue;
+            }
+            if (!path.startsWith(inputDirectory) || path.equals(inputDirectory)) {
                 continue;
             }
             if (ignored(path)) {
