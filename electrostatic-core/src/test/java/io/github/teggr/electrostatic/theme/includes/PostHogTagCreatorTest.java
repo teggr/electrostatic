@@ -18,7 +18,7 @@ class PostHogTagCreatorTest {
         Site site = new Site();
         site.setPosthog(new PostHog("phc_test", "https://eu.i.posthog.com"));
 
-        String html = PostHogTagCreator.create(site).render();
+        String html = PostHogTagCreator.create(site).render().replace("&#39;", "'");
 
         assertTrue(html.contains("https://eu.i.posthog.com/static/array.js"));
         assertTrue(html.contains("posthog.init"));
