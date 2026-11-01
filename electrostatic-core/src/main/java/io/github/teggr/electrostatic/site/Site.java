@@ -30,6 +30,7 @@ public class Site {
     private String theme;
     private String docsSections;
     private String docsSectionLabels;
+    private PostHog posthog;
 
     public boolean showExcerpts() {
         return false;

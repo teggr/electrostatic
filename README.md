@@ -14,6 +14,27 @@ published release; the current development version is `0.0.5-SNAPSHOT`.
 | JBang / CLI | Current directory | `generated-site/` |
 | Maven plugin | `src/main/resources/site/` | `target/generated-site/` |
 
+### PostHog analytics
+
+Both built-in themes support optional PostHog pageview analytics. Set `POSTHOG_KEY`
+in the environment used to run the site build; `POSTHOG_HOST` is optional and defaults
+to the EU cloud host (`https://eu.i.posthog.com`). The project key is a public browser
+ingestion key, so it is suitable for a static-site build.
+
+When no project key is configured, no analytics script is emitted. Electrostatic disables
+autocapture and session recording and uses identified-only person profiles.
+
+You can also configure PostHog directly in `site-config.xml`:
+
+```xml
+<posthog>
+  <projectKey>phc_your_project_key</projectKey>
+  <apiHost>https://eu.i.posthog.com</apiHost>
+</posthog>
+```
+
+Environment variables override the corresponding XML values.
+
 ### JBang and CLI
 
 Install [JBang](https://www.jbang.dev/download/), then create and enter a site directory:
