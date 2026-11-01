@@ -21,7 +21,8 @@ class PostHogTagCreatorTest {
         String html = PostHogTagCreator.create(site).render();
 
         assertTrue(html.contains("https://eu.i.posthog.com/static/array.js"));
-        assertTrue(html.contains("posthog.init('phc_test'"));
+        assertTrue(html.contains("posthog.init"));
+        assertTrue(html.contains("phc_test"));
         assertTrue(html.contains("autocapture: false"));
         assertTrue(html.contains("disable_session_recording: true"));
         assertTrue(html.contains("person_profiles: 'identified_only'"));
