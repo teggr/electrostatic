@@ -7,7 +7,7 @@ A Java-based static site generator with a multi-module Maven structure.
 Choose the wrapper that fits your project. Both delegate to the shared generation core.
 Electrostatic requires Java 21 or newer; the repository Maven Wrapper pins Maven 3.9.16.
 The plugin does not declare a separate minimum Maven version. `0.0.4` is the latest
-published release; the current development version is `0.0.5-SNAPSHOT`.
+published release; the current development version is `0.0.6-SNAPSHOT`.
 
 | Workflow | Source directory by default | Output directory by default |
 | --- | --- | --- |
@@ -272,7 +272,7 @@ Build and publish docs for your own project.
 
 ## Build and release
 
-The current development version of Electrostatic is `0.0.5-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
+The current development version of Electrostatic is `0.0.6-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
 
 Run tests from the repository root:
 
