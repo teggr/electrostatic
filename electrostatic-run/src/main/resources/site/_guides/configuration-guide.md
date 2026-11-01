@@ -62,10 +62,10 @@ Maven plugin exposes equivalent Maven goals.
 
 | Task | JBang / CLI | Maven plugin |
 | --- | --- | --- |
-| Initialize a docs site | `jbang io.github.teggr:electrostatic-cli:0.0.4 init --theme docs` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:init -Delectrostatic.theme=docs` |
-| Build | `jbang io.github.teggr:electrostatic-cli:0.0.4 build` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:generate` |
-| Preview | `jbang io.github.teggr:electrostatic-cli:0.0.4 serve` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:serve` |
-| List built-in themes | `jbang io.github.teggr:electrostatic-cli:0.0.4 themes` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:themes` |
+| Initialize a docs site | `jbang io.github.teggr:electrostatic-cli:0.0.6 init --theme docs` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:init -Delectrostatic.theme=docs` |
+| Build | `jbang io.github.teggr:electrostatic-cli:0.0.6 build` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:generate` |
+| Preview | `jbang io.github.teggr:electrostatic-cli:0.0.6 serve` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:serve` |
+| List built-in themes | `jbang io.github.teggr:electrostatic-cli:0.0.6 themes` | `mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:themes` |
 
 The examples use the latest published release, `0.0.4`. The CLI artifact is
 `io.github.teggr:electrostatic-cli`; the Maven plugin is

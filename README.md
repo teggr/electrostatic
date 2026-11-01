@@ -42,9 +42,9 @@ Install [JBang](https://www.jbang.dev/download/), then create and enter a site d
 ```bash
 mkdir my-site
 cd my-site
-jbang io.github.teggr:electrostatic-cli:0.0.4 init
-jbang io.github.teggr:electrostatic-cli:0.0.4 build
-jbang io.github.teggr:electrostatic-cli:0.0.4 serve --port 8091
+jbang io.github.teggr:electrostatic-cli:0.0.6 init
+jbang io.github.teggr:electrostatic-cli:0.0.6 build
+jbang io.github.teggr:electrostatic-cli:0.0.6 serve --port 8091
 ```
 
 Open `http://localhost:8091`; press Ctrl+C to stop the preview server. The generated site is written to `generated-site/`.
@@ -66,7 +66,7 @@ Create an empty project directory with this `pom.xml`:
       <plugin>
         <groupId>io.github.teggr</groupId>
         <artifactId>electrostatic-maven-plugin</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.6</version>
       </plugin>
     </plugins>
   </build>
@@ -76,9 +76,9 @@ Create an empty project directory with this `pom.xml`:
 From that directory, initialize the site, generate it, and preview it:
 
 ```bash
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:init
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:generate
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:serve
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:init
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:generate
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:serve
 ```
 
 The Maven plugin initializes content in `src/main/resources/site` and writes generated output to `target/generated-site`. Open the local URL printed by `serve`; press Ctrl+C to stop the preview server.
@@ -95,14 +95,14 @@ and troubleshooting step, see the
 JBang works the same way:
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.4 init --theme docs
-jbang io.github.teggr:electrostatic-cli:0.0.4 build
-jbang io.github.teggr:electrostatic-cli:0.0.4 serve
+jbang io.github.teggr:electrostatic-cli:0.0.6 init --theme docs
+jbang io.github.teggr:electrostatic-cli:0.0.6 build
+jbang io.github.teggr:electrostatic-cli:0.0.6 serve
 ```
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.4 build --base-url http://localhost:8080 --include-drafts
-jbang io.github.teggr:electrostatic-cli:0.0.4 serve --base-url http://localhost:8080 --include-drafts
+jbang io.github.teggr:electrostatic-cli:0.0.6 build --base-url http://localhost:8080 --include-drafts
+jbang io.github.teggr:electrostatic-cli:0.0.6 serve --base-url http://localhost:8080 --include-drafts
 ```
 
 ### JBang
@@ -110,8 +110,8 @@ jbang io.github.teggr:electrostatic-cli:0.0.4 serve --base-url http://localhost:
 Install JBang, then run the CLI artifact directly:
 
 ```bash
-jbang io.github.teggr:electrostatic-cli:0.0.4 init
-jbang io.github.teggr:electrostatic-cli:0.0.4 build
+jbang io.github.teggr:electrostatic-cli:0.0.6 init
+jbang io.github.teggr:electrostatic-cli:0.0.6 build
 ```
 
 The command resolves the CLI from your local Maven cache (or configured repositories) and is the quickest way to try the generator in a new project.
@@ -124,7 +124,7 @@ Add the plugin to your project and call the `init`, `themes`, `serve` and `gener
 <plugin>
 	<groupId>io.github.teggr</groupId>
 	<artifactId>electrostatic-maven-plugin</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.6</version>
 </plugin>
 ```
 
@@ -138,10 +138,10 @@ mvn electrostatic:generate
 If prefix resolution is not configured in your Maven environment, use fully-qualified coordinates:
 
 ```bash
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:init
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:themes
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:serve
-mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:generate
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:init
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:themes
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:serve
+mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:generate
 ```
 
 Or configure your Maven plugin groups once so `mvn electrostatic:*` works everywhere:
@@ -272,7 +272,7 @@ Build and publish docs for your own project.
 
 ## Build and release
 
-The current development version of Electrostatic is `0.0.6-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
+The current development version of Electrostatic is `0.0.7-SNAPSHOT`, as declared by the root POM. Consumer examples use the latest published release.
 
 Run tests from the repository root:
 
@@ -291,8 +291,8 @@ The documentation site at https://teggr.github.io/electrostatic/ is built with E
 Build and preview it locally:
 
 ```bash
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build --input ./electrostatic-run/src/main/resources/site --output ./generated-site
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 serve --input ./electrostatic-run/src/main/resources/site --output ./generated-site --base-url=http://localhost:8080
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.6 build --input ./electrostatic-run/src/main/resources/site --output ./generated-site
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.6 serve --input ./electrostatic-run/src/main/resources/site --output ./generated-site --base-url=http://localhost:8080
 ```
 
 To publish your own Electrostatic site the same way, see the "Publish to GitHub Pages" guide (`electrostatic-run/src/main/resources/site/_guides/github-pages-guide.md`).

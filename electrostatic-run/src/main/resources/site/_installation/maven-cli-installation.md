@@ -23,7 +23,7 @@ Maven goals run inside a Maven project. For a new site, create a directory and a
       <plugin>
         <groupId>io.github.teggr</groupId>
         <artifactId>electrostatic-maven-plugin</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.6</version>
       </plugin>
     </plugins>
   </build>

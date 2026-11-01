@@ -31,8 +31,8 @@ For a project Pages site, keep the repository name in `baseUrl` (for example, `/
 Install **Java 21** and **JBang**, then build and preview locally:
 
 ```bash
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build
-jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 serve --base-url=http://localhost:8080
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.6 build
+jbang --fresh io.github.teggr:electrostatic-cli:0.0.6 serve --base-url=http://localhost:8080
 ```
 
 The build output is written to `generated-site/`. Add `generated-site/` to your `.gitignore`; GitHub Actions builds it for you.
@@ -76,7 +76,7 @@ jobs:
         uses: jbangdev/setup-jbang@v0.1.1
 
       - name: Build site
-        run: jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build
+        run: jbang --fresh io.github.teggr:electrostatic-cli:0.0.6 build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
@@ -105,7 +105,7 @@ If your site source is not at the repository root, pass `--input` and `--output`
 ```yaml
       - name: Build site
         run: >-
-          jbang --fresh io.github.teggr:electrostatic-cli:0.0.4 build
+          jbang --fresh io.github.teggr:electrostatic-cli:0.0.6 build
           --input ./docs-site
           --output ./generated-site
 ```

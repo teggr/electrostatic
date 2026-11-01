@@ -10,7 +10,7 @@ Electrostatic uses plugins to load content, aggregate site data, and generate ou
 
 The selected built-in theme registers its bundled plugins; Electrostatic does not scan site
 folders to discover plugins. List available theme bundles with `electrostatic themes` or
-`mvn io.github.teggr:electrostatic-maven-plugin:0.0.4:themes`: `default`, `docs`, and
+`mvn io.github.teggr:electrostatic-maven-plugin:0.0.6:themes`: `default`, `docs`, and
 `v2`. The `docs` theme registers docs section collections, while the general-purpose
 themes include plugins for posts and other content types. See
 [Configuration and troubleshooting](../guides/configuration-guide.html) for theme-selection
