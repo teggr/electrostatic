@@ -6,6 +6,7 @@ import io.github.teggr.electrostatic.mermaid.MermaidJsTagCreator;
 import io.github.teggr.electrostatic.theme.includes.Footer;
 import io.github.teggr.electrostatic.theme.includes.Head;
 import io.github.teggr.electrostatic.theme.includes.Header;
+import io.github.teggr.electrostatic.theme.includes.PostHogTagCreator;
 import j2html.TagCreator;
 import j2html.tags.DomContent;
 
@@ -37,10 +38,7 @@ public class DefaultLayout {
                     ),
                 Footer.create(renderModel),
                 MermaidJsTagCreator.importAndInitializeMermaidJs(),
-              rawHtml("""
-                  <!-- 100% privacy-first analytics -->
-                  <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-                  """)
+                PostHogTagCreator.create(renderModel.getContext().getSite())
             )
         );
 

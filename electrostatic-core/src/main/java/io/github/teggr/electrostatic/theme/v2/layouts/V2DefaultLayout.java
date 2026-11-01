@@ -3,6 +3,7 @@ package io.github.teggr.electrostatic.theme.v2.layouts;
 import io.github.teggr.electrostatic.engine.Layout;
 import io.github.teggr.electrostatic.engine.RenderModel;
 import io.github.teggr.electrostatic.mermaid.MermaidJsTagCreator;
+import io.github.teggr.electrostatic.theme.includes.PostHogTagCreator;
 import io.github.teggr.electrostatic.theme.v2.includes.V2Footer;
 import io.github.teggr.electrostatic.theme.v2.includes.V2Head;
 import io.github.teggr.electrostatic.theme.v2.includes.V2Header;
@@ -36,10 +37,7 @@ public class V2DefaultLayout {
                     ),
                 V2Footer.create(renderModel),
                 MermaidJsTagCreator.importAndInitializeMermaidJs(),
-                rawHtml("""
-                    <!-- 100% privacy-first analytics -->
-                    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-                    """)
+                PostHogTagCreator.create(renderModel.getContext().getSite())
             )
         );
 
