@@ -36,7 +36,7 @@ public class PostHogTagCreator {
 
         return script()
                 .withSrc(apiHost + "/static/array.js")
-                .withAsync(true)
+                .attr("async")
                 .attr("onload", onload);
     }
 
